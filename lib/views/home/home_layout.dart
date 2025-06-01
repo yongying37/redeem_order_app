@@ -17,15 +17,15 @@ class _MyHomePageState extends State<HomeLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              homeTitle()
-            ],
-          )
-      )
+        backgroundColor: Colors.white,
+        body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                homeTitle()
+              ],
+            )
+        )
     );
   }
 }
