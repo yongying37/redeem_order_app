@@ -140,10 +140,15 @@ class HomeContent extends StatelessWidget {
                         backgroundColor: Colors.red,
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text('Order Now'),
+                      child: const Text(
+                          'Order Now',
+                        style: TextStyle(
+                          color: Colors.white,
+                        )
+                      ),
                     ),
                   ],
                 )
@@ -152,7 +157,6 @@ class HomeContent extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // How it works image
             Center(
               child: Image.asset(
                 'assets/images/reward_flow.jpeg',
@@ -165,11 +169,13 @@ class HomeContent extends StatelessWidget {
             const Text(
               "Earn points through volunteering work\n"
                   "Redeem points to enjoy discount during purchase",
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,),
               textAlign: TextAlign.center,
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: 50),
 
             // NETS info
             Center(
