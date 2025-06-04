@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:redeem_order_app/widgets/custom_bottom_nav.dart';
+import 'package:redeem_order_app/views/profile/profile_page.dart';
 
 // Temporary placeholder pages for navigation
 class ShopsPage extends StatelessWidget {
@@ -19,12 +21,6 @@ class VolunteerPage extends StatelessWidget {
   Widget build(BuildContext context) => const Center(child: Text('Volunteer Page'));
 }
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
-  @override
-  Widget build(BuildContext context) => const Center(child: Text('Profile Page'));
-}
-
 class HomeLayout extends StatefulWidget {
   const HomeLayout({super.key});
 
@@ -35,34 +31,25 @@ class HomeLayout extends StatefulWidget {
 class _HomeLayoutState extends State<HomeLayout> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = const [
-    HomeContent(),
-    ShopsPage(),
-    OrderPage(),
-    VolunteerPage(),
-    ProfilePage(),
+  final List<Widget> _screens = [
+    const HomeContent(),
+    const ShopsPage(),
+    const OrderPage(),
+    const VolunteerPage(),
+    const ProfilePage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(child: _screens[_currentIndex]),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: CustomBottomNav(
         currentIndex: _currentIndex,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black54,
         onTap: (index) {
           setState(() {
             _currentIndex = index;
           });
         },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Shops'),
-          BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Order'),
-          BottomNavigationBarItem(icon: Icon(Icons.volunteer_activism), label: 'Volunteer'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
       ),
     );
   }
