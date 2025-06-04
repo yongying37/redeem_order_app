@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:redeem_order_app/widgets/custom_bottom_nav.dart';
+import 'package:redeem_order_app/views/shop_all/shop_page.dart';
 import 'package:redeem_order_app/views/order_history/order_page.dart';
 import 'package:redeem_order_app/views/volunteer/volunteer_page.dart';
 import 'package:redeem_order_app/views/profile/profile_page.dart';
-
-// Temporary placeholder pages for navigation
-class ShopsPage extends StatelessWidget {
-  const ShopsPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Center(child: Text('Shops Page'));
-}
 
 class HomeLayout extends StatefulWidget {
   const HomeLayout({super.key});
@@ -23,7 +17,7 @@ class _HomeLayoutState extends State<HomeLayout> {
 
   final List<Widget> _screens = [
     const HomeContent(),
-    const ShopsPage(),
+    const ShopPage(),
     const OrderPage(),
     const VolunteerPage(),
     const ProfilePage(),
@@ -112,6 +106,10 @@ class HomeContent extends StatelessWidget {
                     const SizedBox(height: 8),
                     ElevatedButton(
                       onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ShopPage()),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
