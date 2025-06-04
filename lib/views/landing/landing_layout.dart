@@ -20,7 +20,7 @@ class _LandingLayoutState extends State<LandingLayout> {
   Widget btnGetStarted() {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF5689FF),
+            backgroundColor: const Color(0xFF5689FF),
             shape: RoundedRectangleBorder(
               borderRadius:
               BorderRadius.circular(20),
