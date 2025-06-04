@@ -72,9 +72,17 @@ class ProfileLayout extends StatelessWidget {
             const SizedBox(height: 10),
             Align(
               alignment: Alignment.centerRight,
-              child: ElevatedButton(
+              child: OutlinedButton(
                 onPressed: () {},
-                child: const Text("Learn More"),
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.grey[200],
+                  side: const BorderSide(
+                    color: Colors.grey,
+                    width: 1.5,
+                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                child: const Text("Learn More", style: TextStyle(color: Colors.black)),
               ),
             ),
           ],
