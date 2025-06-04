@@ -5,6 +5,8 @@ import 'package:redeem_order_app/views/order_history/order_page.dart';
 import 'package:redeem_order_app/views/volunteer/volunteer_page.dart';
 import 'package:redeem_order_app/views/profile/profile_page.dart';
 
+import '../cart/cart_page.dart';
+
 class HomeLayout extends StatefulWidget {
   const HomeLayout({super.key});
 
@@ -56,10 +58,18 @@ class HomeContent extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Row(
-                  children: const [
-                    Text('5200 pts', style: TextStyle(fontSize: 16)),
-                    SizedBox(width: 8),
-                    Icon(Icons.shopping_cart, size: 28),
+                  children: [
+                    const Text('5200 pts', style: TextStyle(fontSize: 16)),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const CartPage()),
+                        );
+                      },
+                      child: const Icon(Icons.shopping_cart, size: 28),
+                    ),
                   ],
                 ),
               ],
