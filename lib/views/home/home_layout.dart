@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:redeem_order_app/widgets/custom_bottom_nav.dart';
+import 'package:redeem_order_app/views/order_history/order_page.dart';
 import 'package:redeem_order_app/views/volunteer/volunteer_page.dart';
 import 'package:redeem_order_app/views/profile/profile_page.dart';
 
@@ -8,12 +9,6 @@ class ShopsPage extends StatelessWidget {
   const ShopsPage({super.key});
   @override
   Widget build(BuildContext context) => const Center(child: Text('Shops Page'));
-}
-
-class OrderPage extends StatelessWidget {
-  const OrderPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Center(child: Text('Order Page'));
 }
 
 class HomeLayout extends StatefulWidget {
