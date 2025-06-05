@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:redeem_order_app/views/stalls/stall_page.dart';
 import 'package:redeem_order_app/widgets/custom_bottom_nav.dart';
 import 'package:redeem_order_app/views/shop_all/shop_page.dart';
 import 'package:redeem_order_app/views/order_history/order_page.dart';
@@ -118,7 +119,7 @@ class HomeContent extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const ShopPage()),
+                          MaterialPageRoute(builder: (context) => const StallPage()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
