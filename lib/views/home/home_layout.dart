@@ -5,7 +5,7 @@ import 'package:redeem_order_app/views/order_history/order_page.dart';
 import 'package:redeem_order_app/views/volunteer/volunteer_page.dart';
 import 'package:redeem_order_app/views/profile/profile_page.dart';
 
-import '../cart/cart_page.dart';
+import 'package:redeem_order_app/views/cart/cart_page.dart';
 
 class HomeLayout extends StatefulWidget {
   const HomeLayout({super.key});
