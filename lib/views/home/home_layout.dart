@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:redeem_order_app/widgets/custom_bottom_nav.dart';
-import 'package:redeem_order_app/views/stalls/stall_page.dart';
+import 'package:redeem_order_app/views/stall/stall_page.dart';
 import 'package:redeem_order_app/views/order_history/order_page.dart';
 import 'package:redeem_order_app/views/volunteer/volunteer_page.dart';
 import 'package:redeem_order_app/views/profile/profile_page.dart';

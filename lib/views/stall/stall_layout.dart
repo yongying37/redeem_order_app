@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:redeem_order_app/views/menus/menu_drinks.dart';
+import 'package:redeem_order_app/views/menu/menu_drinks.dart';
 
 class StallLayout extends StatelessWidget {
   StallLayout({super.key});
