@@ -12,6 +12,7 @@ class LoginLayout extends StatefulWidget {
 class _LoginLayoutState extends State<LoginLayout> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _stayLoggedIn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,19 +28,31 @@ class _LoginLayoutState extends State<LoginLayout> {
           ),
           const SizedBox(height: 40),
 
-          // Email
           _buildInputField(Icons.email, 'Email', _emailController),
           const SizedBox(height: 15),
 
-          // Password
           _buildInputField(Icons.lock, 'Password', _passwordController, obscure: true),
-          const SizedBox(height: 30),
+          const SizedBox(height: 10),
 
-          // Login Button
+          // 🔲 Stay Logged In Checkbox
+          CheckboxListTile(
+            title: const Text("Stay logged in"),
+            value: _stayLoggedIn,
+            onChanged: (bool? value) {
+              setState(() {
+                _stayLoggedIn = value ?? false;
+              });
+            },
+            controlAffinity: ListTileControlAffinity.leading,
+            contentPadding: EdgeInsets.zero,
+          ),
+
+          const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
+                // You can save `_stayLoggedIn` value to local storage if needed
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const HomeLayout()),
@@ -62,7 +75,7 @@ class _LoginLayoutState extends State<LoginLayout> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const SignUpPage()),
-              ); // return to sign up page
+              );
             },
             child: const Text.rich(
               TextSpan(

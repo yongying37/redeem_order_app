@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'stall_layout.dart';  // Import the StallLayout widget
+import 'stall_layout.dart';
 
 class StallPage extends StatelessWidget {
   const StallPage({super.key});
