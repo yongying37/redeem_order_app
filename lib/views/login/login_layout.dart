@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:redeem_order_app/views/home/home_layout.dart';
+import 'package:redeem_order_app/views/signup/signup_page.dart';
 
 class LoginLayout extends StatefulWidget {
   const LoginLayout({super.key});
@@ -58,7 +59,10 @@ class _LoginLayoutState extends State<LoginLayout> {
           const SizedBox(height: 20),
           GestureDetector(
             onTap: () {
-              Navigator.pop(context); // return to sign up page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SignUpPage()),
+              ); // return to sign up page
             },
             child: const Text.rich(
               TextSpan(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:redeem_order_app/views/landing/landing_page.dart';
+import 'package:redeem_order_app/views/login/login_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         useMaterial3: true,
       ),
-      home: const LandingPage(),
+      home: const LoginPage(),
     );
   }
 }
