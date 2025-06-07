@@ -3,15 +3,37 @@ import 'package:redeem_order_app/views/cart/cart_manager.dart';
 import 'package:redeem_order_app/views/order_type/order_type_manager.dart';
 
 class CartLayout extends StatefulWidget {
-  const CartLayout({super.key});
+  final bool supportsDinein;
+  final bool supportsTakeaway;
+  final String stallName;
+  final String selectedOrderType;
+
+  const CartLayout({
+    super.key,
+    required this.supportsDinein,
+    required this.supportsTakeaway,
+    required this.stallName,
+    required this.selectedOrderType,
+  });
 
   @override
   State<CartLayout> createState() => _CartLayoutState();
 }
 
 class _CartLayoutState extends State<CartLayout> {
-  String orderType = 'Dine In';
   int selectedDiscount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (OrderTypeManager.selectedType.isEmpty) {
+      if (widget.supportsDinein) {
+        OrderTypeManager.selectedType = 'Dine In';
+      } else if (widget.supportsTakeaway) {
+        OrderTypeManager.selectedType = 'Take Away';
+      }
+    }
+  }
 
   void showRedeemDialog() {
     showDialog(
@@ -208,7 +230,7 @@ class _CartLayoutState extends State<CartLayout> {
                   children: [
                     const Text("Order Type: ",
                         style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(OrderTypeManager.selectedType),
+                    Text(widget.selectedOrderType),
                   ],
                 ),
                 Row(

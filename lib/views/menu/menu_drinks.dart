@@ -3,7 +3,19 @@ import 'package:redeem_order_app/views/cart/cart_page.dart';
 import 'package:redeem_order_app/views/cart/cart_manager.dart';
 
 class DrinksMenuPage extends StatefulWidget {
-  const DrinksMenuPage({super.key});
+  final String selectedOrderType;
+  final String stallName;
+  final bool supportsDinein;
+  final bool supportsTakeaway;
+
+  const DrinksMenuPage({
+    Key? key,
+    required this.selectedOrderType,
+    required this.stallName,
+    required this.supportsDinein,
+    required this.supportsTakeaway,
+  }) : super(key: key);
+
 
   @override
   State<DrinksMenuPage> createState() => _DrinksMenuPageState();
@@ -30,7 +42,13 @@ class _DrinksMenuPageState extends State<DrinksMenuPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const CartPage()),
+                MaterialPageRoute(builder: (context) => CartPage(
+                  stallName: widget.stallName,
+                  supportsDinein: widget.supportsDinein,
+                  supportsTakeaway: widget.supportsTakeaway,
+                  selectedOrderType: widget.selectedOrderType,
+                ),
+                ),
               );
             },
           ),

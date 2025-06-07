@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:redeem_order_app/views/menu/menu_drinks.dart';
+
+import '../ordertype_stalls/ordertype_page.dart';
 
 class StallLayout extends StatelessWidget {
   StallLayout({super.key});
@@ -35,7 +36,12 @@ class StallLayout extends StatelessWidget {
               if (stall['name'] == 'Drinks') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => DrinksMenuPage()), // Navigate to Drinks Menu
+                  MaterialPageRoute(builder: (context) => OrderTypesPage(
+                    stallName: 'Drinks',
+                    supportsDinein: true,
+                    supportsTakeaway: true,
+                    ),
+                  ), // Navigate to Drinks Menu
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(

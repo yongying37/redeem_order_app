@@ -65,7 +65,12 @@ class HomeContent extends StatelessWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const CartPage()),
+                          MaterialPageRoute(builder: (context) => CartPage(
+                            selectedOrderType: 'Dine In', // or get dynamically
+                            stallName: 'Stall A',
+                            supportsDinein: true,
+                            supportsTakeaway: true,
+                          )),
                         );
                       },
                       child: const Icon(Icons.shopping_cart, size: 28),
