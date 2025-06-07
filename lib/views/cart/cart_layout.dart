@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:redeem_order_app/views/cart/cart_manager.dart';
+import 'package:redeem_order_app/views/order_type/order_type_manager.dart';
 
 class CartLayout extends StatefulWidget {
   const CartLayout({super.key});
@@ -8,7 +10,6 @@ class CartLayout extends StatefulWidget {
 }
 
 class _CartLayoutState extends State<CartLayout> {
-  int quantity = 1;
   String orderType = 'Dine In';
   int selectedDiscount = 0;
 
@@ -23,23 +24,21 @@ class _CartLayoutState extends State<CartLayout> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("Redeem Points", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                SizedBox(height: 4),
-                Text("200 points available", style: TextStyle(color: Colors.grey)),
-
-                SizedBox(height: 20),
+                const Text("Redeem Points", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                const SizedBox(height: 4),
+                const Text("200 points available", style: TextStyle(color: Colors.grey)),
+                const SizedBox(height: 20),
                 _buildRedeemOption("\$1 off", 100),
                 _buildRedeemOption("\$2 off", 200),
                 _buildRedeemOption("\$3 off", 300),
-
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue, minimumSize: Size(double.infinity, 50)),
-                  child: Text("Redeem Now"),
+                      backgroundColor: Colors.blue, minimumSize: const Size(double.infinity, 50)),
+                  child: const Text("Redeem Now"),
                 )
               ],
             ),
@@ -68,7 +67,7 @@ class _CartLayoutState extends State<CartLayout> {
                 selectedDiscount = value!;
               });
               Navigator.pop(context);
-              showRedeemDialog(); // Refresh selection
+              showRedeemDialog();
             },
           )
         ],
@@ -78,23 +77,28 @@ class _CartLayoutState extends State<CartLayout> {
           selectedDiscount = points;
         });
         Navigator.pop(context);
-        showRedeemDialog(); // Refresh selection
+        showRedeemDialog();
       },
     );
   }
 
+  double calculateTotal() {
+    double total = 0.0;
+    for (final item in CartManager().items) {
+      double price = double.tryParse(item.price.replaceAll('\$', '')) ?? 0.0;
+      total += price * item.quantity;
+    }
+    total -= selectedDiscount / 100.0;
+    return total < 0 ? 0 : total;
+  }
+
   @override
   Widget build(BuildContext context) {
-    double itemPrice = 3.90;
-    double total = (quantity * itemPrice) - (selectedDiscount / 100.0);
-    total = total < 0 ? 0 : total;
-
     return SafeArea(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 1.0),
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -102,9 +106,7 @@ class _CartLayoutState extends State<CartLayout> {
                   alignment: Alignment.centerLeft,
                   child: IconButton(
                     icon: const Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: () => Navigator.pop(context),
                   ),
                 ),
                 const Text(
@@ -114,56 +116,86 @@ class _CartLayoutState extends State<CartLayout> {
               ],
             ),
           ),
-          Container(
-            color: Colors.grey[300],
-            width: double.infinity,
-            padding: EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Chicken Rice', style: TextStyle(fontWeight: FontWeight.bold)),
-                Row(
-                  children: [
-                    Icon(Icons.location_on, size: 18),
-                    Text('Foodgle Hub', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ],
+          Expanded(
+            child: ListView.builder(
+              itemCount: CartManager().items.length,
+              itemBuilder: (context, index) {
+                final item = CartManager().items[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset(
+                              item.image,
+                              width: 90,
+                              height: 90,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.name,
+                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  item.price,
+                                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.remove),
+                                      onPressed: () {
+                                        setState(() {
+                                          if (item.quantity > 1) {
+                                            item.quantity--;
+                                          } else {
+                                            CartManager().items.removeAt(index);
+                                          }
+                                        });
+                                      },
+                                    ),
+                                    Text('${item.quantity}', style: const TextStyle(fontSize: 16)),
+                                    IconButton(
+                                      icon: const Icon(Icons.add),
+                                      onPressed: () {
+                                        setState(() {
+                                          item.quantity++;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-          ListTile(
-            leading: Image.asset(
-              'assets/images/roasted_chicken.jpeg',
-              width: 109,
-              height: 88,
-            ),
-            title: Text('Roasted Chicken'),
-            subtitle: Text('Single Meat Rice'),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.remove),
-                  onPressed: () => setState(() {
-                    if (quantity > 1) {
-                      quantity--;
-                    }
-                  }),
-                ),
-                Text('$quantity'),
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () => setState(() {
-                    quantity++;
-                  }),
-                ),
-              ],
-            ),
-          ),
+
+          const Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: TextField(
-              decoration: InputDecoration(labelText: 'Order Note'),
+              decoration: const InputDecoration(labelText: 'Order Note'),
             ),
           ),
           Padding(
@@ -171,53 +203,45 @@ class _CartLayoutState extends State<CartLayout> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Order Info', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text('Order Info', style: TextStyle(fontWeight: FontWeight.bold)),
                 Row(
                   children: [
-                    Radio<String>(
-                      value: 'Dine In',
-                      groupValue: orderType,
-                      onChanged: (value) => setState(() => orderType = value!),
-                    ),
-                    Text('Dine In'),
-                    Radio<String>(
-                      value: 'Take Out',
-                      groupValue: orderType,
-                      onChanged: (value) => setState(() => orderType = value!),
-                    ),
-                    Text('Take Out'),
+                    const Text("Order Type: ",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(OrderTypeManager.selectedType),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Collection Time'),
+                    const Text('Collection Time'),
                     TextButton(
                       onPressed: () {},
-                      child: Text('Now'),
+                      child: const Text('Now'),
                     ),
                   ],
                 ),
               ],
             ),
           ),
-          Divider(),
           ListTile(
-            leading: Icon(Icons.attach_money),
-            title: Text('Enjoy discounts with your points'),
+            leading: const Icon(Icons.attach_money),
+            title: const Text('Enjoy discounts with your points'),
             onTap: showRedeemDialog,
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child:Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Total \$${total.toStringAsFixed(2)}',
-                    style: TextStyle(fontSize: 14, color: Colors.red)),
+                Text('Total \$${calculateTotal().toStringAsFixed(2)}',
+                    style: const TextStyle(fontSize: 14, color: Colors.red)),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-                  onPressed: () {},
-                  child: Text('Check Out'),
+                  onPressed: () {
+                    // Checkout logic
+                  },
+                  child: const Text('Check Out'),
                 ),
               ],
             ),
@@ -225,6 +249,5 @@ class _CartLayoutState extends State<CartLayout> {
         ],
       ),
     );
-
   }
 }

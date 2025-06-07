@@ -6,6 +6,7 @@ import 'package:redeem_order_app/views/volunteer/volunteer_page.dart';
 import 'package:redeem_order_app/views/profile/profile_page.dart';
 
 import 'package:redeem_order_app/views/cart/cart_page.dart';
+import 'package:redeem_order_app/views/order_type/order_type_page.dart';
 
 class HomeLayout extends StatefulWidget {
   const HomeLayout({super.key});
@@ -53,7 +54,6 @@ class HomeContent extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top bar (points and cart)
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -118,7 +118,7 @@ class HomeContent extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const StallPage()),
+                          MaterialPageRoute(builder: (context) => const OrderTypePage()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
