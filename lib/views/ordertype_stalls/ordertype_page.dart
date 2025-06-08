@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:redeem_order_app/views/menu/menu_drinks.dart';
+import '../stall/stall_page.dart';
 import 'ordertype_layout.dart';
 
 class OrderTypesPage extends StatelessWidget {
@@ -17,6 +18,17 @@ class OrderTypesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Order Type Page - Drinks'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+              Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const StallPage()),
+              );
+          }
+        )
+      ),
       body: OrderTypesLayout(
         supportsDinein: supportsDinein,
         supportsTakeaway: supportsTakeaway,
@@ -34,6 +46,7 @@ class OrderTypesPage extends StatelessWidget {
           );
         },
       ),
+
     );
   }
 }
