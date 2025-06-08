@@ -4,7 +4,6 @@ import 'package:redeem_order_app/views/stall/stall_page.dart';
 import 'package:redeem_order_app/views/order_history/order_page.dart';
 import 'package:redeem_order_app/views/volunteer/volunteer_page.dart';
 import 'package:redeem_order_app/views/profile/profile_page.dart';
-
 import 'package:redeem_order_app/views/cart/cart_page.dart';
 import 'package:redeem_order_app/views/order_type/order_type_page.dart';
 
@@ -26,6 +25,13 @@ class _HomeLayoutState extends State<HomeLayout> {
     const ProfilePage(),
   ];
 
+  // Method to update the current index from HomeContent
+  void updateCurrentIndex(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,12 +48,15 @@ class _HomeLayoutState extends State<HomeLayout> {
   }
 }
 
-// Separate Home tab UI
+// Separate Home tab UI (Content)
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Get the parent HomeLayout state
+    final _HomeLayoutState homeLayoutState = context.findAncestorStateOfType<_HomeLayoutState>()!;
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -79,7 +88,6 @@ class HomeContent extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 16),
 
             // Banner with Order Now button
@@ -121,10 +129,8 @@ class HomeContent extends StatelessWidget {
                     const SizedBox(height: 8),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const OrderTypePage()),
-                        );
+                        // Call the method to update the index to show StallPage
+                        homeLayoutState.updateCurrentIndex(1);  // 1 corresponds to StallPage in _screens
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
@@ -134,39 +140,32 @@ class HomeContent extends StatelessWidget {
                         ),
                       ),
                       child: const Text(
-                          'Order Now',
-                        style: TextStyle(
-                          color: Colors.white,
-                        )
+                        'Order Now',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
-
             const SizedBox(height: 24),
-
             Center(
               child: Image.asset(
                 'assets/images/reward_flow.jpeg',
                 width: 300,
               ),
             ),
-
             const SizedBox(height: 16),
-
             const Text(
               "Earn points through volunteering work\n"
                   "Redeem points to enjoy discount during purchase",
               style: TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.bold,),
+                fontWeight: FontWeight.bold,
+              ),
               textAlign: TextAlign.center,
             ),
-
             const SizedBox(height: 50),
-
             // NETS info
             Center(
               child: Row(
@@ -187,7 +186,6 @@ class HomeContent extends StatelessWidget {
                 ],
               ),
             ),
-
             const SizedBox(height: 80), // avoid bottom nav overlap
           ],
         ),
