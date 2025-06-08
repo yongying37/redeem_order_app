@@ -32,7 +32,7 @@ class _LoginLayoutState extends State<LoginLayout> {
           const SizedBox(height: 15),
 
           _buildInputField(Icons.lock, 'Password', _passwordController, obscure: true),
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
 
           // 🔲 Stay Logged In Checkbox
           CheckboxListTile(
@@ -103,6 +103,7 @@ class _LoginLayoutState extends State<LoginLayout> {
       child: TextField(
         controller: controller,
         obscureText: obscure,
+        textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
           prefixIcon: Icon(icon, color: Colors.black54),
           hintText: hint,
