@@ -20,7 +20,7 @@ class CustomBottomNav extends StatelessWidget {
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
         BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Shops'),
-        BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Order'),
+        BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Orders'),
         BottomNavigationBarItem(icon: Icon(Icons.volunteer_activism), label: 'Volunteer'),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
       ],
