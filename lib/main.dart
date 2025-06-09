@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:redeem_order_app/views/login/login_page.dart';
+import 'package:redeem_order_app/views/home/home_page.dart';
 import 'package:redeem_order_app/views/menu/menu_drinks.dart';
 
 void main() {
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
           supportsTakeaway: true,
         ),
       },
-      home: const LoginPage(),
+      home: const HomePage(),
     );
   }
 }

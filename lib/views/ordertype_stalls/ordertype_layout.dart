@@ -22,6 +22,13 @@ class _OrderTypesLayoutState extends State<OrderTypesLayout> {
   String? selectedOption;
   // May add date time for users to select but for
   // now the collection time would be 'Now'
+  Color normalBg = Colors.white;
+  Color normalBorder = Colors.grey;
+  Color normalText = Colors.black;
+
+  Color selectedBg = Color(0xFF0072B2);
+  Color selectedBorder = Color(0xFFD55E00);
+  Color selectedText = Colors.white;
 
   void _handleOptionSelected(String option) {
     setState(() {
@@ -37,26 +44,54 @@ class _OrderTypesLayoutState extends State<OrderTypesLayout> {
 
   Widget _buildOption(String label) {
     final bool isSelected = selectedOption == label;
+
+    IconData iconData;
+    if (label == "Take Away") {
+      iconData = Icons.shopping_bag;
+    }
+    else if (label == "Dine In") {
+      iconData = Icons.restaurant;
+    }
+    else {
+      iconData = Icons.help_outline;
+    }
+
     return GestureDetector(
       onTap: () => _handleOptionSelected(label),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 20),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
         margin: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.pink[50] : Colors.white,
-          border: Border.all(color: isSelected ? Colors.black : Colors.pink),
+          color: isSelected ? selectedBg : normalBg,
+          border: Border.all(
+            color: isSelected ? selectedBorder : normalBorder,
+            width: isSelected ? 2.5 : 1.0,
+          ),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? Colors.pinkAccent : Colors.black,
-              fontSize: 18,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        child: Row(
+          children: [
+            Icon(
+              iconData,
+              color: isSelected ? selectedText : normalText,
             ),
-          ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: isSelected ? selectedText : normalText,
+                  fontSize: 18,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+            ),
+            if (isSelected) ...[
+              const SizedBox(width: 8),
+              Icon(Icons.check_circle, color: selectedText),
+            ],
+          ],
         ),
       ),
     );
