@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../bloc/profile/profile_bloc.dart';
 import 'profile_layout.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -6,8 +8,11 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: ProfileLayout(),
+    return BlocProvider(
+      create: (context) => ProfileBloc()..add(LoadProfile()),
+      child: const Scaffold(
+        body: ProfileLayout(),
+      ),
     );
   }
 }
