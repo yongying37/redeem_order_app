@@ -61,22 +61,11 @@ class HomeContent extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.person_add),
-                  tooltip: 'Login',
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
-                    );
-                  },
-                ),
-                const SizedBox(width: 8),
                 const SizedBox(width: 8),
                 GestureDetector(
                   onTap: () {
@@ -94,6 +83,23 @@ class HomeContent extends StatelessWidget {
                   },
                   child: const Icon(Icons.shopping_cart, size: 28),
                 ),
+                const SizedBox(width: 16),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                    );
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: const [
+                        Icon(Icons.login, size: 28),
+                      ],
+                  ),
+                ),
+                const SizedBox(width: 8),
               ],
             ),
             const SizedBox(height: 16),

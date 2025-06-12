@@ -248,7 +248,13 @@ class _CartLayoutState extends State<CartLayout> {
           ),
           ListTile(
             leading: const Icon(Icons.attach_money),
-            title: const Text('Enjoy discounts with your points'),
+            title: Text(
+              selectedDiscount > 0 ? 'Offer Applied!' : 'Enjoy discounts with your points',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: selectedDiscount > 0 ? Colors.green : Colors.black,
+              ),
+            ),
             onTap: showRedeemDialog,
           ),
           Padding(
@@ -256,8 +262,19 @@ class _CartLayoutState extends State<CartLayout> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Total \$${calculateTotal().toStringAsFixed(2)}',
-                    style: const TextStyle(fontSize: 14, color: Colors.red)),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Total \$${calculateTotal().toStringAsFixed(2)}',
+                    style: const TextStyle(fontSize: 14, color: Colors.red),
+                    ),
+                    if (selectedDiscount > 0)
+                      Text(
+                        'Saved \$${(selectedDiscount / 100).toStringAsFixed(2)}',
+                        style: const TextStyle(fontSize: 12, color: Colors.green),
+                      ),
+                  ],
+                ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
                   onPressed: () {
