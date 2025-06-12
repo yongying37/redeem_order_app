@@ -5,7 +5,7 @@ import 'package:redeem_order_app/views/order_history/order_page.dart';
 import 'package:redeem_order_app/views/volunteer/volunteer_page.dart';
 import 'package:redeem_order_app/views/profile/profile_page.dart';
 import 'package:redeem_order_app/views/cart/cart_page.dart';
-import 'package:redeem_order_app/views/order_type/order_type_page.dart';
+import 'package:redeem_order_app/views/login/login_page.dart';
 
 class HomeLayout extends StatefulWidget {
   const HomeLayout({super.key});
@@ -66,25 +66,33 @@ class HomeContent extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Row(
-                  children: [
-                    const Text('5200 pts', style: TextStyle(fontSize: 16)),
-                    const SizedBox(width: 8),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => CartPage(
-                            selectedOrderType: 'Dine In', // or get dynamically
-                            stallName: 'Stall A',
-                            supportsDinein: true,
-                            supportsTakeaway: true,
-                          )),
-                        );
-                      },
-                      child: const Icon(Icons.shopping_cart, size: 28),
-                    ),
-                  ],
+                IconButton(
+                  icon: const Icon(Icons.person_add),
+                  tooltip: 'Login',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                    );
+                  },
+                ),
+                const SizedBox(width: 8),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CartPage(
+                          selectedOrderType: 'Dine In',
+                          stallName: 'Stall A',
+                          supportsDinein: true,
+                          supportsTakeaway: true,
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Icon(Icons.shopping_cart, size: 28),
                 ),
               ],
             ),
