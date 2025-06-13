@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:redeem_order_app/views/cart/cart_manager.dart';
+import 'package:redeem_order_app/views/checkout/checkout_page.dart';
 import 'package:redeem_order_app/views/order_type/order_type_manager.dart';
 
 class CartLayout extends StatefulWidget {
@@ -279,6 +280,10 @@ class _CartLayoutState extends State<CartLayout> {
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
                   onPressed: () {
                     // Checkout logic
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (_) => const CheckoutPage()),
+                    );
                   },
                   child: const Text('Check Out'),
                 ),
