@@ -9,26 +9,56 @@ class HmacUtil {
     required String secretKey,
     required String requestMethod,
     required String requestUrl,
+    String? overrideDatetime, // Allows manual datetime override for testing
   }) {
+    // The request body for GET must be '{}'
     const requestBody = '{}';
 
-    final datetime = DateTime.now().toUtc().toIso8601String();
+    final now = overrideDatetime != null
+        ? DateTime.parse(overrideDatetime)
+        : DateTime.now().toUtc();
+
+    final datetime = now.toIso8601String().substring(0, 23) + 'Z'; // keep only milliseconds
+
+
+    // Base64-encoded SHA256 hash of the request body '{}'
     final contentSha256 = base64.encode(sha256.convert(utf8.encode(requestBody)).bytes);
-    final host = 'stg.foodservices.openapipaas.com';
 
     final uri = Uri.parse(requestUrl);
-    final canonicalRequest = '$requestMethod\n${uri.path}?${uri.query}\n$datetime\n$contentSha256\n$host';
+    final canonicalUriPath = uri.path;
 
-    final hmac = Hmac(sha256, utf8.encode(secretKey));
-    final rawSignature = base64.encode(hmac.convert(utf8.encode(canonicalRequest)).bytes);
+    final canonicalUriQuery = uri.hasQuery ? '?${uri.query}' : '';
+
+    // Use the parsed host (not hardcoded) to match exactly what the server expects
+    final host = uri.host;
+
+    // Construct the canonical string
+    final canonicalRequest = [
+      requestMethod,                              // e.g., GET
+      '$canonicalUriPath$canonicalUriQuery',      // full path + raw query
+      '$datetime|$host|$projectId|$platformSyscode|$contentSha256'
+    ].join('\n');
+
+    print('Canonical Request Lines:');
+    canonicalRequest.split('\n').forEach((line) => print('➡ "$line"'));
+
+
+    final stringToSign = canonicalRequest + secretKey;
+    final bytes = sha256.convert(utf8.encode(stringToSign)).bytes;
+    final rawSignature = base64.encode(bytes);
+
+    final signedHeadersString = 'datetime|host|project-id|platform-syscode|content-sha256';
 
     final authHeader =
-        'HMAC-SHA256 Credential=$apiKey&SignedHeaders=datetime|host|project-id|platform-syscode|content-sha256&Signature=$rawSignature';
+        'HMAC-SHA256 Credential=$apiKey&SignedHeaders=$signedHeadersString&Signature=$rawSignature';
 
-    print('🧾 Canonical String:\n$canonicalRequest');
+    // Debug output
+    print('--- HMAC-SHA256 DEBUG ---');
+    print('Canonical Request:\n$canonicalRequest');
     print('datetime: $datetime');
     print('content-sha256: $contentSha256');
     print('Authorization: $authHeader');
+    print('--------------------------');
 
     return {
       'api-key': apiKey,
