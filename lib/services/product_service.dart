@@ -25,18 +25,28 @@ class ProductService {
 
     final response = await http.get(Uri.parse(requestUrl), headers: headers);
 
-    print('📦 Fetching products from: $requestUrl');
-    print('📡 Status: ${response.statusCode}');
+    print('Fetching products from: $requestUrl');
+    print('Status: ${response.statusCode}');
 
     if (response.statusCode == 200) {
       final decoded = json.decode(response.body);
-      final List data = decoded['result']['data'];
-      print('✅ Product count: ${data.length}');
+      final rawData = decoded['result']['data'];
+
+      List data;
+
+      if (rawData is List) {
+        data = rawData;
+      } else if (rawData is Map) {
+        data = [rawData];
+      } else {
+        data = [];
+      }
+
+      print('Normalized product count: ${data.length}');
       return data.map((json) => Product.fromJson(json)).toList();
     } else {
-      print('❌ Error: ${response.body}');
+      print('Error: ${response.body}');
       throw Exception('Failed to fetch merchant products');
     }
   }
 }
-
