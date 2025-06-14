@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:redeem_order_app/widgets/custom_bottom_nav.dart';
 import 'package:redeem_order_app/views/stall/stall_page.dart';
 import 'package:redeem_order_app/views/order_history/order_page.dart';
@@ -6,6 +7,7 @@ import 'package:redeem_order_app/views/volunteer/volunteer_page.dart';
 import 'package:redeem_order_app/views/profile/profile_page.dart';
 import 'package:redeem_order_app/views/cart/cart_page.dart';
 import 'package:redeem_order_app/views/login/login_page.dart';
+import 'package:redeem_order_app/views/ordertype_stalls/ordertype_manager.dart';
 
 class HomeLayout extends StatefulWidget {
   const HomeLayout({super.key});
@@ -25,7 +27,6 @@ class _HomeLayoutState extends State<HomeLayout> {
     const ProfilePage(),
   ];
 
-  // Method to update the current index from HomeContent
   void updateCurrentIndex(int index) {
     setState(() {
       _currentIndex = index;
@@ -48,13 +49,11 @@ class _HomeLayoutState extends State<HomeLayout> {
   }
 }
 
-// Separate Home tab UI (Content)
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Get the parent HomeLayout state
     final _HomeLayoutState homeLayoutState = context.findAncestorStateOfType<_HomeLayoutState>()!;
 
     return SingleChildScrollView(
@@ -69,11 +68,13 @@ class HomeContent extends StatelessWidget {
                 const SizedBox(width: 8),
                 GestureDetector(
                   onTap: () {
+                    // Set default order type for cart
+                    Provider.of<OrderTypeManager>(context, listen: false).setOrderType('Dine In');
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CartPage(
-                          selectedOrderType: 'Dine In',
+                        builder: (context) => const CartPage(
                           stallName: 'Stall A',
                           supportsDinein: true,
                           supportsTakeaway: true,
@@ -91,20 +92,14 @@ class HomeContent extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => const LoginPage()),
                     );
                   },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
-                        Icon(Icons.login, size: 28),
-                      ],
-                  ),
+                  child: const Icon(Icons.login, size: 28),
                 ),
                 const SizedBox(width: 8),
               ],
             ),
             const SizedBox(height: 16),
 
-            // Banner with Order Now button
+            // Banner with "Order Now" button
             Stack(
               alignment: Alignment.center,
               children: [
@@ -143,8 +138,7 @@ class HomeContent extends StatelessWidget {
                     const SizedBox(height: 8),
                     ElevatedButton(
                       onPressed: () {
-                        // Call the method to update the index to show StallPage
-                        homeLayoutState.updateCurrentIndex(1);  // 1 corresponds to StallPage in _screens
+                        homeLayoutState.updateCurrentIndex(1); // Go to StallPage
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
@@ -180,11 +174,10 @@ class HomeContent extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 50),
-            // NETS info
+
             Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center, // Ensure vertical alignment
                 children: [
                   Image.asset(
                     'assets/images/nets_logo.jpeg',
@@ -200,7 +193,7 @@ class HomeContent extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 80), // avoid bottom nav overlap
+            const SizedBox(height: 80),
           ],
         ),
       ),

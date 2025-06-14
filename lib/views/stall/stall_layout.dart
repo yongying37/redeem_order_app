@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:redeem_order_app/models/merchant_model.dart';
 import 'package:redeem_order_app/services/merchant_service.dart';
+import 'package:redeem_order_app/views/ordertype_stalls/ordertype_page.dart';
 
 class StallLayout extends StatefulWidget {
   const StallLayout({super.key});
@@ -36,17 +37,39 @@ class _StallLayoutState extends State<StallLayout> {
           itemCount: merchants.length,
           itemBuilder: (context, index) {
             final merchant = merchants[index];
-            return Card(
-              child: ListTile(
-                leading: Image.network(
-                  merchant.imageUrl,
-                  width: 50,
-                  height: 50,
-                  errorBuilder: (context, error, stackTrace) =>
-                  const Icon(Icons.store),
+            print('📦 Merchant: name=${merchant.name}, unit=${merchant.unitNo}, image=${merchant.imageUrl}');
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OrderTypesPage(
+                      stallName: merchant.name,
+                      supportsDinein: merchant.supportsDineIn,
+                      supportsTakeaway: merchant.supportsTakeaway,
+                      organisationId: 'b7ad3a7e-513d-4f5b-a7fe-73363a3e8699',
+                      merchantId: merchant.id,
+                    ),
+                  ),
+                );
+              },
+              child: Card(
+                child: ListTile(
+                  leading: merchant.imageUrl.isNotEmpty
+                      ? Image.network(
+                    merchant.imageUrl,
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.store),
+                  )
+                      : const Icon(Icons.store),
+                  title: Text(merchant.name),
+                  subtitle: Text(
+                    merchant.unitNo.isNotEmpty ? 'Unit: ${merchant.unitNo}' : 'Unit: Not Available',
+                  ),
                 ),
-                title: Text(merchant.name),
-                subtitle: Text('Unit: ${merchant.unitNo}'),
               ),
             );
           },

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:redeem_order_app/views/home/home_page.dart';
-import 'package:redeem_order_app/views/menu/menu_drinks.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,14 +33,6 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         useMaterial3: true,
       ),
-      routes: {
-        '/drinks_menu': (context) => const DrinksMenuPage(
-          selectedOrderType: 'Dine In', // or 'Take Away'
-          stallName: 'Test Stall',
-          supportsDinein: true,
-          supportsTakeaway: true,
-        ),
-      },
       home: const HomePage(),
     );
   }

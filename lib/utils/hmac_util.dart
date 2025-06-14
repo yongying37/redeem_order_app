@@ -11,17 +11,14 @@ class HmacUtil {
     required String requestUrl,
     String? overrideDatetime, // Allows manual datetime override for testing
   }) {
-    // The request body for GET must be '{}'
     const requestBody = '{}';
 
     final now = overrideDatetime != null
         ? DateTime.parse(overrideDatetime)
         : DateTime.now().toUtc();
 
-    final datetime = now.toIso8601String().substring(0, 23) + 'Z'; // keep only milliseconds
+    final datetime = now.toIso8601String().substring(0, 23) + 'Z';
 
-
-    // Base64-encoded SHA256 hash of the request body '{}'
     final contentSha256 = base64.encode(sha256.convert(utf8.encode(requestBody)).bytes);
 
     final uri = Uri.parse(requestUrl);
@@ -29,7 +26,7 @@ class HmacUtil {
 
     final canonicalUriQuery = uri.hasQuery ? '?${uri.query}' : '';
 
-    // Use the parsed host (not hardcoded) to match exactly what the server expects
+    // Use the parsed host to match exactly what the server expects
     final host = uri.host;
 
     // Construct the canonical string

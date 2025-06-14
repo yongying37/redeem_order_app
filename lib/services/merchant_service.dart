@@ -8,7 +8,6 @@ class MerchantService {
     const requestUrl =
         'https://stg.foodservices.openapipaas.com/api/v1/common/org/b7ad3a7e-513d-4f5b-a7fe-73363a3e8699/locations/outlets/merchants?location_code=HawkerCentre@BCHC';
 
-    // Generate secure HMAC-SHA256 headers
     final headers = HmacUtil.generateHeaders(
       apiKey: 'PcnpwcP9tVIoXfhntINa',
       projectId: '4cc3db29-abe6-43d8-8c73-806349e18206',
@@ -18,25 +17,33 @@ class MerchantService {
       requestUrl: requestUrl,
     );
 
-    headers['Host'] = 'stg.foodservices.openapipaas.com';  // Capital "H"
-    headers.remove('host'); // Remove lowercase version
+    try {
+      final response = await http.get(Uri.parse(requestUrl), headers: headers);
 
+      print('📡 Status Code: ${response.statusCode}');
+      print('📦 Raw Response: ${response.body}');
 
-    print('🔍 Final Headers Sent:');
-    headers.forEach((k, v) => print('$k: $v'));
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
 
-    final client = http.Client(); // avoids auto-redirect issues
-    final response = await http.get(Uri.parse(requestUrl), headers: headers);
-    client.close();
+        if (jsonData == null ||
+            jsonData['result'] == null ||
+            jsonData['result']['data'] == null) {
+          print('⚠️ Warning: "result.data" field is null or missing in response.');
+          return [];
+        }
 
-    if (response.statusCode == 200) {
-      final decoded = json.decode(response.body);
-      final List data = decoded['result']['data'];
-      return data.map((json) => Merchant.fromJson(json)).toList();
-    } else {
-      print('❌ Status Code: ${response.statusCode}');
-      print('❌ Response Body: ${response.body}');
-      throw Exception('Failed to fetch merchants');
+        final merchants = jsonData['result']['data'] as List;
+        print('✅ API returned merchant count: ${merchants.length}');
+
+        return merchants.map((merchant) => Merchant.fromJson(merchant)).toList();
+      } else {
+        print('❌ Failed to load merchants. Status: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print('❗ Exception occurred while fetching merchants: $e');
+      return [];
     }
   }
 }

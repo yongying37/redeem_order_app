@@ -1,0 +1,23 @@
+class Product {
+  final String productId;
+  final String productName;
+  final double productPrice;
+  final String productImgUrl;
+
+  Product({
+    required this.productId,
+    required this.productName,
+    required this.productPrice,
+    required this.productImgUrl,
+  });
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      productId: json['product_id'],
+      productName: json['product_name'],
+      productPrice: (json['product_price'] ?? 0).toDouble(),
+      productImgUrl: json['product_img_url'] ?? '',
+    );
+  }
+}
+

@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:redeem_order_app/views/cart/cart_manager.dart';
 import 'package:redeem_order_app/views/checkout/checkout_page.dart';
-import 'package:redeem_order_app/views/order_type/order_type_manager.dart';
+import 'package:redeem_order_app/views/ordertype_stalls/ordertype_manager.dart';
 
 class CartLayout extends StatefulWidget {
   final bool supportsDinein;
   final bool supportsTakeaway;
   final String stallName;
-  final String selectedOrderType;
 
   const CartLayout({
     super.key,
     required this.supportsDinein,
     required this.supportsTakeaway,
     required this.stallName,
-    required this.selectedOrderType,
   });
 
   @override
@@ -23,18 +22,6 @@ class CartLayout extends StatefulWidget {
 
 class _CartLayoutState extends State<CartLayout> {
   int selectedDiscount = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    if (OrderTypeManager.selectedType.isEmpty) {
-      if (widget.supportsDinein) {
-        OrderTypeManager.selectedType = 'Dine In';
-      } else if (widget.supportsTakeaway) {
-        OrderTypeManager.selectedType = 'Take Away';
-      }
-    }
-  }
 
   void showRedeemDialog() {
     showDialog(
@@ -117,6 +104,8 @@ class _CartLayoutState extends State<CartLayout> {
 
   @override
   Widget build(BuildContext context) {
+    final orderType = Provider.of<OrderTypeManager>(context).selectedOrderType ?? 'Not selected';
+
     return SafeArea(
       child: Column(
         children: [
@@ -231,7 +220,7 @@ class _CartLayoutState extends State<CartLayout> {
                   children: [
                     const Text("Order Type: ",
                         style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(widget.selectedOrderType),
+                    Text(orderType),
                   ],
                 ),
                 Row(
@@ -267,7 +256,7 @@ class _CartLayoutState extends State<CartLayout> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Total \$${calculateTotal().toStringAsFixed(2)}',
-                    style: const TextStyle(fontSize: 14, color: Colors.red),
+                      style: const TextStyle(fontSize: 14, color: Colors.red),
                     ),
                     if (selectedDiscount > 0)
                       Text(
@@ -279,9 +268,8 @@ class _CartLayoutState extends State<CartLayout> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
                   onPressed: () {
-                    // Checkout logic
                     Navigator.push(
-                      context, 
+                      context,
                       MaterialPageRoute(builder: (_) => const CheckoutPage()),
                     );
                   },
