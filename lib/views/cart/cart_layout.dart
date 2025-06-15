@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
 import 'package:redeem_order_app/views/cart/cart_manager.dart';
 import 'package:redeem_order_app/views/checkout/checkout_page.dart';
-import 'package:redeem_order_app/views/ordertype_stalls/ordertype_manager.dart';
 
 class CartLayout extends StatefulWidget {
   final bool supportsDinein;
@@ -47,7 +47,9 @@ class _CartLayoutState extends State<CartLayout> {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue, minimumSize: const Size(double.infinity, 50)),
+                    backgroundColor: Colors.blue,
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
                   child: const Text("Redeem Now"),
                 )
               ],
@@ -104,7 +106,7 @@ class _CartLayoutState extends State<CartLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final orderType = Provider.of<OrderTypeManager>(context).selectedOrderType ?? 'Not selected';
+    final orderType = context.select((OrderTypeBloc bloc) => bloc.state.selectedOption ?? 'Not selected');
 
     return SafeArea(
       child: Column(
@@ -141,14 +143,17 @@ class _CartLayoutState extends State<CartLayout> {
                     child: Padding(
                       padding: const EdgeInsets.all(12),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.asset(
+                            child: Image.network(
                               item.image,
                               width: 90,
                               height: 90,
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                const Icon(Icons.broken_image, size: 48, color: Colors.grey),
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -158,15 +163,17 @@ class _CartLayoutState extends State<CartLayout> {
                               children: [
                                 Text(
                                   item.name,
-                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   item.price,
-                                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                                  style: const TextStyle(fontSize: 14, color: Colors.grey),
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: 8),
                                 Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     IconButton(
                                       icon: const Icon(Icons.remove),
@@ -180,7 +187,7 @@ class _CartLayoutState extends State<CartLayout> {
                                         });
                                       },
                                     ),
-                                    Text('${item.quantity}', style: const TextStyle(fontSize: 16)),
+                                    Text('${item.quantity}', style: const TextStyle(fontSize: 14)),
                                     IconButton(
                                       icon: const Icon(Icons.add),
                                       onPressed: () {
@@ -202,7 +209,6 @@ class _CartLayoutState extends State<CartLayout> {
               },
             ),
           ),
-
           const Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -218,8 +224,7 @@ class _CartLayoutState extends State<CartLayout> {
                 const Text('Order Info', style: TextStyle(fontWeight: FontWeight.bold)),
                 Row(
                   children: [
-                    const Text("Order Type: ",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text("Order Type: ", style: TextStyle(fontWeight: FontWeight.bold)),
                     Text(orderType),
                   ],
                 ),
@@ -255,7 +260,8 @@ class _CartLayoutState extends State<CartLayout> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Total \$${calculateTotal().toStringAsFixed(2)}',
+                    Text(
+                      'Total \$${calculateTotal().toStringAsFixed(2)}',
                       style: const TextStyle(fontSize: 14, color: Colors.red),
                     ),
                     if (selectedDiscount > 0)

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
 import 'package:redeem_order_app/models/product_model.dart';
 import 'package:redeem_order_app/services/product_service.dart';
+import 'package:redeem_order_app/views/cart/cart_page.dart';
+import 'package:redeem_order_app/views/stall/stall_page.dart';
 import 'product_tile.dart';
 
 class ProductPage extends StatefulWidget {
@@ -41,8 +45,33 @@ class _ProductPageState extends State<ProductPage> {
         title: Text('${widget.stallName} - ${widget.selectedOrderType}'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const StallPage()),
+            );
+          },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider.value(
+                    value: BlocProvider.of<OrderTypeBloc>(context),
+                    child: CartPage(
+                      supportsDinein: widget.selectedOrderType == 'Dine In',
+                      supportsTakeaway: widget.selectedOrderType == 'Takeaway',
+                      stallName: widget.stallName,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List<Product>>(
         future: _productFuture,

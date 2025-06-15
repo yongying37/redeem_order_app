@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
 import 'package:redeem_order_app/widgets/custom_bottom_nav.dart';
 import 'package:redeem_order_app/views/stall/stall_page.dart';
 import 'package:redeem_order_app/views/order_history/order_page.dart';
@@ -7,7 +8,6 @@ import 'package:redeem_order_app/views/volunteer/volunteer_page.dart';
 import 'package:redeem_order_app/views/profile/profile_page.dart';
 import 'package:redeem_order_app/views/cart/cart_page.dart';
 import 'package:redeem_order_app/views/login/login_page.dart';
-import 'package:redeem_order_app/views/ordertype_stalls/ordertype_manager.dart';
 
 class HomeLayout extends StatefulWidget {
   const HomeLayout({super.key});
@@ -69,7 +69,7 @@ class HomeContent extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     // Set default order type for cart
-                    Provider.of<OrderTypeManager>(context, listen: false).setOrderType('Dine In');
+                    context.read<OrderTypeBloc>().add(const SelectOrderType('Dine In'));
 
                     Navigator.push(
                       context,

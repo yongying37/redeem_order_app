@@ -18,9 +18,7 @@ class OrderTypesLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => OrderTypeBloc(),
-      child: BlocConsumer<OrderTypeBloc, OrderTypeState>(
+    return BlocConsumer<OrderTypeBloc, OrderTypeState>(
         listener: (context, state) {
           if (state.status == OrderTypeStatus.confirmed && state.selectedOption != null) {
             onContinue(state.selectedOption!);
@@ -113,7 +111,6 @@ class OrderTypesLayout extends StatelessWidget {
             ),
           );
         },
-      ),
     );
   }
 }
