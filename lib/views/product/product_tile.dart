@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:redeem_order_app/models/product_model.dart';
-import 'package:redeem_order_app/views/cart/cart_manager.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../bloc/cart/cart_bloc.dart';
+import '../../models/cart_item_model.dart';
 
 class ProductTile extends StatefulWidget {
   final Product product;
@@ -75,15 +77,19 @@ class _ProductTileState extends State<ProductTile> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    for (int i = 0; i < quantity; i++) {
-                      CartManager().addItem(
+                    final cartBloc = context.read<CartBloc>();
+
+                    cartBloc.add(
+                      AddItem(
                         CartItem(
+                          id: UniqueKey().toString(),
                           name: widget.product.productName,
-                          price: widget.product.productPrice.toStringAsFixed(2),
-                          image: widget.product.productImgUrl,
+                          price: widget.product.productPrice,
+                          imgUrl: widget.product.productImgUrl,
+                          quantity: quantity,
                         ),
-                      );
-                    }
+                      ),
+                    );
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Added $quantity item(s) to cart')),

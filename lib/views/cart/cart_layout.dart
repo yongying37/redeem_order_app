@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
-import 'package:redeem_order_app/views/cart/cart_manager.dart';
-import 'package:redeem_order_app/views/checkout/checkout_page.dart';
+import '../../bloc/cart/cart_bloc.dart';
+import '../../bloc/ordertype/ordertype_bloc.dart';
+import '../checkout/checkout_page.dart';
 
 class CartLayout extends StatefulWidget {
   final bool supportsDinein;
@@ -34,9 +34,11 @@ class _CartLayoutState extends State<CartLayout> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text("Redeem Points", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                const Text("Redeem Points",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 const SizedBox(height: 4),
-                const Text("200 points available", style: TextStyle(color: Colors.grey)),
+                const Text("200 points available",
+                    style: TextStyle(color: Colors.grey)),
                 const SizedBox(height: 20),
                 _buildRedeemOption("\$1 off", 100),
                 _buildRedeemOption("\$2 off", 200),
@@ -44,6 +46,7 @@ class _CartLayoutState extends State<CartLayout> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
+                    context.read<CartBloc>().add(RedeemPoints(selectedDiscount));
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -94,197 +97,220 @@ class _CartLayoutState extends State<CartLayout> {
     );
   }
 
-  double calculateTotal() {
-    double total = 0.0;
-    for (final item in CartManager().items) {
-      double price = double.tryParse(item.price.replaceAll('\$', '')) ?? 0.0;
-      total += price * item.quantity;
-    }
-    total -= selectedDiscount / 100.0;
-    return total < 0 ? 0 : total;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final orderType = context.select((OrderTypeBloc bloc) => bloc.state.selectedOption ?? 'Not selected');
+    final orderType = context
+        .select((OrderTypeBloc bloc) => bloc.state.selectedOption) ??
+        'Not selected';
 
     return SafeArea(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.pop(context),
-                  ),
+      child: BlocBuilder<CartBloc, CartState>(
+        builder: (context, state) {
+          final items = state.cartItems;
+
+          double total = state.total;
+          total = total < 0 ? 0 : total;
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ),
+                    const Text(
+                      'Cart',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
-                const Text(
-                  'Cart',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: CartManager().items.length,
-              itemBuilder: (context, index) {
-                final item = CartManager().items[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Card(
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              item.image,
-                              width: 90,
-                              height: 90,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.broken_image, size: 48, color: Colors.grey),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item.name,
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                  overflow: TextOverflow.ellipsis,
+              ),
+              Expanded(
+                child: items.isEmpty
+                    ? const Center(child: Text("Cart is empty."))
+                    : ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      child: Card(
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  item.imgUrl,
+                                  width: 90,
+                                  height: 90,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(Icons.broken_image,
+                                      size: 48, color: Colors.grey),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  item.price,
-                                  style: const TextStyle(fontSize: 14, color: Colors.grey),
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
                                   children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.remove),
-                                      onPressed: () {
-                                        setState(() {
-                                          if (item.quantity > 1) {
-                                            item.quantity--;
-                                          } else {
-                                            CartManager().items.removeAt(index);
-                                          }
-                                        });
-                                      },
-                                    ),
-                                    Text('${item.quantity}', style: const TextStyle(fontSize: 14)),
-                                    IconButton(
-                                      icon: const Icon(Icons.add),
-                                      onPressed: () {
-                                        setState(() {
-                                          item.quantity++;
-                                        });
-                                      },
+                                    Text(item.name,
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                        overflow: TextOverflow.ellipsis),
+                                    const SizedBox(height: 4),
+                                    Text("\$${item.price.toStringAsFixed(2)}",
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey)),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.remove),
+                                          onPressed: () {
+                                            if (item.quantity > 1) {
+                                              context.read<CartBloc>().add(
+                                                  UpdateItemQuantity(
+                                                      item.id,
+                                                      item.quantity - 1));
+                                            } else {
+                                              context
+                                                  .read<CartBloc>()
+                                                  .add(RemoveItem(item.id));
+                                            }
+                                          },
+                                        ),
+                                        Text('${item.quantity}',
+                                            style: const TextStyle(
+                                                fontSize: 14)),
+                                        IconButton(
+                                          icon: const Icon(Icons.add),
+                                          onPressed: () {
+                                            context.read<CartBloc>().add(
+                                                UpdateItemQuantity(item.id,
+                                                    item.quantity + 1));
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: TextField(
-              decoration: const InputDecoration(labelText: 'Order Note'),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Order Info', style: TextStyle(fontWeight: FontWeight.bold)),
-                Row(
-                  children: [
-                    const Text("Order Type: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(orderType),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Collection Time'),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text('Now'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.attach_money),
-            title: Text(
-              selectedDiscount > 0 ? 'Offer Applied!' : 'Enjoy discounts with your points',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: selectedDiscount > 0 ? Colors.green : Colors.black,
-              ),
-            ),
-            onTap: showRedeemDialog,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Total \$${calculateTotal().toStringAsFixed(2)}',
-                      style: const TextStyle(fontSize: 14, color: Colors.red),
-                    ),
-                    if (selectedDiscount > 0)
-                      Text(
-                        'Saved \$${(selectedDiscount / 100).toStringAsFixed(2)}',
-                        style: const TextStyle(fontSize: 12, color: Colors.green),
-                      ),
-                  ],
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const CheckoutPage()),
                     );
                   },
-                  child: const Text('Check Out'),
                 ),
-              ],
-            ),
-          ),
-        ],
+              ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextField(
+                  decoration: const InputDecoration(labelText: 'Order Note'),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Order Info',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Row(
+                      children: [
+                        const Text("Order Type: ",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(orderType),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Collection Time'),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text('Now'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.attach_money),
+                title: Text(
+                  selectedDiscount > 0
+                      ? 'Offer Applied!'
+                      : 'Enjoy discounts with your points',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: selectedDiscount > 0 ? Colors.green : Colors.black,
+                  ),
+                ),
+                onTap: showRedeemDialog,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Total \$${total.toStringAsFixed(2)}',
+                          style:
+                          const TextStyle(fontSize: 14, color: Colors.red),
+                        ),
+                        if (selectedDiscount > 0)
+                          Text(
+                            'Saved \$${(selectedDiscount / 100).toStringAsFixed(2)}',
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.green),
+                          ),
+                      ],
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.redAccent),
+                      onPressed: () {
+                        final orderType = context.read<OrderTypeBloc>().state.selectedOption ?? '';
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => CheckoutPage(
+                                orderType: orderType,
+                              )),
+                        );
+                      },
+                      child: const Text('Check Out'),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

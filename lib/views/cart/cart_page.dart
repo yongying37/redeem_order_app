@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../bloc/cart/cart_bloc.dart';
 import 'cart_layout.dart';
 
 class CartPage extends StatelessWidget {
@@ -15,12 +17,15 @@ class CartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body:CartLayout(
-        supportsDinein: supportsDinein,
-        supportsTakeaway: supportsTakeaway,
-        stallName: stallName,
-      ),
+    return BlocProvider.value(
+      value: BlocProvider.of<CartBloc>(context),
+      child: Scaffold(
+        body:CartLayout(
+          supportsDinein: supportsDinein,
+          supportsTakeaway: supportsTakeaway,
+          stallName: stallName,
+        ),
+      )
     );
   }
 }

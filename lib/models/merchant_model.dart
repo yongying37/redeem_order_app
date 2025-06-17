@@ -16,6 +16,7 @@ class Merchant {
   });
 
   factory Merchant.fromJson(Map<String, dynamic> json) {
+
     return Merchant(
       id: json['merchant_id'] ?? '',
       name: json['merchant_name'] ?? '',
