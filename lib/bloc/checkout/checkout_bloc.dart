@@ -10,6 +10,8 @@ part 'checkout_state.dart';
 class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   final CartBloc cartBloc;
 
+  static const double takeawayCharge = 0.50;
+
   CheckoutBloc({required this.cartBloc}) : super(CheckoutState.initial()) {
     on<LoadCheckout>(_onLoadCheckout);
     on<SelectPaymentMethod>(_onSelectPaymentMethod);
@@ -38,6 +40,11 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     double total = 0.0;
     for (final item in items) {
       total += item.price * item.quantity;
+
+      if (orderType.toLowerCase() == 'take away') {
+        total += takeawayCharge * item.quantity;
+      }
+
     }
 
     total -= pointsUsed / 100.0;

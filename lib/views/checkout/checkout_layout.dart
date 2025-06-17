@@ -62,13 +62,7 @@ class CheckoutLayout extends StatelessWidget {
                       ),
                     ),
 
-                    const SizedBox(height: 8),
-
-                    // Points used
-                    ListTile(
-                      title: const Text("Points Used"),
-                      trailing: Text("${state.pointsUsed}", style: const TextStyle(fontSize: 16)),
-                    ),
+                    const SizedBox(height: 12),
 
                     // Subtotal row
                     Padding(
@@ -83,6 +77,32 @@ class CheckoutLayout extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 10),
+
+                    if (state.orderType.toLowerCase() == 'take away') ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Takeaway Charge:", style: TextStyle(fontSize: 16.0)),
+                            Text("+ \$${_calculateTakeawayCharge(state.cartItems).toStringAsFixed(2)}"),
+                          ],
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: 10),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Points redeemed:", style: TextStyle(fontSize: 16.0)),
+                          Text("- \$${(state.pointsUsed / 100.0).toStringAsFixed(2)}"),
+                        ],
+                      ),
+                    ),
 
                     // Total Payment row
                     ListTile(
@@ -213,4 +233,9 @@ class CheckoutLayout extends StatelessWidget {
     }
     return subtotal;
   }
+
+  double _calculateTakeawayCharge(List<CartItem> items) {
+    return items.fold(0.0, (sum, item) => sum + item.quantity * CheckoutBloc.takeawayCharge);
+  }
+
 }
