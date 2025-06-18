@@ -98,7 +98,7 @@ class CheckoutLayout extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text("Points redeemed:", style: TextStyle(fontSize: 16.0)),
+                          const Text("Discount applied:", style: TextStyle(fontSize: 16.0)),
                           Text("- \$${(state.pointsUsed / 100.0).toStringAsFixed(2)}"),
                         ],
                       ),
