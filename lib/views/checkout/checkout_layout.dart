@@ -1,136 +1,156 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../bloc/checkout/checkout_bloc.dart';
-import '../../models/cart_item_model.dart';
+import 'package:redeem_order_app/bloc/checkout/checkout_bloc.dart';
+import 'package:redeem_order_app/models/cart_item_model.dart';
+import 'package:redeem_order_app/views/nets_qr/nets_qr_layout.dart';
+import 'package:redeem_order_app/bloc/nets_qr/nets_qr_bloc.dart';
 
 class CheckoutLayout extends StatelessWidget {
-  const CheckoutLayout({super.key});
+  final String orderType;
+
+  const CheckoutLayout({super.key, required this.orderType});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold (
-      body:
-      SafeArea(
-          child: BlocBuilder<CheckoutBloc, CheckoutState>(
-            builder: (context, state) {
-              final bloc = context.read<CheckoutBloc>();
-              final cartItems = state.cartItems;
-              final orderType = state.orderType;
+    return Scaffold(
+      body: SafeArea(
+        child: BlocBuilder<CheckoutBloc, CheckoutState>(
+          builder: (context, state) {
+            final bloc = context.read<CheckoutBloc>();
+            final cartItems = state.cartItems;
 
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // Header
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: IconButton(
-                              icon: const Icon(Icons.arrow_back),
-                              onPressed: () => Navigator.pop(context),
-                            ),
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  // Header
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
+                            icon: const Icon(Icons.arrow_back),
+                            onPressed: () => Navigator.pop(context),
                           ),
-                          const Text('Checkout', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                    ),
-
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Items", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      ),
-                    ),
-
-                    _buildCartTable(cartItems),
-
-                    const SizedBox(height: 8),
-
-                    // Order Type
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("Order Type:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                          Text(orderType.isNotEmpty ? orderType : "Not selected"),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    // Subtotal row
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("Subtotal:", style: TextStyle(fontSize: 16)),
-                          Text("\$${_calculateSubtotal(cartItems).toStringAsFixed(2)}"),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    if (state.orderType.toLowerCase() == 'take away') ...[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("Takeaway Charge:", style: TextStyle(fontSize: 16.0)),
-                            Text("+ \$${_calculateTakeawayCharge(state.cartItems).toStringAsFixed(2)}"),
-                          ],
                         ),
-                      ),
-                    ],
+                        const Text(
+                          'Checkout',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
 
-                    const SizedBox(height: 10),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Items", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    ),
+                  ),
 
+                  _buildCartTable(cartItems),
+
+                  const SizedBox(height: 8),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Order Type:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text(orderType.isNotEmpty ? orderType : "Not selected"),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // Subtotal
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Subtotal:", style: TextStyle(fontSize: 16)),
+                        Text("\$${_calculateSubtotal(cartItems).toStringAsFixed(2)}"),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  if (orderType.toLowerCase() == 'take away') ...[
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text("Discount applied:", style: TextStyle(fontSize: 16.0)),
-                          Text("- \$${(state.pointsUsed / 100.0).toStringAsFixed(2)}"),
+                          const Text("Takeaway Charge:", style: TextStyle(fontSize: 16.0)),
+                          Text("+ \$${_calculateTakeawayCharge(cartItems).toStringAsFixed(2)}"),
                         ],
                       ),
-                    ),
-
-                    // Total Payment row
-                    ListTile(
-                      title: const Text("Total Payment", style: TextStyle(fontWeight: FontWeight.bold)),
-                      trailing: Text("\$${state.total.toStringAsFixed(2)}", style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                    ),
-
-                    const Divider(),
-
-                    _buildPaymentOptions(bloc, state.paymentMethod),
-
-                    const SizedBox(height: 16),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        // Submit order logic here
-                      },
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                      child: const Text("Submit Order"),
                     ),
                   ],
-                ),
-              );
-            },
-          ),
-        ),
-    );
 
+                  const SizedBox(height: 10),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Discount applied:", style: TextStyle(fontSize: 16.0)),
+                        Text("- \$${(state.pointsUsed / 100.0).toStringAsFixed(2)}"),
+                      ],
+                    ),
+                  ),
+
+                  // Total
+                  ListTile(
+                    title: const Text("Total Payment", style: TextStyle(fontWeight: FontWeight.bold)),
+                    trailing: Text(
+                      "\$${state.total.toStringAsFixed(2)}",
+                      style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+
+                  const Divider(),
+
+                  _buildPaymentOptions(context, bloc, state.paymentMethod),
+
+                  const SizedBox(height: 16),
+
+                  ElevatedButton(
+                    onPressed: state.paymentMethod.isEmpty ? null :() {
+                      if (state.paymentMethod == 'NETS QR') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BlocProvider(
+                              create: (_) => NetsQrBloc(),
+                              child: NetsQrLayout(orderType: orderType),
+                            ),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Order submitted with selected payment method.')),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white,),
+                    child: const Text("Submit Order"),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   Widget _buildCartTable(List<CartItem> items) {
@@ -182,7 +202,7 @@ class CheckoutLayout extends StatelessWidget {
     );
   }
 
-  Widget _buildPaymentOptions(CheckoutBloc bloc, String selected) {
+  Widget _buildPaymentOptions(BuildContext context, CheckoutBloc bloc, String selected) {
     final methods = [
       {'name': 'Cash', 'icon': Icons.attach_money},
       {'name': 'NETS QR', 'icon': Icons.qr_code},
@@ -201,7 +221,9 @@ class CheckoutLayout extends StatelessWidget {
             final isSelected = name == selected;
 
             return GestureDetector(
-              onTap: () => bloc.add(SelectPaymentMethod(name)),
+              onTap: () {
+                bloc.add(SelectPaymentMethod(name));
+              },
               child: Container(
                 margin: const EdgeInsets.symmetric(vertical: 6),
                 padding: const EdgeInsets.all(12),
@@ -227,15 +249,10 @@ class CheckoutLayout extends StatelessWidget {
   }
 
   double _calculateSubtotal(List<CartItem> items) {
-    double subtotal = 0.0;
-    for (final item in items) {
-      subtotal += item.price * item.quantity;
-    }
-    return subtotal;
+    return items.fold(0.0, (sum, item) => sum + item.price * item.quantity);
   }
 
   double _calculateTakeawayCharge(List<CartItem> items) {
     return items.fold(0.0, (sum, item) => sum + item.quantity * CheckoutBloc.takeawayCharge);
   }
-
 }

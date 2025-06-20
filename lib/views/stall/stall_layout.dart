@@ -37,7 +37,7 @@ class _StallLayoutState extends State<StallLayout> {
           itemCount: merchants.length,
           itemBuilder: (context, index) {
             final merchant = merchants[index];
-            print('📦 Merchant: name=${merchant.name}, unit=${merchant.unitNo}, image=${merchant.imageUrl}');
+            print('Merchant: name=${merchant.name}, unit=${merchant.unitNo}, image=${merchant.imageUrl}');
             return InkWell(
               onTap: () {
                 Navigator.push(

@@ -48,9 +48,9 @@ class OrderTypesLayout extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFF0072B2) : Colors.white,
+                  color: isSelected ? Colors.green : Colors.white,
                   border: Border.all(
-                    color: isSelected ? const Color(0xFFD55E00) : Colors.grey,
+                    color: isSelected ? Colors.green : Colors.grey,
                     width: isSelected ? 2.5 : 1.0,
                   ),
                   borderRadius: BorderRadius.circular(10),
@@ -101,7 +101,7 @@ class OrderTypesLayout extends StatelessWidget {
                           : null,
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 50),
-                        backgroundColor: Colors.grey,
+                        backgroundColor: Colors.red, foregroundColor: Colors.white,
                       ),
                       child: const Text("Continue"),
                     ),

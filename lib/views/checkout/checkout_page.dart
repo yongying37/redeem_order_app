@@ -12,8 +12,8 @@ class CheckoutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CheckoutBloc(cartBloc: context.read<CartBloc>())..add(LoadCheckout(orderType)),
-      child: const Scaffold(
-        body: CheckoutLayout(),
+      child: Scaffold(
+        body: CheckoutLayout(orderType: orderType),
       ),
     );
   }

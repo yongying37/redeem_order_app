@@ -103,6 +103,12 @@ class _ProductTileState extends State<ProductTile> {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     textStyle: const TextStyle(fontSize: 12),
+                    backgroundColor: Colors.green.shade300,
+                    foregroundColor: Colors.black,
+                    side: const BorderSide(color: Colors.grey),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 ),
               ],

@@ -264,7 +264,7 @@ class _CartLayoutState extends State<CartLayout> {
                       : 'Enjoy discounts with your points',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: selectedDiscount > 0 ? Colors.green : Colors.black,
+                    color: selectedDiscount > 0 ? Colors.green.shade600 : Colors.black,
                   ),
                 ),
                 onTap: showRedeemDialog,
@@ -280,19 +280,21 @@ class _CartLayoutState extends State<CartLayout> {
                         Text(
                           'Total \$${total.toStringAsFixed(2)}',
                           style:
-                          const TextStyle(fontSize: 14, color: Colors.red),
+                          const TextStyle(fontSize: 14, color: Colors.red, fontWeight: FontWeight.bold,),
                         ),
                         if (selectedDiscount > 0)
                           Text(
                             'Saved \$${(selectedDiscount / 100).toStringAsFixed(2)}',
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.green),
+                            style: TextStyle(
+                                fontSize: 14, color: Colors.green.shade600,),
                           ),
                       ],
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent),
+                          backgroundColor: Colors.redAccent,
+                          foregroundColor: Colors.white,
+                      ),
                       onPressed: () {
                         final orderType = context.read<OrderTypeBloc>().state.selectedOption ?? '';
                         Navigator.push(
