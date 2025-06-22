@@ -5,6 +5,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:redeem_order_app/utils/config.dart';
+import '../utils/common_enum.dart';
+import '../utils/logger.dart';
 
 class NetsHttpClient extends WidgetsBindingObserver {
   static const String _baseUrl = Config.commonUrl;
@@ -28,34 +30,44 @@ class NetsHttpClient extends WidgetsBindingObserver {
   static final http.Client _sseHttpClient = http.Client();
   static StreamSubscription<String>? _sseSubscription;
 
+  static Future<Map<String, String>> _authHeaders({required String method, required Uri url, Map<String, dynamic> requestBody = const {}}) async {
+    final headers = Map<String, String>.from(_apiHeader);
+    return headers;
+  }
+
   // Generic GET request
-  static Future<dynamic> get(String endpoint, {Duration? timeout}) async {
+  static Future<dynamic> get(String endpoint, {Duration? timeout, bool useLogger = false}) async {
     final uri = Uri.parse('$_baseUrl$endpoint');
-    final headers = _httpHeaders(sse: false);
+    //final headers = _httpHeaders(sse: false);
+    final headers = await _authHeaders(method: RequestType.GET.stringValue, url: uri);
+    if (useLogger) Logger.d(uri.toString(), requestType: RequestType.GET, tag: 'NetsHttpClient.get');
     final response = await http.get(uri, headers: headers).timeout(timeout ?? _httpTimeout);
     return httpResponseHandler(response);
   }
 
   // Generic POST request
-  static Future<dynamic> post(String endpoint, {Map<String, dynamic> requestBody = const {}, Duration? timeout}) async {
+  static Future<dynamic> post(String endpoint, {Map<String, dynamic> requestBody = const {}, Duration? timeout, bool useLogger = false}) async {
     final uri = Uri.parse('$_baseUrl$endpoint');
-    final headers = _httpHeaders(sse: false);
+    final headers = await _authHeaders(method: RequestType.GET.stringValue, url: uri, requestBody: requestBody);
+    if (useLogger) Logger.d(uri.toString(), requestType: RequestType.POST, tag: 'NetsHttpClient.post');
     final response = await http.post(uri, headers: headers, body: jsonEncode(requestBody)).timeout(timeout ?? _httpTimeout);
     return httpResponseHandler(response);
   }
 
   // Generic PUT request
-  static Future<dynamic> put(String endpoint, {Map<String, dynamic> requestBody = const {}, Duration? timeout}) async {
+  static Future<dynamic> put(String endpoint, {Map<String, dynamic> requestBody = const {}, Duration? timeout, bool useLogger = false}) async {
     final uri = Uri.parse('$_baseUrl$endpoint');
-    final headers = _httpHeaders(sse: false);
+    final headers = await _authHeaders(method: RequestType.PUT.stringValue, url: uri, requestBody: requestBody);
+    if (useLogger) Logger.d(uri.toString(), requestType: RequestType.PUT, tag: 'NetsHttpClient.put');
     final response = await http.put(uri, headers: headers, body: jsonEncode(requestBody)).timeout(timeout ?? _httpTimeout);
     return httpResponseHandler(response);
   }
 
   // Generic DELETE request
-  static Future<dynamic> delete(String endpoint, {Map<String, dynamic> requestBody = const {}, Duration? timeout}) async {
+  static Future<dynamic> delete(String endpoint, {Map<String, dynamic> requestBody = const {}, Duration? timeout, bool useLogger = false}) async {
     final uri = Uri.parse('$_baseUrl$endpoint');
-    final headers = _httpHeaders(sse: false);
+    final headers = await _authHeaders(method: RequestType.DELETE.stringValue, url: uri, requestBody: requestBody);
+    if (useLogger) Logger.d(uri.toString(), requestType: RequestType.DELETE, tag: 'NetsHttpClient.delete');
     final response = await http.delete(uri, headers: headers, body: jsonEncode(requestBody)).timeout(timeout ?? _httpTimeout);
     return httpResponseHandler(response);
   }

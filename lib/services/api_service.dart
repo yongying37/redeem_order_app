@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:redeem_order_app/dtos/nets_qr_webhook_response_dto.dart';
+import 'package:redeem_order_app/dtos/nets_click_purchase_response_dto.dart';
+import '../dtos/nets_click_purchase_request_dto.dart';
 import 'package:redeem_order_app/utils/config.dart';
 import '../http_clients/nets_http_client.dart';
 import '../models/nets_qr_query_model.dart';
@@ -82,4 +84,41 @@ class ApiService {
       rethrow;
     }
   }
+
+  // NETS Click
+  Future<String> checkNetsClickHealth() async {
+    try {
+      final response = await NetsHttpClient.get(Config.apiUrls.netsHealthCheck);
+      if (Config().debugMode) {
+        Logger.d('checkNetsClickHealth response', jsonString: jsonEncode(response), tag: 'ApiService.checkNetsClickHealth');
+      }
+
+      String responseCode = response['result']['data']['response_code'];
+
+      return responseCode;
+    } catch (e, s) {
+      Logger.e(e.toString(), stackTrace: s, tag: 'ApiService.checkNetsClickHealth');
+      rethrow;
+    }
+  }
+
+  Future<NetsClickPurchaseResponseDto> mainNetsClickPurchase(NetsClickPurchaseRequestDto netsClickPurchase) async {
+    try {
+      final Map<String, dynamic> requestBody = netsClickPurchase.toJson();
+      if (Config().debugMode) {
+        Logger.d('mainNetsClickPurchase request', jsonString: requestBody.toString(), tag: 'ApiService.mainNetsClickPurchase');
+      }
+
+      final response = await NetsHttpClient.post(Config.apiUrls.mainPurchaseNetsClick, requestBody: requestBody);
+      if (Config().debugMode) {
+        Logger.d('mainNetsClickPurchase response', jsonString: jsonEncode(response), tag: 'ApiService.mainNetsClickPurchase');
+      }
+
+      return NetsClickPurchaseResponseDto.fromJson(response['result']['data']);
+    } catch (e, s) {
+      Logger.e(e.toString(), stackTrace: s, tag: 'ApiService.mainNetsClickPurchase');
+      rethrow;
+    }
+  }
+
 }

@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/checkout/checkout_bloc.dart';
 import 'package:redeem_order_app/models/cart_item_model.dart';
+import 'package:redeem_order_app/views/nets_click/nets_click_page.dart';
 import 'package:redeem_order_app/views/nets_qr/nets_qr_layout.dart';
 import 'package:redeem_order_app/bloc/nets_qr/nets_qr_bloc.dart';
+
+import '../../bloc/nets_click/nets_click_bloc.dart';
 
 class CheckoutLayout extends StatelessWidget {
   final String orderType;
@@ -135,7 +138,19 @@ class CheckoutLayout extends StatelessWidget {
                             ),
                           ),
                         );
-                      } else {
+                      }
+                      else if (state.paymentMethod == 'NETS Click') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                create: (_) => NetsClickBloc(),
+                                child: const NetsClickPage(),
+                              )
+                          )
+                        );
+                      }
+                      else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Order submitted with selected payment method.')),
                         );

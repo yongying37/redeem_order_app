@@ -2,6 +2,8 @@
 import 'package:redeem_order_app/dtos/nets_qr_webhook_response_dto.dart';
 import 'package:redeem_order_app/models/nets_qr_query_model.dart';
 import 'package:redeem_order_app/models/nets_qr_request_model.dart';
+import 'package:redeem_order_app/dtos/nets_click_purchase_response_dto.dart';
+import '../dtos/nets_click_purchase_request_dto.dart';
 
 import '../services/api_service.dart';
 
@@ -19,4 +21,12 @@ class ApiRepository {
   Future<void> cancelWebhookNetsApi() async => service.cancelWebhookNetsApi();
 
   Future<NetsQrQuery> queryNetsApi(String netsQrRetrievalRef, netsTimeoutStatus) async => service.queryNetsApi(netsQrRetrievalRef, netsTimeoutStatus);
+
+  // NETs Click
+  Future<String> checkNetsClickHealth() async =>
+      service.checkNetsClickHealth();
+
+  Future<NetsClickPurchaseResponseDto> mainNetsClickPurchase(NetsClickPurchaseRequestDto netsClickPurchase) async =>
+      service.mainNetsClickPurchase(netsClickPurchase);
+
 }
