@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../bloc/cart/cart_bloc.dart';
-import '../../models/cart_item_model.dart';
+import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
+import 'package:redeem_order_app/models/cart_item_model.dart';
 
 part 'checkout_event.dart';
 part 'checkout_state.dart';

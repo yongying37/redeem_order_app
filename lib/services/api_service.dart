@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:redeem_order_app/dtos/nets_qr_webhook_response_dto.dart';
 import 'package:redeem_order_app/dtos/nets_click_purchase_response_dto.dart';
-import '../dtos/nets_click_purchase_request_dto.dart';
+import 'package:redeem_order_app/dtos/nets_click_purchase_request_dto.dart';
 import 'package:redeem_order_app/utils/config.dart';
-import '../http_clients/nets_http_client.dart';
-import '../models/nets_qr_query_model.dart';
-import '../models/nets_qr_request_model.dart';
-import '../utils/logger.dart';
+import 'package:redeem_order_app/http_clients/nets_http_client.dart';
+import 'package:redeem_order_app/models/nets_qr_query_model.dart';
+import 'package:redeem_order_app/models/nets_qr_request_model.dart';
+import 'package:redeem_order_app/utils/logger.dart';
 
 class ApiService {
   ApiService._privateConstructor();

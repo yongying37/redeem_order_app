@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../../models/nets_bank_card_model.dart';
-import '../../utils/config.dart';
+import 'package:redeem_order_app/models/nets_bank_card_model.dart';
+import 'package:redeem_order_app/utils/config.dart';
 
 class NetsBankCardDetailsLayout extends StatefulWidget {
   final NetsBankCard netsBankCard;

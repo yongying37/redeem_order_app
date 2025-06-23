@@ -14,6 +14,7 @@ class _SignUpLayoutState extends State<SignUpLayout> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _cfmPasswordController = TextEditingController();
   String? _selectedGender;
 
   @override
@@ -30,27 +31,55 @@ class _SignUpLayoutState extends State<SignUpLayout> {
           ),
           const SizedBox(height: 40),
 
-          // Username
           _buildInputField(Icons.person, 'Username', _usernameController),
           const SizedBox(height: 15),
 
-          // Email
           _buildInputField(Icons.email, 'Email', _emailController),
           const SizedBox(height: 15),
 
-          // Password
           _buildInputField(Icons.lock, 'Password', _passwordController, obscure: true),
           const SizedBox(height: 15),
 
-          // Gender
+          _buildInputField(Icons.lock_outline, 'Confirm Password', _cfmPasswordController, obscure: true),
+          const SizedBox(height: 15),
+
           _buildDropdownField(),
           const SizedBox(height: 30),
 
-          // Register Button
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
+                final email = _emailController.text.trim();
+
+                // validation of empty fields
+                if(_usernameController.text.isEmpty ||
+                    _emailController.text.isEmpty ||
+                    _passwordController.text.isEmpty ||
+                    _cfmPasswordController.text.isEmpty ||
+                    _selectedGender == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please fill in all fields')),
+                  );
+                  return;
+                }
+
+                // validate email format
+                final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                if (!emailRegex.hasMatch(email)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please enter a valid email address')),
+                  );
+                  return;
+                }
+
+                // validation of password and confirm password fields
+                if(_passwordController.text != _cfmPasswordController.text) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Passwords do not match')),
+                  );
+                  return;
+                }
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const HomeLayout()),

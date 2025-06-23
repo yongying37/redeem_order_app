@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/dtos/nets_click_purchase_response_dto.dart';
-import '../../dtos/nets_click_purchase_request_dto.dart';
-import '../../models/payment_details_model.dart';
-import '../../repositories/api_repository.dart';
-import '../../utils/config.dart';
-import '../../utils/logger.dart';
+import 'package:redeem_order_app/dtos/nets_click_purchase_request_dto.dart';
+import 'package:redeem_order_app/models/payment_details_model.dart';
+import 'package:redeem_order_app/repositories/api_repository.dart';
+import 'package:redeem_order_app/utils/config.dart';
+import 'package:redeem_order_app/utils/logger.dart';
 
 part 'nets_click_event.dart';
 part 'nets_click_state.dart';

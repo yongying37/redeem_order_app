@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../bloc/cart/cart_bloc.dart';
-import '../../bloc/checkout/checkout_bloc.dart';
+import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
+import 'package:redeem_order_app/bloc/checkout/checkout_bloc.dart';
 import 'checkout_layout.dart';
 
 class CheckoutPage extends StatelessWidget {

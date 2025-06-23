@@ -1,11 +1,9 @@
-
 import 'package:redeem_order_app/dtos/nets_qr_webhook_response_dto.dart';
 import 'package:redeem_order_app/models/nets_qr_query_model.dart';
 import 'package:redeem_order_app/models/nets_qr_request_model.dart';
 import 'package:redeem_order_app/dtos/nets_click_purchase_response_dto.dart';
-import '../dtos/nets_click_purchase_request_dto.dart';
-
-import '../services/api_service.dart';
+import 'package:redeem_order_app/dtos/nets_click_purchase_request_dto.dart';
+import 'package:redeem_order_app/services/api_service.dart';
 
 class ApiRepository {
   ApiRepository._privateConstructor();

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../bloc/profile/profile_bloc.dart';
+import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 
 class UpdateProfileLayout extends StatefulWidget {
   final String username;
   final String phone;
   final String email;
   final String password;
+  final String cfmPassword;
 
   const UpdateProfileLayout({
     super.key,
@@ -14,6 +15,7 @@ class UpdateProfileLayout extends StatefulWidget {
     required this.phone,
     required this.email,
     required this.password,
+    required this.cfmPassword,
   });
 
   @override
@@ -25,6 +27,7 @@ class _UpdateProfileLayoutState extends State<UpdateProfileLayout> {
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
+  late TextEditingController _cfmPasswordController;
 
   @override
   void initState() {
@@ -33,6 +36,7 @@ class _UpdateProfileLayoutState extends State<UpdateProfileLayout> {
     _phoneController = TextEditingController(text: widget.phone);
     _emailController = TextEditingController(text: widget.email);
     _passwordController = TextEditingController(text: widget.password);
+    _cfmPasswordController = TextEditingController(text: widget.cfmPassword);
   }
 
   @override
@@ -41,15 +45,24 @@ class _UpdateProfileLayoutState extends State<UpdateProfileLayout> {
     _phoneController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _cfmPasswordController.dispose();
     super.dispose();
   }
 
   void _onSave() {
+    if (_passwordController.text != _cfmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match')),
+      );
+      return;
+    }
+
     print("Dispatching Profile Update...");
     context.read<ProfileBloc>().add(
       UpdateProfile(
         _usernameController.text,
         _passwordController.text,
+        _cfmPasswordController.text,
         _emailController.text,
         _phoneController.text,
       ),
@@ -69,6 +82,7 @@ class _UpdateProfileLayoutState extends State<UpdateProfileLayout> {
           _buildField("Phone", _phoneController),
           _buildField("Email", _emailController),
           _buildField("Password", _passwordController, obscure: true),
+          _buildField("Confirm Password", _cfmPasswordController, obscure: true),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: _onSave,

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../models/volunteer_activity_model.dart';
+import 'package:redeem_order_app/models/volunteer_activity_model.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';
@@ -18,6 +18,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         phoneNumber: event.phoneNumber,
         email: event.email,
         password: event.password,
+        cfmPassword: event.cfmPassword,
       ));
     });
   }

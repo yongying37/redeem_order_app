@@ -34,7 +34,6 @@ class _LoginLayoutState extends State<LoginLayout> {
           _buildInputField(Icons.lock, 'Password', _passwordController, obscure: true),
           const SizedBox(height: 15),
 
-          // 🔲 Stay Logged In Checkbox
           CheckboxListTile(
             title: const Text("Stay logged in"),
             value: _stayLoggedIn,
@@ -52,7 +51,26 @@ class _LoginLayoutState extends State<LoginLayout> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                // You can save `_stayLoggedIn` value to local storage if needed
+                final email = _emailController.text.trim();
+                final password = _passwordController.text;
+
+                // validate empty fields
+                if (email.isEmpty || password.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please enter both email and password')),
+                  );
+                  return;
+                }
+
+                // validate email format
+                final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                if (!emailRegex.hasMatch(email)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please enter a valid email address')),
+                  );
+                  return;
+                }
+                // save `_stayLoggedIn` value to local storage if needed
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const HomeLayout()),

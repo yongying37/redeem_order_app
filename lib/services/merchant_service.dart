@@ -20,8 +20,8 @@ class MerchantService {
     try {
       final response = await http.get(Uri.parse(requestUrl), headers: headers);
 
-      print('📡 Status Code: ${response.statusCode}');
-      print('📦 Raw Response: ${response.body}');
+      print('Status Code: ${response.statusCode}');
+      print('Raw Response: ${response.body}');
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
@@ -29,20 +29,20 @@ class MerchantService {
         if (jsonData == null ||
             jsonData['result'] == null ||
             jsonData['result']['data'] == null) {
-          print('⚠️ Warning: "result.data" field is null or missing in response.');
+          print('Warning: "result.data" field is null or missing in response.');
           return [];
         }
 
         final merchants = jsonData['result']['data'] as List;
-        print('✅ API returned merchant count: ${merchants.length}');
+        print('API returned merchant count: ${merchants.length}');
 
         return merchants.map((merchant) => Merchant.fromJson(merchant)).toList();
       } else {
-        print('❌ Failed to load merchants. Status: ${response.statusCode}');
+        print('Failed to load merchants. Status: ${response.statusCode}');
         return [];
       }
     } catch (e) {
-      print('❗ Exception occurred while fetching merchants: $e');
+      print('Exception occurred while fetching merchants: $e');
       return [];
     }
   }

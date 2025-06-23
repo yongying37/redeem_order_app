@@ -6,6 +6,7 @@ class UpdateProfilePage extends StatelessWidget {
   final String phone;
   final String email;
   final String password;
+  final String cfmPassword;
 
   const UpdateProfilePage({
     super.key,
@@ -13,6 +14,7 @@ class UpdateProfilePage extends StatelessWidget {
     required this.phone,
     required this.email,
     required this.password,
+    required this.cfmPassword,
   });
 
   @override
@@ -24,6 +26,7 @@ class UpdateProfilePage extends StatelessWidget {
         phone: phone,
         email: email,
         password: password,
+        cfmPassword: cfmPassword,
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../../models/cart_item_model.dart';
+import 'package:redeem_order_app/models/cart_item_model.dart';
 
 part 'cart_event.dart';
 part 'cart_state.dart';

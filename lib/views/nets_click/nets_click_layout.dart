@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:redeem_order_app/models/nets_bank_card_model.dart';
-
-import '../../models/payment_details_model.dart';
-import '../../utils/config.dart';
-import '../nets_click_loader/nets_click_loader_page.dart';
-import '../../widgets/bank_card_widget.dart';
+import 'package:redeem_order_app/models/payment_details_model.dart';
+import 'package:redeem_order_app/utils/config.dart';
+import 'package:redeem_order_app/views/nets_click_loader/nets_click_loader_page.dart';
+import 'package:redeem_order_app/widgets/bank_card_widget.dart';
 
 class NetsClickLayout extends StatefulWidget {
   const NetsClickLayout({super.key});

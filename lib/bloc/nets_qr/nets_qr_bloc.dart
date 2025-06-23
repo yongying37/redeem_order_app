@@ -1,12 +1,10 @@
 import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:crypto/crypto.dart';
 import 'package:equatable/equatable.dart';
 import 'package:redeem_order_app/dtos/nets_qr_webhook_response_dto.dart';
 import 'package:redeem_order_app/models/nets_qr_request_model.dart';
 import 'package:redeem_order_app/utils/logger.dart';
-
 import 'package:redeem_order_app/models/nets_qr_query_model.dart';
 import 'package:redeem_order_app/repositories/api_repository.dart';
 

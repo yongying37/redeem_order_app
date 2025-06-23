@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:redeem_order_app/utils/config.dart';
-import '../utils/common_enum.dart';
-import '../utils/logger.dart';
+import 'package:redeem_order_app/utils/common_enum.dart';
+import 'package:redeem_order_app/utils/logger.dart';
 
 class NetsHttpClient extends WidgetsBindingObserver {
   static const String _baseUrl = Config.commonUrl;
@@ -72,9 +71,6 @@ class NetsHttpClient extends WidgetsBindingObserver {
     return httpResponseHandler(response);
   }
 
-  // ----------------------------- Start of Webhook API handling -----------------------------
-  // Generic SSE (Server-Sent Events) GET request
-  // The client initiates a SSE GET request, and the server keeps the connection open, allowing it to send updates as they become available.
   static Future<StreamSubscription<String>> getSse(
       String endpoint, {
         required Function(String) onMessage,
@@ -142,7 +138,6 @@ class NetsHttpClient extends WidgetsBindingObserver {
   static void closeSseSubscription() {
     _sseSubscription?.cancel();
   }
-  // ----------------------------- End of Webhook API handling -----------------------------
 
   // Handles HTTP responses
   static dynamic httpResponseHandler(http.Response response) {

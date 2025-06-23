@@ -7,6 +7,7 @@ class ProfileState extends Equatable {
   final String phoneNumber;
   final String email;
   final String password;
+  final String cfmPassword;
 
   const ProfileState({
     required this.username,
@@ -15,6 +16,7 @@ class ProfileState extends Equatable {
     required this.phoneNumber,
     required this.email,
     required this.password,
+    required this.cfmPassword,
   });
 
   // Start of hardcoded codes to show how UI looks like
@@ -39,6 +41,7 @@ class ProfileState extends Equatable {
       phoneNumber: "98765432",
       email: "john@example.com",
       password: "**********",
+      cfmPassword: "**********"
     );
   }
 
@@ -49,6 +52,7 @@ class ProfileState extends Equatable {
     String? phoneNumber,
     String? email,
     String? password,
+    String? cfmPassword,
   }) {
     return ProfileState(
         username: username ?? this.username,
@@ -56,10 +60,11 @@ class ProfileState extends Equatable {
         activityList: activityList ?? this.activityList,
         phoneNumber: phoneNumber ?? this.phoneNumber,
         email: email ?? this.email,
-        password: password ?? this.password);
+        password: password ?? this.password,
+        cfmPassword: cfmPassword ?? this.cfmPassword);
   }
 
   @override
-  List<Object?> get props => [username, activityList, points, phoneNumber, email, password];
+  List<Object?> get props => [username, activityList, points, phoneNumber, email, password, cfmPassword];
 
 }

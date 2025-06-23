@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../bloc/ordertype/ordertype_bloc.dart';
+import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
 
 class OrderTypesLayout extends StatelessWidget {
   final bool supportsDinein;

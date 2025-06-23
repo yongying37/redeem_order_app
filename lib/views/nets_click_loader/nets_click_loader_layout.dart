@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/models/payment_details_model.dart';
-
-import '../../bloc/nets_click/nets_click_bloc.dart';
-import '../../utils/config.dart';
+import 'package:redeem_order_app/views/home/home_page.dart';
+import 'package:redeem_order_app/bloc/nets_click/nets_click_bloc.dart';
+import 'package:redeem_order_app/utils/config.dart';
 
 class NetsClickLoaderLayout extends StatefulWidget {
   final PaymentDetails mainPaymentDetails;
@@ -70,7 +70,11 @@ class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
           const SizedBox(height: 20,),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                  (Route<dynamic> route) => false,
+              );
             },
             child: const Text('Go back'),
           ),

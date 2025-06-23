@@ -138,7 +138,7 @@ class HomeContent extends StatelessWidget {
                     const SizedBox(height: 8),
                     ElevatedButton(
                       onPressed: () {
-                        homeLayoutState.updateCurrentIndex(1); // Go to StallPage
+                        homeLayoutState.updateCurrentIndex(1);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,

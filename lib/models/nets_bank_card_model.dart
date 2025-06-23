@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../utils/logger.dart';
+import 'package:redeem_order_app/utils/logger.dart';
 
 class NetsBankCard extends Equatable {
   final int id;

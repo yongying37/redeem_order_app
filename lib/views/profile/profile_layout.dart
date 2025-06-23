@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../bloc/profile/profile_bloc.dart';
-import '../../models/volunteer_activity_model.dart';
+import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
+import 'package:redeem_order_app/models/volunteer_activity_model.dart';
 import 'package:redeem_order_app/views/profile/update_profile_page.dart';
 
 class ProfileLayout extends StatelessWidget {
@@ -39,6 +39,7 @@ class ProfileLayout extends StatelessWidget {
                                 phone: state.phoneNumber,
                                 email: state.email,
                                 password: state.password,
+                                cfmPassword: state.cfmPassword,
                               ),
                             ),
                           );

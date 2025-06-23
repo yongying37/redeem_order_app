@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:redeem_order_app/models/product_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../bloc/cart/cart_bloc.dart';
-import '../../models/cart_item_model.dart';
+import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
+import 'package:redeem_order_app/models/cart_item_model.dart';
 
 class ProductTile extends StatefulWidget {
   final Product product;
@@ -38,7 +38,6 @@ class _ProductTileState extends State<ProductTile> {
         padding: const EdgeInsets.all(8),
         child: Row(
           children: [
-            // Product image
             widget.product.productImgUrl.isNotEmpty
                 ? Image.network(
               widget.product.productImgUrl,
@@ -50,12 +49,10 @@ class _ProductTileState extends State<ProductTile> {
 
             const SizedBox(width: 12),
 
-            // Product name
             Expanded(
               child: Text(widget.product.productName),
             ),
 
-            // Quantity + Price + Add Button
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
