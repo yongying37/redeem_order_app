@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/checkout/checkout_bloc.dart';
 import 'package:redeem_order_app/models/cart_item_model.dart';
+import 'package:redeem_order_app/views/cash_checkout/cash_checkout_page.dart';
 import 'package:redeem_order_app/views/nets_click/nets_click_page.dart';
 import 'package:redeem_order_app/views/nets_qr/nets_qr_layout.dart';
 import 'package:redeem_order_app/bloc/nets_qr/nets_qr_bloc.dart';
@@ -146,6 +147,14 @@ class CheckoutLayout extends StatelessWidget {
                                 create: (_) => NetsClickBloc(),
                                 child: const NetsClickPage(),
                               )
+                          )
+                        );
+                      }
+                      else if (state.paymentMethod == 'Cash') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const CashCheckoutPage(orderNumber: '01'),
                           )
                         );
                       }

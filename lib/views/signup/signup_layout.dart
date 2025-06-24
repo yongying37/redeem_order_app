@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:redeem_order_app/views/login/login_page.dart';
-import 'package:redeem_order_app/views/home/home_layout.dart';
+import 'package:redeem_order_app/views/signup/success_signup_page.dart';
 
 
 class SignUpLayout extends StatefulWidget {
@@ -82,7 +82,7 @@ class _SignUpLayoutState extends State<SignUpLayout> {
                 }
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const HomeLayout()),
+                  MaterialPageRoute(builder: (context) => const SuccessSignupPage()),
                 );
               },
               style: ElevatedButton.styleFrom(
