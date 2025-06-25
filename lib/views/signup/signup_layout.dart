@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:redeem_order_app/models/signup_model.dart';
+import 'package:redeem_order_app/services/auth_service.dart';
 import 'package:redeem_order_app/views/login/login_page.dart';
 import 'package:redeem_order_app/views/signup/success_signup_page.dart';
-
 
 class SignUpLayout extends StatefulWidget {
   const SignUpLayout({super.key});
@@ -15,7 +16,10 @@ class _SignUpLayoutState extends State<SignUpLayout> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _cfmPasswordController = TextEditingController();
+  final TextEditingController _contactController = TextEditingController();
   String? _selectedGender;
+
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -43,48 +47,16 @@ class _SignUpLayoutState extends State<SignUpLayout> {
           _buildInputField(Icons.lock_outline, 'Confirm Password', _cfmPasswordController, obscure: true),
           const SizedBox(height: 15),
 
+          _buildInputField(Icons.phone, 'Contact Number', _contactController),
+          const SizedBox(height: 15),
+
           _buildDropdownField(),
           const SizedBox(height: 30),
 
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                final email = _emailController.text.trim();
-
-                // validation of empty fields
-                if(_usernameController.text.isEmpty ||
-                    _emailController.text.isEmpty ||
-                    _passwordController.text.isEmpty ||
-                    _cfmPasswordController.text.isEmpty ||
-                    _selectedGender == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please fill in all fields')),
-                  );
-                  return;
-                }
-
-                // validate email format
-                final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-                if (!emailRegex.hasMatch(email)) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please enter a valid email address')),
-                  );
-                  return;
-                }
-
-                // validation of password and confirm password fields
-                if(_passwordController.text != _cfmPasswordController.text) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Passwords do not match')),
-                  );
-                  return;
-                }
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SuccessSignupPage()),
-                );
-              },
+              onPressed: _handleSignUp,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF5689FF),
                 padding: const EdgeInsets.symmetric(vertical: 15),
@@ -116,6 +88,61 @@ class _SignUpLayoutState extends State<SignUpLayout> {
         ],
       ),
     );
+  }
+
+  void _handleSignUp() async {
+    print('Register button clicked');
+    final username = _usernameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirmPassword = _cfmPasswordController.text;
+    final contact = _contactController.text.trim();
+    final gender = _selectedGender;
+    print('Fields gathered: $username, $email, $gender');
+
+    if (username.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty || contact.isEmpty || gender == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    if (!emailRegex.hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid email address')),
+      );
+      return;
+    }
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match')),
+      );
+      return;
+    }
+
+    final request = SignupRequest(
+      name: username,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+      contactNumber: contact,
+      gender: gender,
+    );
+
+    final success = await _authService.signup(request);
+
+    if (success) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const SuccessSignupPage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Signup failed. Please try again.')),
+      );
+    }
   }
 
   Widget _buildInputField(IconData icon, String hint, TextEditingController controller, {bool obscure = false}) {

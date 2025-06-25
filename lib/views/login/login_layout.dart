@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:redeem_order_app/services/auth_service.dart';
 import 'package:redeem_order_app/views/home/home_layout.dart';
 import 'package:redeem_order_app/views/signup/signup_page.dart';
 
@@ -13,6 +14,9 @@ class _LoginLayoutState extends State<LoginLayout> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _stayLoggedIn = false;
+  bool _isLoading = false;
+
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -50,32 +54,7 @@ class _LoginLayoutState extends State<LoginLayout> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                final email = _emailController.text.trim();
-                final password = _passwordController.text;
-
-                // validate empty fields
-                if (email.isEmpty || password.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please enter both email and password')),
-                  );
-                  return;
-                }
-
-                // validate email format
-                final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-                if (!emailRegex.hasMatch(email)) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please enter a valid email address')),
-                  );
-                  return;
-                }
-                // save `_stayLoggedIn` value to local storage if needed
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeLayout()),
-                );
-              },
+              onPressed: _isLoading ? null : _handleLogin,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF5689FF),
                 padding: const EdgeInsets.symmetric(vertical: 15),
@@ -83,7 +62,9 @@ class _LoginLayoutState extends State<LoginLayout> {
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              child: const Text('Login', style: TextStyle(fontSize: 18)),
+              child: _isLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text('Login', style: TextStyle(fontSize: 18)),
             ),
           ),
 
@@ -112,7 +93,48 @@ class _LoginLayoutState extends State<LoginLayout> {
     );
   }
 
-  Widget _buildInputField(IconData icon, String hint, TextEditingController controller, {bool obscure = false}) {
+  Future<void> _handleLogin() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter both email and password')),
+      );
+      return;
+    }
+
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    if (!emailRegex.hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid email address')),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    final result = await _authService.login(email, password);
+
+    setState(() => _isLoading = false);
+
+    if (result != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login successful!')),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeLayout()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login failed. Please check your credentials.')),
+      );
+    }
+  }
+
+  Widget _buildInputField(IconData icon, String hint, TextEditingController controller,
+      {bool obscure = false}) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
