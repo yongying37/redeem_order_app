@@ -24,7 +24,7 @@ class _HomeLayoutState extends State<HomeLayout> {
     const StallPage(),
     const OrderPage(),
     const VolunteerPage(),
-    const ProfilePage(),
+    const ProfilePage(userId: '1'),
   ];
 
   void updateCurrentIndex(int index) {

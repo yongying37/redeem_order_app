@@ -4,12 +4,14 @@ import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'profile_layout.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  final String userId;
+
+  const ProfilePage({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ProfileBloc()..add(LoadProfile()),
+      create: (context) => ProfileBloc()..add(LoadProfile(userId)),
       child: const Scaffold(
         body: ProfileLayout(),
       ),

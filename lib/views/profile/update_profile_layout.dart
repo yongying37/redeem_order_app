@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
+import 'package:redeem_order_app/services/auth_service.dart';
 
 class UpdateProfileLayout extends StatefulWidget {
   final String username;
@@ -29,6 +28,9 @@ class _UpdateProfileLayoutState extends State<UpdateProfileLayout> {
   late TextEditingController _passwordController;
   late TextEditingController _cfmPasswordController;
 
+  final _formKey = GlobalKey<FormState>();
+  final _authService = AuthService();
+
   @override
   void initState() {
     super.initState();
@@ -49,46 +51,52 @@ class _UpdateProfileLayoutState extends State<UpdateProfileLayout> {
     super.dispose();
   }
 
-  void _onSave() {
+  Future<void> _onSave() async {
     if (_passwordController.text != _cfmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Passwords do not match')),
       );
       return;
     }
+    const userId = '1'; // Or get from logged-in session
 
-    print("Dispatching Profile Update...");
-    context.read<ProfileBloc>().add(
-      UpdateProfile(
-        _usernameController.text,
-        _passwordController.text,
-        _cfmPasswordController.text,
-        _emailController.text,
-        _phoneController.text,
-      ),
+    final success = await _authService.updateProfile(
+      userId: userId,
+      username: _usernameController.text,
+      phoneNumber: _phoneController.text,
+      email: _emailController.text,
+      password: _passwordController.text,
     );
 
-    print("Navigating back to Profile Page...");
-    Navigator.pop(context);
+    if (success) {
+      Navigator.pop(context, true);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to update profile')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          _buildField("Username", _usernameController),
-          _buildField("Phone", _phoneController),
-          _buildField("Email", _emailController),
-          _buildField("Password", _passwordController, obscure: true),
-          _buildField("Confirm Password", _cfmPasswordController, obscure: true),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _onSave,
-            child: const Text("Save Changes"),
-          ),
-        ],
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            _buildField("Username", _usernameController),
+            _buildField("Phone", _phoneController),
+            _buildField("Email", _emailController),
+            _buildField("Password", _passwordController, obscure: true),
+            _buildField("Confirm Password", _cfmPasswordController, obscure: true),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _onSave,
+              child: const Text("Save Changes"),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -96,7 +104,7 @@ class _UpdateProfileLayoutState extends State<UpdateProfileLayout> {
   Widget _buildField(String label, TextEditingController controller, {bool obscure = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         obscureText: obscure,
         decoration: InputDecoration(

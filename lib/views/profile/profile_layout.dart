@@ -36,7 +36,7 @@ class ProfileLayout extends StatelessWidget {
                             MaterialPageRoute(
                               builder: (context) => UpdateProfilePage(
                                 username: state.username,
-                                phone: state.phoneNumber,
+                                phone: state.contactNumber,
                                 email: state.email,
                                 password: state.password,
                                 cfmPassword: state.cfmPassword,
