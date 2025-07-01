@@ -1,25 +1,15 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:redeem_order_app/models/merchant_model.dart';
-import 'package:redeem_order_app/utils/hmac_util.dart';
-import 'package:redeem_order_app/utils/config.dart';
 
 class MerchantService {
-  static Future<List<Merchant>> fetchMerchants() async {
-    const requestUrl =
-        'https://stg.foodservices.openapipaas.com/api/v1/common/org/b7ad3a7e-513d-4f5b-a7fe-73363a3e8699/locations/outlets/merchants?location_code=HawkerCentre@BCHC';
+  static const String baseUrl = 'http://10.0.2.2:8000/api/v1';
 
-    final headers = HmacUtil.generateHeaders(
-      apiKey: Config().devApiKey,
-      projectId: Config().devProjectId,
-      platformSyscode: Config().devPlatformSyscode,
-      secretKey: Config().devSecretKey,
-      requestMethod: 'GET',
-      requestUrl: requestUrl,
-    );
+  static Future<List<Merchant>> fetchMerchants() async {
+    final url = Uri.parse('$baseUrl/merchants');
 
     try {
-      final response = await http.get(Uri.parse(requestUrl), headers: headers);
+      final response = await http.get(url);
 
       print('Status Code: ${response.statusCode}');
       print('Raw Response: ${response.body}');
@@ -27,23 +17,20 @@ class MerchantService {
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
 
-        if (jsonData == null ||
-            jsonData['result'] == null ||
-            jsonData['result']['data'] == null) {
-          print('Warning: "result.data" field is null or missing in response.');
+        if (jsonData == null || jsonData is! List) {
+          print('Warning: API did not return a list as expected.');
           return [];
         }
 
-        final merchants = jsonData['result']['data'] as List;
-        print('API returned merchant count: ${merchants.length}');
-
-        return merchants.map((merchant) => Merchant.fromJson(merchant)).toList();
+        return jsonData
+            .map<Merchant>((merchant) => Merchant.fromJson(merchant))
+            .toList();
       } else {
-        print('Failed to load merchants. Status: ${response.statusCode}');
+        print('Failed to load merchants from DB. Status: ${response.statusCode}');
         return [];
       }
     } catch (e) {
-      print('Exception occurred while fetching merchants: $e');
+      print('Exception occurred while fetching merchants from DB: $e');
       return [];
     }
   }

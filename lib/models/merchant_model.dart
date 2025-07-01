@@ -16,14 +16,14 @@ class Merchant {
   });
 
   factory Merchant.fromJson(Map<String, dynamic> json) {
-
     return Merchant(
-      id: json['merchant_id'] ?? '',
+      id: json['merchant_id']?.toString() ?? '',
       name: json['merchant_name'] ?? '',
       unitNo: json['merchant_unit_no'] ?? '',
       imageUrl: json['merchant_img_url'] ?? '',
-      supportsDineIn: true,
-      supportsTakeaway: true,
+      supportsDineIn: json['supports_dine_in'] ?? false,
+      supportsTakeaway: json['supports_takeaway'] ?? false,
     );
   }
+
 }
