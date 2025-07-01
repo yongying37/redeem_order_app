@@ -17,6 +17,12 @@ class Config {
 
   String get sandboxProjectId => dotenv.env["SANDBOX_PROJECT_ID"]!;
 
+  String get devProjectId => dotenv.env["DEVELOPER_PROJECT_ID"]!;
+  String get devApiKey => dotenv.env["DEVELOPER_PROJECT_API_KEY"]!;
+  String get devSecretKey => dotenv.env["DEVELOPER_PROJECT_SECRET_KEY"]!;
+  String get devPlatformSyscode => dotenv.env["DEVELOPER_PROJECT_PLATFORM_SYSCODE"]!;
+
+
   // For NETS Click
   String get netsLogoPath => 'assets/images/nets_logo.jpeg';
   String get greenTickPath => 'assets/images/greenTick.png';

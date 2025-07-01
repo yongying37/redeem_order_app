@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:redeem_order_app/models/product_model.dart';
 import 'package:redeem_order_app/utils/hmac_util.dart';
+import 'package:redeem_order_app/utils/config.dart';
 
 class ProductService {
   static Future<List<Product>> fetchMerchantProducts({
@@ -13,10 +14,10 @@ class ProductService {
         'https://stg.foodservices.openapipaas.com/api/v1/common/org/$organisationId/merchants/$merchantId/products?platform_syscode=$platformSyscode';
 
     final headers = HmacUtil.generateHeaders(
-      apiKey: 'PcnpwcP9tVIoXfhntINa',
-      projectId: '4cc3db29-abe6-43d8-8c73-806349e18206',
-      platformSyscode: platformSyscode,
-      secretKey: '5KKew8s6m8gxYzrseZZY',
+      apiKey: Config().devApiKey,
+      projectId: Config().devProjectId,
+      platformSyscode: Config().devPlatformSyscode,
+      secretKey: Config().devSecretKey,
       requestMethod: 'GET',
       requestUrl: requestUrl,
     );
