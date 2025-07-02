@@ -8,14 +8,12 @@ import 'package:redeem_order_app/views/stall/stall_page.dart';
 import 'product_tile.dart';
 
 class ProductPage extends StatefulWidget {
-  final String organisationId;
   final String merchantId;
   final String selectedOrderType;
   final String stallName;
 
   const ProductPage({
     super.key,
-    required this.organisationId,
     required this.merchantId,
     required this.selectedOrderType,
     required this.stallName,
@@ -31,11 +29,7 @@ class _ProductPageState extends State<ProductPage> {
   @override
   void initState() {
     super.initState();
-    _productFuture = ProductService.fetchMerchantProducts(
-      organisationId: widget.organisationId,
-      merchantId: widget.merchantId,
-      platformSyscode: '100',
-    );
+    _productFuture = ProductService.fetchProducts(merchantId: widget.merchantId);
   }
 
   @override

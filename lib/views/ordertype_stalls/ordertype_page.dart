@@ -43,7 +43,6 @@ class OrderTypesPage extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => ProductPage(
-                organisationId: organisationId,
                 merchantId: merchantId,
                 selectedOrderType: selectedOption,
                 stallName: stallName,

@@ -38,9 +38,9 @@ class _ProductTileState extends State<ProductTile> {
         padding: const EdgeInsets.all(8),
         child: Row(
           children: [
-            widget.product.productImgUrl.isNotEmpty
+            widget.product.productUrl.isNotEmpty
                 ? Image.network(
-              widget.product.productImgUrl,
+              widget.product.productUrl,
               width: 60,
               height: 60,
               fit: BoxFit.cover,
@@ -82,7 +82,7 @@ class _ProductTileState extends State<ProductTile> {
                           id: UniqueKey().toString(),
                           name: widget.product.productName,
                           price: widget.product.productPrice,
-                          imgUrl: widget.product.productImgUrl,
+                          imgUrl: widget.product.productUrl,
                           quantity: quantity,
                         ),
                       ),

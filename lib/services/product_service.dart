@@ -1,53 +1,39 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:redeem_order_app/models/product_model.dart';
-import 'package:redeem_order_app/utils/hmac_util.dart';
-import 'package:redeem_order_app/utils/config.dart';
 
 class ProductService {
-  static Future<List<Product>> fetchMerchantProducts({
-    required String organisationId,
-    required String merchantId,
-    required String platformSyscode,
-  }) async {
-    final requestUrl =
-        'https://stg.foodservices.openapipaas.com/api/v1/common/org/$organisationId/merchants/$merchantId/products?platform_syscode=$platformSyscode';
+  static const String baseUrl = 'http://10.0.2.2:8000/api/v1';
 
-    final headers = HmacUtil.generateHeaders(
-      apiKey: Config().devApiKey,
-      projectId: Config().devProjectId,
-      platformSyscode: Config().devPlatformSyscode,
-      secretKey: Config().devSecretKey,
-      requestMethod: 'GET',
-      requestUrl: requestUrl,
-    );
+  static Future<List<Product>> fetchProducts({String? merchantId}) async {
+    final uri = merchantId != null
+        ? Uri.parse('$baseUrl/merchants/products?merchant_id=$merchantId')
+        : Uri.parse('$baseUrl/merchants/products');
 
-    headers['Host'] = 'stg.foodservices.openapipaas.com';
+    try {
+      final response = await http.get(uri);
 
-    final response = await http.get(Uri.parse(requestUrl), headers: headers);
+      print('Status Code: ${response.statusCode}');
+      print('Raw Response: ${response.body}');
 
-    print('Fetching products from: $requestUrl');
-    print('Status: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
 
-    if (response.statusCode == 200) {
-      final decoded = json.decode(response.body);
-      final rawData = decoded['result']['data'];
+        if (jsonData == null || jsonData is! List) {
+          print('Warning: API did not return a list as expected.');
+          return [];
+        }
 
-      List data;
-
-      if (rawData is List) {
-        data = rawData;
-      } else if (rawData is Map) {
-        data = [rawData];
+        return jsonData
+            .map<Product>((product) => Product.fromJson(product))
+            .toList();
       } else {
-        data = [];
+        print('Failed to load products from DB. Status: ${response.statusCode}');
+        return [];
       }
-
-      print('Normalized product count: ${data.length}');
-      return data.map((json) => Product.fromJson(json)).toList();
-    } else {
-      print('Error: ${response.body}');
-      throw Exception('Failed to fetch merchant products');
+    } catch (e) {
+      print('Exception occurred while fetching products from DB: $e');
+      return [];
     }
   }
 }
