@@ -10,7 +10,8 @@ import 'package:redeem_order_app/views/cart/cart_page.dart';
 import 'package:redeem_order_app/views/login/login_page.dart';
 
 class HomeLayout extends StatefulWidget {
-  const HomeLayout({super.key});
+  final String? userId;
+  const HomeLayout({super.key, required this.userId});
 
   @override
   State<HomeLayout> createState() => _HomeLayoutState();
@@ -19,13 +20,20 @@ class HomeLayout extends StatefulWidget {
 class _HomeLayoutState extends State<HomeLayout> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [
-    const HomeContent(),
-    const StallPage(),
-    const OrderPage(),
-    const VolunteerPage(),
-    const ProfilePage(userId: '1'),
-  ];
+  late final List <Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      const HomeContent(),
+      StallPage(userId: widget.userId ?? 'guest'),
+      const OrderPage(),
+      const VolunteerPage(),
+      ProfilePage(userId: widget.userId ?? 'guest'),
+    ];
+  }
+
 
   void updateCurrentIndex(int index) {
     setState(() {
@@ -74,10 +82,11 @@ class HomeContent extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const CartPage(
+                        builder: (context) => CartPage(
                           stallName: 'Stall A',
                           supportsDinein: true,
                           supportsTakeaway: true,
+                          userId: homeLayoutState.widget.userId ?? 'guest',
                         ),
                       ),
                     );

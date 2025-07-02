@@ -5,13 +5,14 @@ import 'nets_click_loader_layout.dart';
 
 class NetsClickLoaderPage extends StatelessWidget {
   final PaymentDetails mainPaymentDetails;
-  const NetsClickLoaderPage({super.key, required this.mainPaymentDetails});
+  final String userId;
+  const NetsClickLoaderPage({super.key, required this.mainPaymentDetails, required this.userId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: NetsClickLoaderLayout(mainPaymentDetails: mainPaymentDetails),
+      body: NetsClickLoaderLayout(mainPaymentDetails: mainPaymentDetails, userId: userId),
     );
   }
 }

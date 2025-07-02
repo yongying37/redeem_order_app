@@ -10,8 +10,9 @@ import 'package:redeem_order_app/bloc/nets_click/nets_click_bloc.dart';
 
 class CheckoutLayout extends StatelessWidget {
   final String orderType;
+  final String userId;
 
-  const CheckoutLayout({super.key, required this.orderType});
+  const CheckoutLayout({super.key, required this.orderType, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +135,7 @@ class CheckoutLayout extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => BlocProvider(
                               create: (_) => NetsQrBloc(),
-                              child: NetsQrLayout(orderType: orderType),
+                              child: NetsQrLayout(orderType: orderType, userId: userId),
                             ),
                           ),
                         );
@@ -145,7 +146,7 @@ class CheckoutLayout extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => BlocProvider(
                                 create: (_) => NetsClickBloc(),
-                                child: const NetsClickPage(),
+                                child: NetsClickPage(userId: userId),
                               )
                           )
                         );
@@ -154,7 +155,7 @@ class CheckoutLayout extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const CashCheckoutPage(orderNumber: '01'),
+                            builder: (_) => CashCheckoutPage(orderNumber: '01', userId: userId),
                           )
                         );
                       }

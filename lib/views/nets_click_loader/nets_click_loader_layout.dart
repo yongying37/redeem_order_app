@@ -7,7 +7,8 @@ import 'package:redeem_order_app/utils/config.dart';
 
 class NetsClickLoaderLayout extends StatefulWidget {
   final PaymentDetails mainPaymentDetails;
-  const NetsClickLoaderLayout({super.key, required this.mainPaymentDetails});
+  final String userId;
+  const NetsClickLoaderLayout({super.key, required this.mainPaymentDetails, required this.userId});
 
   @override
   State<NetsClickLoaderLayout> createState() => _NetsClickLoaderLayoutState();
@@ -72,7 +73,7 @@ class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
             onPressed: () {
               Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
+                  MaterialPageRoute(builder: (context) => HomePage(userId: widget.userId)),
                   (Route<dynamic> route) => false,
               );
             },

@@ -4,7 +4,8 @@ import 'cash_checkout_layout.dart';
 
 class CashCheckoutPage extends StatelessWidget {
   final String orderNumber;
-  const CashCheckoutPage({Key? key, required this.orderNumber}) : super(key: key);
+  final String userId;
+  const CashCheckoutPage({Key? key, required this.orderNumber, required this.userId}) : super(key: key);
 
   void _handlePaymentDone(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -21,7 +22,7 @@ class CashCheckoutPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back), 
           onPressed: () {
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => const HomeLayout()),
+                context, MaterialPageRoute(builder: (context) => HomeLayout(userId: userId)),
             );
           }
         ),

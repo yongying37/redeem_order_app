@@ -7,7 +7,8 @@ import 'package:redeem_order_app/views/nets_click_loader/nets_click_loader_page.
 import 'package:redeem_order_app/widgets/bank_card_widget.dart';
 
 class NetsClickLayout extends StatefulWidget {
-  const NetsClickLayout({super.key});
+  final String userId;
+  const NetsClickLayout({super.key, required this.userId});
 
   @override
   State<NetsClickLayout> createState() => _NetsClickLayoutState();
@@ -95,7 +96,7 @@ class _NetsClickLayoutState extends State<NetsClickLayout> {
 
     Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => NetsClickLoaderPage(mainPaymentDetails: mainPaymentDetails)));
+        MaterialPageRoute(builder: (context) => NetsClickLoaderPage(mainPaymentDetails: mainPaymentDetails, userId: widget.userId)));
   }
 
   @override

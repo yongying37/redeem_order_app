@@ -9,8 +9,9 @@ import 'package:redeem_order_app/views/home/home_page.dart';
 
 class NetsQrLayout extends StatefulWidget {
   final String orderType;
+  final String userId;
 
-  const NetsQrLayout({super.key, required this.orderType});
+  const NetsQrLayout({super.key, required this.orderType, required this.userId});
 
   @override
   State<NetsQrLayout> createState() => _NetsQrLayoutState();
@@ -47,7 +48,7 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
             MaterialPageRoute(
               builder: (context) => BlocProvider.value(
                 value: cartBloc,
-                child: TxnNetsFailStatusPage(orderType: widget.orderType),
+                child: TxnNetsFailStatusPage(orderType: widget.orderType, userId: widget.userId),
               ),
             ),
           );
@@ -104,7 +105,7 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
         netsTimer?.cancel();
         netsTimerActive = false;
         BlocProvider.of<NetsQrBloc>(context).add(const CancelWebhookNetsQrEvent(cancelWebhookNetsQr: true));
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(userId: widget.userId)));
       },
       child: const Text(
         'CANCEL',
@@ -122,7 +123,7 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
             await Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (_) => TxnNetsSuccessStatusPage(orderType: widget.orderType),
+                builder: (_) => TxnNetsSuccessStatusPage(orderType: widget.orderType, userId: widget.userId),
               ),
             );
           } else {
@@ -132,7 +133,7 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
               MaterialPageRoute(
                 builder: (_) => BlocProvider.value(
                   value: cartBloc,
-                  child: TxnNetsFailStatusPage(orderType: widget.orderType),
+                  child: TxnNetsFailStatusPage(orderType: widget.orderType, userId: widget.userId),
                 ),
               ),
             );
@@ -142,7 +143,7 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
             await Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (_) => TxnNetsSuccessStatusPage(orderType: widget.orderType),
+                builder: (_) => TxnNetsSuccessStatusPage(orderType: widget.orderType, userId: widget.userId),
               ),
             );
           } else {
@@ -152,7 +153,7 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
               MaterialPageRoute(
                 builder: (_) => BlocProvider.value(
                   value: cartBloc,
-                  child: TxnNetsFailStatusPage(orderType: widget.orderType),
+                  child: TxnNetsFailStatusPage(orderType: widget.orderType, userId: widget.userId),
                 ),
               ),
             );

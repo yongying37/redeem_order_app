@@ -1,6 +1,7 @@
 part of 'profile_bloc.dart';
 
 class ProfileState extends Equatable {
+  final String userId;
   final String username;
   final int points;
   final List<VolunteerActivity> activityList;
@@ -10,6 +11,7 @@ class ProfileState extends Equatable {
   final String cfmPassword;
 
   const ProfileState({
+    required this.userId,
     required this.username,
     required this.points,
     required this.activityList,
@@ -20,6 +22,7 @@ class ProfileState extends Equatable {
   });
 
   ProfileState copyWith({
+    String? userId,
     String? username,
     int? points,
     List<VolunteerActivity>? activityList,
@@ -29,6 +32,7 @@ class ProfileState extends Equatable {
     String? cfmPassword,
   }) {
     return ProfileState(
+      userId: userId ?? this.userId,
       username: username ?? this.username,
       points: points ?? this.points,
       activityList: activityList ?? this.activityList,
@@ -41,6 +45,7 @@ class ProfileState extends Equatable {
 
   @override
   List<Object?> get props => [
+    userId,
     username,
     points,
     activityList,

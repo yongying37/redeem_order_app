@@ -5,9 +5,10 @@ import 'package:redeem_order_app/bloc/nets_qr/nets_qr_bloc.dart';
 import 'txn_nets_fail_status_layout.dart';
 
 class TxnNetsFailStatusPage extends StatelessWidget {
+  final String userId;
   final String orderType;
 
-  const TxnNetsFailStatusPage({super.key, required this.orderType});
+  const TxnNetsFailStatusPage({super.key, required this.orderType, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class TxnNetsFailStatusPage extends StatelessWidget {
         BlocProvider.value(value: cartBloc),
         BlocProvider.value(value: netsQrBloc),
       ],
-      child: TxnNetsFailStatusLayout(orderType: orderType),
+      child: TxnNetsFailStatusLayout(orderType: orderType, userId: userId),
     );
   }
 }

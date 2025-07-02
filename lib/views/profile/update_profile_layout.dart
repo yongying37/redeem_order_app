@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:redeem_order_app/services/auth_service.dart';
 
 class UpdateProfileLayout extends StatefulWidget {
+  final String userId;
   final String username;
   final String phone;
   final String email;
@@ -10,6 +11,7 @@ class UpdateProfileLayout extends StatefulWidget {
 
   const UpdateProfileLayout({
     super.key,
+    required this.userId,
     required this.username,
     required this.phone,
     required this.email,
@@ -58,10 +60,9 @@ class _UpdateProfileLayoutState extends State<UpdateProfileLayout> {
       );
       return;
     }
-    const userId = '1'; // Or get from logged-in session
 
     final success = await _authService.updateProfile(
-      userId: userId,
+      userId: widget.userId,
       username: _usernameController.text,
       phoneNumber: _phoneController.text,
       email: _emailController.text,

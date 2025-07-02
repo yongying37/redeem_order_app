@@ -11,12 +11,14 @@ class ProductPage extends StatefulWidget {
   final String merchantId;
   final String selectedOrderType;
   final String stallName;
+  final String userId;
 
   const ProductPage({
     super.key,
     required this.merchantId,
     required this.selectedOrderType,
     required this.stallName,
+    required this.userId,
   });
 
   @override
@@ -42,7 +44,7 @@ class _ProductPageState extends State<ProductPage> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => const StallPage()),
+              MaterialPageRoute(builder: (_) => StallPage(userId: widget.userId)),
             );
           },
         ),
@@ -59,6 +61,7 @@ class _ProductPageState extends State<ProductPage> {
                       supportsDinein: widget.selectedOrderType == 'Dine In',
                       supportsTakeaway: widget.selectedOrderType == 'Takeaway',
                       stallName: widget.stallName,
+                      userId: widget.userId,
                     ),
                   ),
                 ),

@@ -5,6 +5,7 @@ import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
 import 'package:redeem_order_app/bloc/nets_click/nets_click_bloc.dart';
 import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
 import 'package:redeem_order_app/bloc/nets_qr/nets_qr_bloc.dart';
+import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'package:redeem_order_app/views/home/home_page.dart';
 
 void main() async {
@@ -18,6 +19,7 @@ void main() async {
         BlocProvider(create: (_) => NetsQrBloc()),
         BlocProvider(create: (_) => CartBloc()),
         BlocProvider(create: (_) => NetsClickBloc()),
+        BlocProvider(create: (_) => ProfileBloc()),
       ],
 
       child: const MyApp(),
@@ -53,7 +55,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: const HomePage(userId: 'guest'),
     );
   }
 }

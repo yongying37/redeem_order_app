@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'package:redeem_order_app/services/auth_service.dart';
-import 'package:redeem_order_app/views/home/home_layout.dart';
+import 'package:redeem_order_app/views/home/home_page.dart';
 import 'package:redeem_order_app/views/signup/signup_page.dart';
 
 class LoginLayout extends StatefulWidget {
@@ -119,13 +121,21 @@ class _LoginLayoutState extends State<LoginLayout> {
     setState(() => _isLoading = false);
 
     if (result != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login successful!')),
-      );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeLayout()),
-      );
+      final user = result['user'];
+      if (user != null && user['account_user_id'] != null) {
+        final userId = user['account_user_id'].toString();
+
+        context.read<ProfileBloc>().add(LoadProfile(userId));
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Login successful!')),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => HomePage(userId: userId)),
+        );
+      }
+
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login failed. Please check your credentials.')),

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'nets_click_layout.dart';
 
 class NetsClickPage extends StatelessWidget {
-  const NetsClickPage({super.key});
+  final String userId;
+  const NetsClickPage({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class NetsClickPage extends StatelessWidget {
         title: const Text('Confirm Payment', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
       ),
-      body: const NetsClickLayout(),
+      body: NetsClickLayout(userId: userId),
     );
   }
 
