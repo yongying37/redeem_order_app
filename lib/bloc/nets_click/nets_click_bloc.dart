@@ -21,10 +21,6 @@ class NetsClickBloc extends Bloc<NetsClickEvent, NetsClickState> {
   }
 
   String _generateTxnId(MakePayment event) {
-    /*String txnId = '';
-    // main payment
-    txnId = '${Config().openApiPaasProjectName}|${Config().mainPaymentCredentialSource}|${event.mainPaymentDetails.identifier}|${event.mainPaymentDetails.recordId}';
-    return txnId;*/
     return '${Config().openApiPaasProjectName}|'
         '${Config().mainPaymentCredentialSource}|'
         '${event.mainPaymentDetails.identifier}|'

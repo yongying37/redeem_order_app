@@ -4,7 +4,7 @@ import 'package:redeem_order_app/bloc/checkout/checkout_bloc.dart';
 import 'package:redeem_order_app/models/cart_item_model.dart';
 import 'package:redeem_order_app/views/cash_checkout/cash_checkout_page.dart';
 import 'package:redeem_order_app/views/nets_click/nets_click_page.dart';
-import 'package:redeem_order_app/views/nets_qr/nets_qr_layout.dart';
+import 'package:redeem_order_app/views/nets_qr/nets_qr_page.dart';
 import 'package:redeem_order_app/bloc/nets_qr/nets_qr_bloc.dart';
 import 'package:redeem_order_app/bloc/nets_click/nets_click_bloc.dart';
 
@@ -128,35 +128,44 @@ class CheckoutLayout extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   ElevatedButton(
-                    onPressed: state.paymentMethod.isEmpty ? null :() {
+                    onPressed: state.paymentMethod.isEmpty ? null :()  {
                       if (state.paymentMethod == 'NETS QR') {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => BlocProvider(
                               create: (_) => NetsQrBloc(),
-                              child: NetsQrLayout(orderType: orderType, userId: userId),
+                              child: NetsQrPage(orderType: orderType, userId: userId, cartItems: cartItems),
                             ),
                           ),
                         );
                       }
                       else if (state.paymentMethod == 'NETS Click') {
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BlocProvider(
-                                create: (_) => NetsClickBloc(),
-                                child: NetsClickPage(userId: userId),
-                              )
-                          )
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BlocProvider(
+                                  create: (_) => NetsClickBloc(),
+                                  child: NetsClickPage(
+                                      userId: userId,
+                                      orderType: orderType,
+                                      cartItems: cartItems,
+                                  ),
+                                )
+                            )
                         );
                       }
                       else if (state.paymentMethod == 'Cash') {
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => CashCheckoutPage(orderNumber: '01', userId: userId),
-                          )
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => CashCheckoutPage(
+                                  orderNumber: '01',
+                                  userId: userId,
+                                  orderType: orderType,
+                                  cartItems: cartItems,
+                              ),
+                            ),
                         );
                       }
                       else {

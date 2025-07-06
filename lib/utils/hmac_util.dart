@@ -9,9 +9,10 @@ class HmacUtil {
     required String secretKey,
     required String requestMethod,
     required String requestUrl,
+    String? requestBody,
     String? overrideDatetime, // Allows manual datetime override for testing
   }) {
-    const requestBody = '{}';
+    final body = requestBody ?? '{}';
 
     final now = overrideDatetime != null
         ? DateTime.parse(overrideDatetime)
@@ -19,7 +20,7 @@ class HmacUtil {
 
     final datetime = now.toIso8601String().substring(0, 23) + 'Z';
 
-    final contentSha256 = base64.encode(sha256.convert(utf8.encode(requestBody)).bytes);
+    final contentSha256 = base64.encode(sha256.convert(utf8.encode(body)).bytes);
 
     final uri = Uri.parse(requestUrl);
     final canonicalUriPath = uri.path;
@@ -64,6 +65,7 @@ class HmacUtil {
       'datetime': datetime,
       'content-sha256': contentSha256,
       'Authorization': authHeader,
+      'Content-Type': 'application/json',
     };
   }
 }

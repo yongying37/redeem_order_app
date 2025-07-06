@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/models/payment_details_model.dart';
+import 'package:redeem_order_app/models/cart_item_model.dart';
 import 'package:redeem_order_app/views/home/home_page.dart';
 import 'package:redeem_order_app/bloc/nets_click/nets_click_bloc.dart';
 import 'package:redeem_order_app/utils/config.dart';
+import 'package:redeem_order_app/utils/order_payload_util.dart';
+import 'package:redeem_order_app/services/create_order_service.dart';
 
 class NetsClickLoaderLayout extends StatefulWidget {
   final PaymentDetails mainPaymentDetails;
   final String userId;
-  const NetsClickLoaderLayout({super.key, required this.mainPaymentDetails, required this.userId});
+  final String orderType;
+  final List<CartItem> cartItems;
+
+  const NetsClickLoaderLayout({
+    super.key,
+    required this.mainPaymentDetails,
+    required this.userId,
+    required this.orderType,
+    required this.cartItems,
+  });
 
   @override
   State<NetsClickLoaderLayout> createState() => _NetsClickLoaderLayoutState();
 }
 
 class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
+  bool _orderCreated = false;
+
   @override
   void initState() {
     super.initState();
@@ -73,8 +87,8 @@ class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
             onPressed: () {
               Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage(userId: widget.userId)),
-                  (Route<dynamic> route) => false,
+                  MaterialPageRoute(builder: (_) => HomePage(userId: widget.userId)),
+                  (_) => false,
               );
             },
             child: const Text('Go back'),
@@ -86,16 +100,62 @@ class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NetsClickBloc, NetsClickState>(
-      builder: (context, netsClickState) {
-        return PopScope(
-          canPop: false,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Center(child: renderLoadingScreen(netsClickState)),
-          ),
-        );
+    return BlocListener<NetsClickBloc, NetsClickState>(
+      listener: (context, state) async {
+        if (state.status.isMakePaymentSuccess && !_orderCreated) {
+          _orderCreated = true;
+
+          try {
+            final payload = OrderPayloadUtil.buildPayload(
+                cartItems: widget.cartItems,
+                orderType: widget.orderType
+            );
+
+            final result = await OrderService.createOrder(orderPayload: payload);
+            final txnId = result['txn_id'];
+            final retrievalRef = result['txn_retrieval_ref'];
+
+            showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: const Text("Order created!"),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Transaction ID:\n$txnId"),
+                    const SizedBox(height: 8),
+                    Text("Retrieval Ref:\n$retrievalRef"),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("OK"),
+                  ),
+                ],
+              ),
+            );
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Order failed: $e")),
+            );
+          }
+        }
       },
+      child: BlocBuilder<NetsClickBloc, NetsClickState>(
+        builder: (context, netsClickState) {
+          return PopScope(
+            canPop: false,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(child: renderLoadingScreen(netsClickState)),
+            ),
+          );
+        },
+      ),
     );
   }
 }

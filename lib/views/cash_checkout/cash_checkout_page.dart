@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
-import '../home/home_layout.dart';
+import 'package:redeem_order_app/models/cart_item_model.dart';
+import 'package:redeem_order_app/views/home/home_layout.dart';
 import 'cash_checkout_layout.dart';
 
 class CashCheckoutPage extends StatelessWidget {
   final String orderNumber;
   final String userId;
-  const CashCheckoutPage({Key? key, required this.orderNumber, required this.userId}) : super(key: key);
+  final String orderType;
+  final List<CartItem> cartItems;
 
-  void _handlePaymentDone(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Payment Confirmed. Thank you!')),
-    );
-  }
+  const CashCheckoutPage({
+    Key? key,
+    required this.orderNumber,
+    required this.userId,
+    required this.orderType,
+    required this.cartItems,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,9 @@ class CashCheckoutPage extends StatelessWidget {
       ),
       body: CashCheckoutLayout(
           orderNumber: orderNumber,
-          onPaymentDone: () => _handlePaymentDone(context)
+          orderType: orderType,
+          userId: userId,
+          cartItems: cartItems,
       ),
     );
   }

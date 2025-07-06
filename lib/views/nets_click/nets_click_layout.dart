@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:redeem_order_app/models/cart_item_model.dart';
 import 'package:redeem_order_app/models/nets_bank_card_model.dart';
 import 'package:redeem_order_app/models/payment_details_model.dart';
 import 'package:redeem_order_app/utils/config.dart';
@@ -8,7 +9,14 @@ import 'package:redeem_order_app/widgets/bank_card_widget.dart';
 
 class NetsClickLayout extends StatefulWidget {
   final String userId;
-  const NetsClickLayout({super.key, required this.userId});
+  final String orderType;
+  final List<CartItem> cartItems;
+  const NetsClickLayout({
+    super.key,
+    required this.userId,
+    required this.orderType,
+    required this.cartItems,
+  });
 
   @override
   State<NetsClickLayout> createState() => _NetsClickLayoutState();
@@ -96,7 +104,12 @@ class _NetsClickLayoutState extends State<NetsClickLayout> {
 
     Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => NetsClickLoaderPage(mainPaymentDetails: mainPaymentDetails, userId: widget.userId)));
+        MaterialPageRoute(builder: (context) => NetsClickLoaderPage(
+            mainPaymentDetails: mainPaymentDetails,
+            userId: widget.userId,
+            orderType: widget.orderType,
+            cartItems: widget.cartItems,
+        )));
   }
 
   @override

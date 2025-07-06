@@ -20,7 +20,7 @@ class Config {
   String get devProjectId => dotenv.env["DEVELOPER_PROJECT_ID"]!;
   String get devApiKey => dotenv.env["DEVELOPER_PROJECT_API_KEY"]!;
   String get devSecretKey => dotenv.env["DEVELOPER_PROJECT_SECRET_KEY"]!;
-  String get devPlatformSyscode => dotenv.env["DEVELOPER_PROJECT_PLATFORM_SYSCODE"]!;
+  int get devPlatformSyscode => int.parse(dotenv.env["DEVELOPER_PROJECT_PLATFORM_SYSCODE"]!);
 
 
   // For NETS Click

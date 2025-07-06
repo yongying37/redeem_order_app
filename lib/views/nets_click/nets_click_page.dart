@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
-
+import 'package:redeem_order_app/models/cart_item_model.dart';
 import 'nets_click_layout.dart';
 
 class NetsClickPage extends StatelessWidget {
   final String userId;
-  const NetsClickPage({super.key, required this.userId});
+  final String orderType;
+  final List<CartItem> cartItems;
+
+  const NetsClickPage({
+    super.key,
+    required this.userId,
+    required this.orderType,
+    required this.cartItems,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +21,11 @@ class NetsClickPage extends StatelessWidget {
         title: const Text('Confirm Payment', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
       ),
-      body: NetsClickLayout(userId: userId),
+      body: NetsClickLayout(
+          userId: userId,
+          orderType: orderType,
+          cartItems: cartItems,
+      ),
     );
   }
 
