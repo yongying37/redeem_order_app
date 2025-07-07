@@ -84,6 +84,8 @@ class _ProductTileState extends State<ProductTile> {
                           price: widget.product.productPrice,
                           imgUrl: widget.product.productUrl,
                           quantity: quantity,
+                          productId: widget.product.productId,
+                          merchantId: widget.product.merchantId,
                         ),
                       ),
                     );

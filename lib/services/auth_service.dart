@@ -55,7 +55,7 @@ class AuthService {
     }
   }
 
-  Future<UserProfile?> getProfile(String userId) async {
+  Future<UserProfile?> getProfile(int userId) async {
     final url = Uri.parse('$baseUrl/accounts/users/$userId');
 
     print('Fetching profile from $url');
@@ -79,7 +79,7 @@ class AuthService {
   }
 
   Future<bool> updateProfile({
-    required String userId,
+    required int userId,
     required String username,
     required String phoneNumber,
     required String email,

@@ -1,7 +1,7 @@
 part of 'profile_bloc.dart';
 
 class ProfileState extends Equatable {
-  final String userId;
+  final int userId;
   final String username;
   final int points;
   final List<VolunteerActivity> activityList;
@@ -22,7 +22,7 @@ class ProfileState extends Equatable {
   });
 
   ProfileState copyWith({
-    String? userId,
+    int? userId,
     String? username,
     int? points,
     List<VolunteerActivity>? activityList,

@@ -5,7 +5,7 @@ sealed class ProfileEvent {
 }
 
 class LoadProfile extends ProfileEvent {
-  final String userId;
+  final int userId;
   const LoadProfile(this.userId);
 }
 

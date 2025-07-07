@@ -4,20 +4,22 @@ import 'package:redeem_order_app/models/payment_details_model.dart';
 import 'package:redeem_order_app/models/cart_item_model.dart';
 import 'package:redeem_order_app/views/home/home_page.dart';
 import 'package:redeem_order_app/bloc/nets_click/nets_click_bloc.dart';
+import 'package:redeem_order_app/bloc/session/session_bloc.dart';
+import 'package:redeem_order_app/bloc/checkout/checkout_bloc.dart';
+import 'package:redeem_order_app/bloc/cart/cart_bloc.dart'; 
 import 'package:redeem_order_app/utils/config.dart';
 import 'package:redeem_order_app/utils/order_payload_util.dart';
 import 'package:redeem_order_app/services/create_order_service.dart';
+import 'package:redeem_order_app/services/record_order_service.dart';
 
 class NetsClickLoaderLayout extends StatefulWidget {
   final PaymentDetails mainPaymentDetails;
-  final String userId;
   final String orderType;
   final List<CartItem> cartItems;
 
   const NetsClickLoaderLayout({
     super.key,
     required this.mainPaymentDetails,
-    required this.userId,
     required this.orderType,
     required this.cartItems,
   });
@@ -87,7 +89,7 @@ class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
             onPressed: () {
               Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (_) => HomePage(userId: widget.userId)),
+                  MaterialPageRoute(builder: (_) => HomePage()),
                   (_) => false,
               );
             },
@@ -102,6 +104,16 @@ class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
   Widget build(BuildContext context) {
     return BlocListener<NetsClickBloc, NetsClickState>(
       listener: (context, state) async {
+
+        final userId = context.read<SessionBloc>().state.userId;
+
+        if (userId == 0) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Please login to place an order")),
+          );
+          return;
+        }
+
         if (state.status.isMakePaymentSuccess && !_orderCreated) {
           _orderCreated = true;
 
@@ -114,6 +126,17 @@ class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
             final result = await OrderService.createOrder(orderPayload: payload);
             final txnId = result['txn_id'];
             final retrievalRef = result['txn_retrieval_ref'];
+
+            print('Order created!');
+
+            await RecordOrderService().submitOrderToDB(
+              userId: userId,
+              cartItems: widget.cartItems,
+              paymentMethod: "Cash",
+              paymentAmt: context.read<CheckoutBloc>().state.total,
+              pointsUsed: context.read<CartBloc>().state.pointsUsed,
+              orderType: widget.orderType,
+            );
 
             showDialog(
               context: context,

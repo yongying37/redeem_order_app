@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
 import 'package:redeem_order_app/bloc/nets_click/nets_click_bloc.dart';
 import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
 import 'package:redeem_order_app/bloc/nets_qr/nets_qr_bloc.dart';
 import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
+import 'package:redeem_order_app/bloc/checkout/checkout_bloc.dart';
 import 'package:redeem_order_app/views/home/home_page.dart';
 
 void main() async {
@@ -15,14 +17,15 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => SessionBloc()),
         BlocProvider(create: (_) => OrderTypeBloc()),
         BlocProvider(create: (_) => NetsQrBloc()),
         BlocProvider(create: (_) => CartBloc()),
+        BlocProvider(create: (context) => CheckoutBloc(cartBloc: context.read<CartBloc>())),
         BlocProvider(create: (_) => NetsClickBloc()),
         BlocProvider(create: (_) => ProfileBloc()),
       ],
-
-      child: const MyApp(),
+      child: MyApp(),
     ),
   );
 }
@@ -34,7 +37,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Redeem Order App',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -55,7 +58,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         useMaterial3: true,
       ),
-      home: const HomePage(userId: 'guest'),
+      home: const HomePage(),
     );
   }
 }

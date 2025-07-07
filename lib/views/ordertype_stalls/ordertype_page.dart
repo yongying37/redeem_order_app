@@ -9,7 +9,6 @@ class OrderTypesPage extends StatelessWidget {
   final bool supportsTakeaway;
   final String organisationId;
   final String merchantId;
-  final String userId;
 
   const OrderTypesPage({
     Key? key,
@@ -18,7 +17,6 @@ class OrderTypesPage extends StatelessWidget {
     required this.supportsTakeaway,
     required this.organisationId,
     required this.merchantId,
-    required this.userId,
   }) : super(key: key);
 
   @override
@@ -31,7 +29,7 @@ class OrderTypesPage extends StatelessWidget {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => StallPage(userId: userId)),
+              MaterialPageRoute(builder: (context) => StallPage()),
             );
           },
         ),
@@ -48,7 +46,6 @@ class OrderTypesPage extends StatelessWidget {
                 merchantId: merchantId,
                 selectedOrderType: selectedOption,
                 stallName: stallName,
-                userId: userId,
               ),
             ),
           );

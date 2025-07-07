@@ -11,7 +11,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   ProfileBloc()
       : super(const ProfileState(
-    userId: '',
+    userId: 0,
     username: '',
     points: 0,
     activityList: [],
@@ -26,7 +26,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
         if (userProfile != null) {
           emit(ProfileState(
-            userId: userProfile.accountUserId.toString(),
+            userId: userProfile.accountUserId,
             username: userProfile.username,
             points: userProfile.points,
             activityList: [],

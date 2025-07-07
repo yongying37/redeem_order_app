@@ -4,8 +4,7 @@ import 'package:redeem_order_app/services/merchant_service.dart';
 import 'package:redeem_order_app/views/ordertype_stalls/ordertype_page.dart';
 
 class StallLayout extends StatefulWidget {
-  final String userId;
-  const StallLayout({super.key, required this.userId});
+  const StallLayout({super.key});
 
   @override
   State<StallLayout> createState() => _StallLayoutState();
@@ -50,7 +49,6 @@ class _StallLayoutState extends State<StallLayout> {
                       supportsTakeaway: merchant.supportsTakeaway,
                       organisationId: 'b7ad3a7e-513d-4f5b-a7fe-73363a3e8699',
                       merchantId: merchant.id,
-                      userId: widget.userId,
                     ),
                   ),
                 );

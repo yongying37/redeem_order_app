@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
+import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/models/volunteer_activity_model.dart';
 import 'package:redeem_order_app/views/profile/update_profile_page.dart';
 
@@ -35,7 +36,6 @@ class ProfileLayout extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => UpdateProfilePage(
-                                userId: state.userId,
                                 username: state.username,
                                 phone: state.contactNumber,
                                 email: state.email,
@@ -48,7 +48,7 @@ class ProfileLayout extends StatelessWidget {
                           if (result == true) {
                           }
                         } else if (value == 'logout') {
-                          // Handle logout logic here
+                          context.read<SessionBloc>().add(Logout());
                         }
                       },
 

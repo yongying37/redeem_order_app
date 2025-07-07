@@ -7,14 +7,12 @@ class CartPage extends StatelessWidget {
   final bool supportsDinein;
   final bool supportsTakeaway;
   final String stallName;
-  final String userId;
 
   const CartPage({
     super.key,
     required this.supportsDinein,
     required this.supportsTakeaway,
     required this.stallName,
-    required this.userId,
   });
 
   @override
@@ -26,7 +24,6 @@ class CartPage extends StatelessWidget {
           supportsDinein: supportsDinein,
           supportsTakeaway: supportsTakeaway,
           stallName: stallName,
-          userId: userId,
         ),
       )
     );

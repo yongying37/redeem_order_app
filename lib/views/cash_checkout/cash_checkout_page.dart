@@ -5,14 +5,12 @@ import 'cash_checkout_layout.dart';
 
 class CashCheckoutPage extends StatelessWidget {
   final String orderNumber;
-  final String userId;
   final String orderType;
   final List<CartItem> cartItems;
 
   const CashCheckoutPage({
     Key? key,
     required this.orderNumber,
-    required this.userId,
     required this.orderType,
     required this.cartItems,
   }) : super(key: key);
@@ -26,7 +24,7 @@ class CashCheckoutPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back), 
           onPressed: () {
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => HomeLayout(userId: userId)),
+                context, MaterialPageRoute(builder: (context) => HomeLayout()),
             );
           }
         ),
@@ -34,7 +32,6 @@ class CashCheckoutPage extends StatelessWidget {
       body: CashCheckoutLayout(
           orderNumber: orderNumber,
           orderType: orderType,
-          userId: userId,
           cartItems: cartItems,
       ),
     );

@@ -10,8 +10,7 @@ import 'package:redeem_order_app/views/cart/cart_page.dart';
 import 'package:redeem_order_app/views/login/login_page.dart';
 
 class HomeLayout extends StatefulWidget {
-  final String? userId;
-  const HomeLayout({super.key, required this.userId});
+  const HomeLayout({super.key});
 
   @override
   State<HomeLayout> createState() => _HomeLayoutState();
@@ -27,10 +26,10 @@ class _HomeLayoutState extends State<HomeLayout> {
     super.initState();
     _screens = [
       const HomeContent(),
-      StallPage(userId: widget.userId ?? 'guest'),
+      const StallPage(),
       const OrderPage(),
       const VolunteerPage(),
-      ProfilePage(userId: widget.userId ?? 'guest'),
+      const ProfilePage(),
     ];
   }
 
@@ -86,7 +85,6 @@ class HomeContent extends StatelessWidget {
                           stallName: 'Stall A',
                           supportsDinein: true,
                           supportsTakeaway: true,
-                          userId: homeLayoutState.widget.userId ?? 'guest',
                         ),
                       ),
                     );

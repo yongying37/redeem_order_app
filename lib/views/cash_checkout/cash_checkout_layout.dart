@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:redeem_order_app/bloc/checkout/checkout_bloc.dart';
+import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
+import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/models/cart_item_model.dart';
 import 'package:redeem_order_app/services/create_order_service.dart';
+import 'package:redeem_order_app/services/record_order_service.dart';
 import 'package:redeem_order_app/utils/order_payload_util.dart';
 import 'package:redeem_order_app/views/home/home_layout.dart';
 
 class CashCheckoutLayout extends StatefulWidget {
   final String orderNumber;
   final String orderType;
-  final String userId;
   final List<CartItem> cartItems;
 
   const CashCheckoutLayout({
     Key? key,
     required this.orderNumber,
     required this.orderType,
-    required this.userId,
     required this.cartItems,
   }) : super (key: key);
 
@@ -27,6 +30,15 @@ class _CashCheckoutLayoutState extends State<CashCheckoutLayout> {
   bool orderSubmitted = false;
 
   Future<void> _onPaymentDone() async {
+    final userId = context.read<SessionBloc>().state.userId;
+
+    if (userId == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please login to place an order")),
+      );
+      return;
+    }
+
     setState(() {
       isProcessing = true;
       orderSubmitted = false;
@@ -41,6 +53,17 @@ class _CashCheckoutLayoutState extends State<CashCheckoutLayout> {
       final result = await OrderService.createOrder(orderPayload: payload);
       final txnId = result['txn_id'];
       final retrievalRef = result['txn_retrieval_ref'];
+
+      print ('Order created!');
+
+      await RecordOrderService().submitOrderToDB(
+          userId: userId,
+          cartItems: widget.cartItems,
+          paymentMethod: "Cash",
+          paymentAmt: context.read<CheckoutBloc>().state.total,
+          pointsUsed: context.read<CartBloc>().state.pointsUsed,
+          orderType: widget.orderType,
+      );
 
       showDialog(
         context: context,
@@ -126,7 +149,7 @@ class _CashCheckoutLayoutState extends State<CashCheckoutLayout> {
                       if (orderSubmitted) {
                         Navigator.pushAndRemoveUntil(
                           context, 
-                          MaterialPageRoute(builder: (_) => HomeLayout(userId: widget.userId)),
+                          MaterialPageRoute(builder: (_) => const HomeLayout()),
                             (route) => false,
                         );
                       }

@@ -8,9 +8,8 @@ import 'package:redeem_order_app/views/checkout/checkout_page.dart';
 
 class TxnNetsFailStatusLayout extends StatefulWidget {
   final String orderType;
-  final String userId;
 
-  const TxnNetsFailStatusLayout({super.key, required this.orderType, required this.userId});
+  const TxnNetsFailStatusLayout({super.key, required this.orderType});
 
   @override
   State<TxnNetsFailStatusLayout> createState() => _TxnNetsFailStatusLayoutState();
@@ -78,7 +77,7 @@ class _TxnNetsFailStatusLayoutState extends State<TxnNetsFailStatusLayout> {
                       ..add(LoadCheckout(orderType)),
                   ),
                 ],
-                child: CheckoutPage(orderType: orderType, userId: widget.userId),
+                child: CheckoutPage(orderType: orderType),
               ),
             ),
           );

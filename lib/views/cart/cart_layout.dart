@@ -8,14 +8,12 @@ class CartLayout extends StatefulWidget {
   final bool supportsDinein;
   final bool supportsTakeaway;
   final String stallName;
-  final String userId;
 
   const CartLayout({
     super.key,
     required this.supportsDinein,
     required this.supportsTakeaway,
     required this.stallName,
-    required this.userId,
   });
 
   @override
@@ -304,7 +302,6 @@ class _CartLayoutState extends State<CartLayout> {
                           MaterialPageRoute(
                               builder: (_) => CheckoutPage(
                                 orderType: orderType,
-                                userId: widget.userId,
                               )),
                         );
                       },

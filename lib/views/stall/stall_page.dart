@@ -3,8 +3,7 @@ import 'stall_layout.dart';
 import 'package:redeem_order_app/views/home/home_layout.dart';
 
 class StallPage extends StatelessWidget {
-  final String userId;
-  const StallPage({super.key, required this.userId});
+  const StallPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +15,12 @@ class StallPage extends StatelessWidget {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => HomeLayout(userId: userId)),
+              MaterialPageRoute(builder: (context) => HomeLayout()),
             );
           },
         ),
       ),
-      body: StallLayout(userId: userId),
+      body: StallLayout(),
     );
   }
 }

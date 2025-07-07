@@ -1,5 +1,5 @@
 class UserProfile {
-  final String accountUserId;
+  final int accountUserId;
   final String username;
   final String contactNumber;
   final String email;
@@ -17,7 +17,7 @@ class UserProfile {
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
-      accountUserId: json['account_user_id'].toString(),
+      accountUserId: json['account_user_id'],
       username: json['account_user_name'],
       contactNumber: json['account_user_contact_number'] ?? '',
       email: json['account_user_email'],

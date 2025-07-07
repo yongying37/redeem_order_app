@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'update_profile_layout.dart';
 
 class UpdateProfilePage extends StatelessWidget {
-  final String userId;
   final String username;
   final String phone;
   final String email;
@@ -11,7 +10,6 @@ class UpdateProfilePage extends StatelessWidget {
 
   const UpdateProfilePage({
     super.key,
-    required this.userId,
     required this.username,
     required this.phone,
     required this.email,
@@ -24,7 +22,6 @@ class UpdateProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Update Profile")),
       body: UpdateProfileLayout(
-        userId: userId,
         username: username,
         phone: phone,
         email: email,

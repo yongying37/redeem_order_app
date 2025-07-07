@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/services/auth_service.dart';
+import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 
 class UpdateProfileLayout extends StatefulWidget {
-  final String userId;
   final String username;
   final String phone;
   final String email;
@@ -11,7 +12,6 @@ class UpdateProfileLayout extends StatefulWidget {
 
   const UpdateProfileLayout({
     super.key,
-    required this.userId,
     required this.username,
     required this.phone,
     required this.email,
@@ -61,8 +61,10 @@ class _UpdateProfileLayoutState extends State<UpdateProfileLayout> {
       return;
     }
 
+    final userId = context.read<SessionBloc>().state.userId;
+
     final success = await _authService.updateProfile(
-      userId: widget.userId,
+      userId: userId,
       username: _usernameController.text,
       phoneNumber: _phoneController.text,
       email: _emailController.text,

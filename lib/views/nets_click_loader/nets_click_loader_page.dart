@@ -5,14 +5,12 @@ import 'nets_click_loader_layout.dart';
 
 class NetsClickLoaderPage extends StatelessWidget {
   final PaymentDetails mainPaymentDetails;
-  final String userId;
   final String orderType;
   final List<CartItem> cartItems;
 
   const NetsClickLoaderPage({
     super.key,
     required this.mainPaymentDetails,
-    required this.userId,
     required this.orderType,
     required this.cartItems,
   });
@@ -23,7 +21,6 @@ class NetsClickLoaderPage extends StatelessWidget {
       backgroundColor: Colors.white,
       body: NetsClickLoaderLayout(
           mainPaymentDetails: mainPaymentDetails,
-          userId: userId,
           orderType: orderType,
           cartItems: cartItems,
       ),

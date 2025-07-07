@@ -3,13 +3,11 @@ import 'package:redeem_order_app/models/cart_item_model.dart';
 import 'nets_click_layout.dart';
 
 class NetsClickPage extends StatelessWidget {
-  final String userId;
   final String orderType;
   final List<CartItem> cartItems;
 
   const NetsClickPage({
     super.key,
-    required this.userId,
     required this.orderType,
     required this.cartItems,
   });
@@ -22,7 +20,6 @@ class NetsClickPage extends StatelessWidget {
         backgroundColor: Colors.white,
       ),
       body: NetsClickLayout(
-          userId: userId,
           orderType: orderType,
           cartItems: cartItems,
       ),

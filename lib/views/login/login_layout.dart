@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
+import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/services/auth_service.dart';
 import 'package:redeem_order_app/views/home/home_page.dart';
 import 'package:redeem_order_app/views/signup/signup_page.dart';
@@ -123,16 +124,17 @@ class _LoginLayoutState extends State<LoginLayout> {
     if (result != null) {
       final user = result['user'];
       if (user != null && user['account_user_id'] != null) {
-        final userId = user['account_user_id'].toString();
+        final int userId = user['account_user_id'];
 
         context.read<ProfileBloc>().add(LoadProfile(userId));
+        context.read<SessionBloc>().add(SetUserId(userId));
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login successful!')),
         );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => HomePage(userId: userId)),
+          MaterialPageRoute(builder: (_) => HomePage()),
         );
       }
 

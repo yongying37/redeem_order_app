@@ -21,6 +21,7 @@ class CartItem {
   int quantity;
 
   final String? productId;
+  final String? merchantId;
   final List<AddOnItem> addOns;
   final String? preference;
   final String? remarks;
@@ -32,6 +33,7 @@ class CartItem {
     required this.imgUrl,
     this.quantity = 1,
     this.productId,
+    this.merchantId,
     this.addOns = const [],
     this.preference,
     this.remarks,

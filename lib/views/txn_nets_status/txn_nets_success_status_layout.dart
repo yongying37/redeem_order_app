@@ -5,9 +5,8 @@ import 'package:redeem_order_app/views/home/home_page.dart';
 
 class TxnNetsSuccessStatusLayout extends StatefulWidget {
   final String orderType;
-  final String userId;
 
-  const TxnNetsSuccessStatusLayout({super.key, required this.orderType, required this.userId});
+  const TxnNetsSuccessStatusLayout({super.key, required this.orderType});
 
   @override
   State<TxnNetsSuccessStatusLayout> createState() =>
@@ -28,7 +27,7 @@ class _TxnNetsSuccessStatusLayoutState
             )),
         onPressed: () async {
           BlocProvider.of<NetsQrBloc>(context).add(const CancelWebhookNetsQrEvent());
-          await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(userId: widget.userId)));
+          await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
         },
         child: const Padding(
           padding: EdgeInsets.all(15.0),
