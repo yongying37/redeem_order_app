@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
-import 'package:redeem_order_app/models/volunteer_activity_model.dart';
 import 'package:redeem_order_app/views/profile/update_profile_page.dart';
 
 class ProfileLayout extends StatelessWidget {
@@ -46,12 +45,12 @@ class ProfileLayout extends StatelessWidget {
                           );
 
                           if (result == true) {
+                            // Profile updated, do something if needed
                           }
                         } else if (value == 'logout') {
                           context.read<SessionBloc>().add(Logout());
                         }
                       },
-
                       itemBuilder: (BuildContext context) => [
                         const PopupMenuItem<String>(
                           value: 'update',
@@ -74,61 +73,10 @@ class ProfileLayout extends StatelessWidget {
                 Center(
                   child: Text("${state.points} points", style: const TextStyle(fontSize: 18)),
                 ),
-                const Divider(height: 30),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text("History of Volunteer Work", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                ),
-                const SizedBox(height: 10),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.activityList.length,
-                  itemBuilder: (context, index) {
-                    final activity = state.activityList[index];
-                    return Column(
-                      children: [
-                        _volunteerCard(activity),
-                        const SizedBox(height: 10),
-                      ],
-                    );
-                  },
-                ),
               ],
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _volunteerCard(VolunteerActivity activity) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(activity.title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 5),
-            Text("Location: ${activity.location}"),
-            Text("Date / Time: ${activity.dateTime}"),
-            Text("Points received: ${activity.points}"),
-            const SizedBox(height: 10),
-            Align(
-              alignment: Alignment.centerRight,
-              child: OutlinedButton(
-                onPressed: () {},
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.grey[200],
-                  side: const BorderSide(color: Colors.grey, width: 1.5),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
-                child: const Text("Learn More", style: TextStyle(color: Colors.black)),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

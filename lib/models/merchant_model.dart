@@ -25,5 +25,4 @@ class Merchant {
       supportsTakeaway: json['supports_takeaway'] ?? false,
     );
   }
-
 }

@@ -4,7 +4,7 @@ import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
 import 'package:redeem_order_app/widgets/custom_bottom_nav.dart';
 import 'package:redeem_order_app/views/stall/stall_page.dart';
 import 'package:redeem_order_app/views/order_history/order_page.dart';
-import 'package:redeem_order_app/views/volunteer/volunteer_page.dart';
+import 'package:redeem_order_app/views/volunteer/volunteer_organization_page.dart';
 import 'package:redeem_order_app/views/profile/profile_page.dart';
 import 'package:redeem_order_app/views/cart/cart_page.dart';
 import 'package:redeem_order_app/views/login/login_page.dart';
@@ -28,7 +28,7 @@ class _HomeLayoutState extends State<HomeLayout> {
       const HomeContent(),
       const StallPage(),
       const OrderPage(),
-      const VolunteerPage(),
+      const VolunteerOrganizationPage(),
       const ProfilePage(),
     ];
   }
