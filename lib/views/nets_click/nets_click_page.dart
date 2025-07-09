@@ -5,11 +5,13 @@ import 'nets_click_layout.dart';
 class NetsClickPage extends StatelessWidget {
   final String orderType;
   final List<CartItem> cartItems;
+  final double totalAmount;
 
   const NetsClickPage({
     super.key,
     required this.orderType,
     required this.cartItems,
+    required this.totalAmount,
   });
 
   @override
@@ -22,6 +24,7 @@ class NetsClickPage extends StatelessWidget {
       body: NetsClickLayout(
           orderType: orderType,
           cartItems: cartItems,
+          totalAmount: totalAmount,
       ),
     );
   }

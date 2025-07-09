@@ -7,12 +7,14 @@ class NetsClickLoaderPage extends StatelessWidget {
   final PaymentDetails mainPaymentDetails;
   final String orderType;
   final List<CartItem> cartItems;
+  final double totalAmount;
 
   const NetsClickLoaderPage({
     super.key,
     required this.mainPaymentDetails,
     required this.orderType,
     required this.cartItems,
+    required this.totalAmount,
   });
 
   @override
@@ -23,6 +25,7 @@ class NetsClickLoaderPage extends StatelessWidget {
           mainPaymentDetails: mainPaymentDetails,
           orderType: orderType,
           cartItems: cartItems,
+          totalAmount: totalAmount,
       ),
     );
   }

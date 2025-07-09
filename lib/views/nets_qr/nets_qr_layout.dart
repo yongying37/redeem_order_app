@@ -3,21 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/nets_qr/nets_qr_bloc.dart';
 import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
+import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/models/cart_item_model.dart';
-import 'package:redeem_order_app/services/create_order_service.dart';
 import 'package:redeem_order_app/views/txn_nets_status/txn_nets_fail_status_page.dart';
 import 'package:redeem_order_app/views/txn_nets_status/txn_nets_success_status_page.dart';
 import 'package:redeem_order_app/views/home/home_page.dart';
 import 'package:redeem_order_app/utils/order_payload_util.dart';
+import 'package:redeem_order_app/services/create_order_service.dart';
+import 'package:redeem_order_app/services/record_order_service.dart';
 
 class NetsQrLayout extends StatefulWidget {
   final String orderType;
   final List<CartItem> cartItems;
+  final double totalAmount;
 
   const NetsQrLayout({
     Key? key,
     required this.orderType,
-    required this.cartItems
+    required this.cartItems,
+    required this.totalAmount,
   }) : super(key : key);
 
   @override
@@ -125,11 +129,12 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
   Widget build(BuildContext context) {
     return BlocListener<NetsQrBloc, NetsQrState>(
       listener: (context, state) async {
+        final userId = context.read<SessionBloc>().state.userId;
         if (state.isNetsQrCodeScanned == true) {
           if (state.isNetsQrPaymentSuccess) {
             try {
               final payload = OrderPayloadUtil.buildPayload(
-                  cartItems: [],
+                  cartItems: widget.cartItems,
                   orderType: widget.orderType,
               );
 
@@ -138,6 +143,17 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
               final retrievalRef = result['txn_retrieval_ref'];
 
               print('Order created: $txnId | Ref: $retrievalRef');
+
+              double roundedTotal = double.parse(widget.totalAmount.toStringAsFixed(2));
+
+              await RecordOrderService().submitOrderToDB(
+                  userId: userId,
+                  cartItems: widget.cartItems,
+                  paymentMethod: "NETs QR",
+                  paymentAmt: roundedTotal,
+                  pointsUsed: context.read<CartBloc>().state.pointsUsed,
+                  orderType: widget.orderType,
+              );
 
             } catch (e) {
               print('Order creation failed after NETS Payment: $e');

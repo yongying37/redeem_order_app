@@ -5,7 +5,6 @@ import 'package:redeem_order_app/models/cart_item_model.dart';
 import 'package:redeem_order_app/views/home/home_page.dart';
 import 'package:redeem_order_app/bloc/nets_click/nets_click_bloc.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
-import 'package:redeem_order_app/bloc/checkout/checkout_bloc.dart';
 import 'package:redeem_order_app/bloc/cart/cart_bloc.dart'; 
 import 'package:redeem_order_app/utils/config.dart';
 import 'package:redeem_order_app/utils/order_payload_util.dart';
@@ -16,12 +15,14 @@ class NetsClickLoaderLayout extends StatefulWidget {
   final PaymentDetails mainPaymentDetails;
   final String orderType;
   final List<CartItem> cartItems;
+  final double totalAmount;
 
   const NetsClickLoaderLayout({
     super.key,
     required this.mainPaymentDetails,
     required this.orderType,
     required this.cartItems,
+    required this.totalAmount,
   });
 
   @override
@@ -129,11 +130,13 @@ class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
 
             print('Order created!');
 
+            double roundedTotal = double.parse(widget.totalAmount.toStringAsFixed(2));
+
             await RecordOrderService().submitOrderToDB(
               userId: userId,
               cartItems: widget.cartItems,
-              paymentMethod: "Cash",
-              paymentAmt: context.read<CheckoutBloc>().state.total,
+              paymentMethod: "NETs Click",
+              paymentAmt: roundedTotal,
               pointsUsed: context.read<CartBloc>().state.pointsUsed,
               orderType: widget.orderType,
             );

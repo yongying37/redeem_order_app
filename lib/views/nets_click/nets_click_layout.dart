@@ -10,10 +10,12 @@ import 'package:redeem_order_app/widgets/bank_card_widget.dart';
 class NetsClickLayout extends StatefulWidget {
   final String orderType;
   final List<CartItem> cartItems;
+  final double totalAmount;
   const NetsClickLayout({
     super.key,
     required this.orderType,
     required this.cartItems,
+    required this.totalAmount,
   });
 
   @override
@@ -106,6 +108,7 @@ class _NetsClickLayoutState extends State<NetsClickLayout> {
             mainPaymentDetails: mainPaymentDetails,
             orderType: widget.orderType,
             cartItems: widget.cartItems,
+            totalAmount: widget.totalAmount,
         )));
   }
 

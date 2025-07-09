@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:redeem_order_app/bloc/checkout/checkout_bloc.dart';
 import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/models/cart_item_model.dart';
@@ -13,12 +12,14 @@ class CashCheckoutLayout extends StatefulWidget {
   final String orderNumber;
   final String orderType;
   final List<CartItem> cartItems;
+  final double totalAmount;
 
   const CashCheckoutLayout({
     Key? key,
     required this.orderNumber,
     required this.orderType,
     required this.cartItems,
+    required this.totalAmount,
   }) : super (key: key);
 
   @override
@@ -56,11 +57,13 @@ class _CashCheckoutLayoutState extends State<CashCheckoutLayout> {
 
       print ('Order created!');
 
+      double roundedTotal = double.parse(widget.totalAmount.toStringAsFixed(2));
+
       await RecordOrderService().submitOrderToDB(
           userId: userId,
           cartItems: widget.cartItems,
           paymentMethod: "Cash",
-          paymentAmt: context.read<CheckoutBloc>().state.total,
+          paymentAmt: roundedTotal,
           pointsUsed: context.read<CartBloc>().state.pointsUsed,
           orderType: widget.orderType,
       );

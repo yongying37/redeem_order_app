@@ -5,11 +5,13 @@ import 'nets_qr_layout.dart';
 class NetsQrPage extends StatelessWidget {
   final String orderType;
   final List<CartItem> cartItems;
+  final double totalAmount;
 
   const NetsQrPage({
     super.key,
     required this.orderType,
     required this.cartItems,
+    required this.totalAmount,
   });
 
   @override
@@ -17,7 +19,8 @@ class NetsQrPage extends StatelessWidget {
     return Scaffold(
       body: NetsQrLayout(
           orderType: orderType,
-          cartItems: cartItems
+          cartItems: cartItems,
+          totalAmount: totalAmount,
       ),
     );
   }

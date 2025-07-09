@@ -7,12 +7,14 @@ class CashCheckoutPage extends StatelessWidget {
   final String orderNumber;
   final String orderType;
   final List<CartItem> cartItems;
+  final double totalAmount;
 
   const CashCheckoutPage({
     Key? key,
     required this.orderNumber,
     required this.orderType,
     required this.cartItems,
+    required this.totalAmount,
   }) : super(key: key);
 
   @override
@@ -33,6 +35,7 @@ class CashCheckoutPage extends StatelessWidget {
           orderNumber: orderNumber,
           orderType: orderType,
           cartItems: cartItems,
+          totalAmount: totalAmount,
       ),
     );
   }

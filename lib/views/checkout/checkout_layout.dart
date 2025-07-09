@@ -135,7 +135,11 @@ class CheckoutLayout extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => BlocProvider(
                               create: (_) => NetsQrBloc(),
-                              child: NetsQrPage(orderType: orderType, cartItems: cartItems),
+                              child: NetsQrPage(
+                                  orderType: orderType,
+                                  cartItems: cartItems,
+                                  totalAmount: state.total,
+                              ),
                             ),
                           ),
                         );
@@ -149,6 +153,7 @@ class CheckoutLayout extends StatelessWidget {
                                   child: NetsClickPage(
                                       orderType: orderType,
                                       cartItems: cartItems,
+                                      totalAmount: state.total,
                                   ),
                                 )
                             )
@@ -162,6 +167,7 @@ class CheckoutLayout extends StatelessWidget {
                                   orderNumber: '01',
                                   orderType: orderType,
                                   cartItems: cartItems,
+                                  totalAmount: state.total,
                               ),
                             ),
                         );
