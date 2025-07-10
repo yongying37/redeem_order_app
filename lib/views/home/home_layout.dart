@@ -8,6 +8,7 @@ import 'package:redeem_order_app/views/volunteer/volunteer_organization_page.dar
 import 'package:redeem_order_app/views/profile/profile_page.dart';
 import 'package:redeem_order_app/views/cart/cart_page.dart';
 import 'package:redeem_order_app/views/login/login_page.dart';
+import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 
 class HomeLayout extends StatefulWidget {
   const HomeLayout({super.key});
@@ -19,21 +20,6 @@ class HomeLayout extends StatefulWidget {
 class _HomeLayoutState extends State<HomeLayout> {
   int _currentIndex = 0;
 
-  late final List <Widget> _screens;
-
-  @override
-  void initState() {
-    super.initState();
-    _screens = [
-      const HomeContent(),
-      const StallPage(),
-      const OrderPage(),
-      const VolunteerOrganizationPage(),
-      const ProfilePage(),
-    ];
-  }
-
-
   void updateCurrentIndex(int index) {
     setState(() {
       _currentIndex = index;
@@ -42,8 +28,21 @@ class _HomeLayoutState extends State<HomeLayout> {
 
   @override
   Widget build(BuildContext context) {
+    final profileState = context.watch<ProfileBloc>().state;
+    final userId = profileState.userId;
+
+    final List<Widget> screens = [
+      const HomeContent(),
+      const StallPage(),
+      userId != 0
+          ? OrderPage(userId: userId)
+          : const Center(child: Text("Please log in to view orders")),
+      const VolunteerOrganizationPage(),
+      const ProfilePage(),
+    ];
+
     return Scaffold(
-      body: SafeArea(child: _screens[_currentIndex]),
+      body: SafeArea(child: screens[_currentIndex]),
       bottomNavigationBar: CustomBottomNav(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -55,7 +54,6 @@ class _HomeLayoutState extends State<HomeLayout> {
     );
   }
 }
-
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
 

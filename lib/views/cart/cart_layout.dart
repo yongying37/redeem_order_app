@@ -3,17 +3,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
 import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
 import 'package:redeem_order_app/views/checkout/checkout_page.dart';
+import 'package:redeem_order_app/models/cart_item_model.dart';
+import 'package:redeem_order_app/models/order_history_model.dart';
 
 class CartLayout extends StatefulWidget {
   final bool supportsDinein;
   final bool supportsTakeaway;
   final String stallName;
+  final OrderHistory? prefilledProduct;
+  final String? prefilledOrderType;
 
   const CartLayout({
     super.key,
     required this.supportsDinein,
     required this.supportsTakeaway,
     required this.stallName,
+    this.prefilledProduct,
+    this.prefilledOrderType,
   });
 
   @override
@@ -22,6 +28,31 @@ class CartLayout extends StatefulWidget {
 
 class _CartLayoutState extends State<CartLayout> {
   int selectedDiscount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final product = widget.prefilledProduct;
+    final type = widget.prefilledOrderType;
+
+    if (product != null && type != null) {
+      // Set order type (Dine In or Takeaway)
+      context.read<OrderTypeBloc>().add(SelectOrderType(type));
+
+      // Add to cart if not already in it
+      context.read<CartBloc>().add(AddItem(
+        CartItem(
+          id: product.productName.hashCode.toString(),
+          name: product.productName,
+          price: product.productPrice,
+          quantity: 1,
+          imgUrl: product.productImage,
+        ),
+      ));
+    }
+  }
+
 
   void showRedeemDialog() {
     showDialog(

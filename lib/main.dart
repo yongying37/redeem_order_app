@@ -8,6 +8,8 @@ import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
 import 'package:redeem_order_app/bloc/nets_qr/nets_qr_bloc.dart';
 import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'package:redeem_order_app/bloc/checkout/checkout_bloc.dart';
+import 'package:redeem_order_app/bloc/order_history/orderhistory_bloc.dart';
+import 'package:redeem_order_app/services/order_history_service.dart';
 import 'package:redeem_order_app/views/home/home_page.dart';
 
 void main() async {
@@ -24,6 +26,7 @@ void main() async {
         BlocProvider(create: (context) => CheckoutBloc(cartBloc: context.read<CartBloc>())),
         BlocProvider(create: (_) => NetsClickBloc()),
         BlocProvider(create: (_) => ProfileBloc()),
+        BlocProvider(create: (_) => OrderHistoryBloc(OrderHistoryService())),
       ],
       child: MyApp(),
     ),

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'order_layout.dart';
 
 class OrderPage extends StatelessWidget {
-  const OrderPage({super.key});
+  final int userId;
+  const OrderPage({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: OrderLayout(),
+    return Scaffold(
+      body: OrderLayout(userId: userId),
     );
   }
 }
