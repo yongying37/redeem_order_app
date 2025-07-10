@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:redeem_order_app/models/volunteer_activity_model.dart';
 import 'package:redeem_order_app/services/volunteer_activity_service.dart';
 
+import 'volunteer_activity_details_page.dart';
+
 class VolunteerActivityLayout extends StatefulWidget {
   final String organizationId;
   final String organizationName;
@@ -63,13 +65,17 @@ class _VolunteerActivityLayoutState extends State<VolunteerActivityLayout> {
                     activity.title,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text(activity.description),
                   trailing: SizedBox(
                     width: 80,
                     height: 32,
                     child: OutlinedButton(
                       onPressed: () {
-                        // You can add navigation or registration logic here
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VolunteerActivityDetailsPage(activity: activity),
+                          ),
+                        );
                       },
                       style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.zero,
@@ -79,7 +85,7 @@ class _VolunteerActivityLayoutState extends State<VolunteerActivityLayout> {
                         ),
                         side: const BorderSide(color: Colors.black),
                       ),
-                      child: const Text("Register", style: TextStyle(color: Colors.black)),
+                      child: const Text("Learn More", style: TextStyle(color: Colors.black)),
                     ),
                   ),
 
