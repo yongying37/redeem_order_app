@@ -34,4 +34,48 @@ class VolunteerActivityService {
       return [];
     }
   }
+
+  static Future<bool> registerForActivity(int userId, int activityId) async {
+    final uri = Uri.parse('$baseUrl/common/social-ewallet/activities/register');
+
+    try {
+      final response = await http.post(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'account_user_id': userId,
+          'volunteer_activity_id': activityId,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        return true;
+      } else {
+        print('Failed to register: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      print('Exception while registering: $e');
+      throw Exception('Failed to register for activity');
+    }
+  }
+
+  static Future<List<VolunteerActivity>> fetchRegisteredActivities(int userId) async {
+    final uri = Uri.parse('$baseUrl/common/social-ewallet/volunteers/$userId/activities');
+
+    try {
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data.map<VolunteerActivity>((json) => VolunteerActivity.fromJson(json)).toList();
+      } else {
+        print('Failed to load registered activities: ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print('Error fetching registered activities: $e');
+      return [];
+    }
+  }
+
 }

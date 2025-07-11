@@ -7,6 +7,7 @@ class VolunteerActivity {
   final int duration;
   final int targetAmount;
   final String type;
+  final String locationName;
   final String orgId;
   final String orgName;
 
@@ -19,6 +20,7 @@ class VolunteerActivity {
     required this.duration,
     required this.targetAmount,
     required this.type,
+    required this.locationName,
     required this.orgId,
     required this.orgName,
   });
@@ -33,6 +35,7 @@ class VolunteerActivity {
       duration: json['activity_duration'] ?? 0,
       targetAmount: json['activity_target_amt'] ?? 0,
       type: json['activity_type'] ?? '',
+      locationName: json['location_name'] ?? '',
       orgId: json['org_id'] ?? '',
       orgName: json['org_name'] ?? '',
     );

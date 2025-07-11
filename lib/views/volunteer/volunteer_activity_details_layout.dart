@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:redeem_order_app/models/volunteer_activity_model.dart';
+import 'package:redeem_order_app/views/volunteer/volunteer_activity_register_page.dart';
 
 class VolunteerActivityDetailsLayout extends StatelessWidget {
   final VolunteerActivity activity;
@@ -54,6 +55,16 @@ class VolunteerActivityDetailsLayout extends StatelessWidget {
           const SizedBox(height: 8),
           Row(
             children: [
+              const Icon(Icons.location_on, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(activity.locationName),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
               const Icon(Icons.star, size: 20),
               const SizedBox(width: 8),
               Text("Target: ${activity.targetAmount} points"),
@@ -71,7 +82,12 @@ class VolunteerActivityDetailsLayout extends StatelessWidget {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                // Implement registration logic here
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => VolunteerActivityRegisterPage(activity: activity),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),

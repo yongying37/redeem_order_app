@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
+import 'package:redeem_order_app/models/volunteer_activity_model.dart';
+import 'package:redeem_order_app/services/volunteer_activity_service.dart';
 import 'package:redeem_order_app/views/profile/update_profile_page.dart';
 
 class ProfileLayout extends StatelessWidget {
@@ -9,6 +11,8 @@ class ProfileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userId = context.read<SessionBloc>().state.userId;
+
     return SafeArea(
       child: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
@@ -45,7 +49,7 @@ class ProfileLayout extends StatelessWidget {
                           );
 
                           if (result == true) {
-                            // Profile updated, do something if needed
+                            // Profile updated
                           }
                         } else if (value == 'logout') {
                           context.read<SessionBloc>().add(Logout());
@@ -72,6 +76,48 @@ class ProfileLayout extends StatelessWidget {
                 const SizedBox(height: 10),
                 Center(
                   child: Text("${state.points} points", style: const TextStyle(fontSize: 18)),
+                ),
+                const SizedBox(height: 30),
+
+                const Text(
+                  'Registered Volunteer Activities',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+
+                FutureBuilder<List<VolunteerActivity>>(
+                  future: VolunteerActivityService.fetchRegisteredActivities(userId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Text('No registered volunteer activities.'),
+                      );
+                    }
+
+                    final activities = snapshot.data!;
+
+                    return Column(
+                      children: activities.map((activity) {
+                        return Card(
+                          child: ListTile(
+                            leading: Image.network(
+                              activity.imageUrl,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            ),
+                            title: Text(activity.title),
+                            subtitle: Text('${activity.orgName} • ${activity.datetime.split("T").first}'),
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  },
                 ),
               ],
             ),
