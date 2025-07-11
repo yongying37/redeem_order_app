@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
+import 'package:redeem_order_app/views/home/home_page.dart';
 import 'package:redeem_order_app/views/profile/update_profile_page.dart';
 
 class ProfileLayout extends StatelessWidget {
@@ -49,6 +50,12 @@ class ProfileLayout extends StatelessWidget {
                           }
                         } else if (value == 'logout') {
                           context.read<SessionBloc>().add(Logout());
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomePage(),
+                            ),
+                          );
                         }
                       },
                       itemBuilder: (BuildContext context) => [
