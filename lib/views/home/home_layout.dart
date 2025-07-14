@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
+import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
+import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/widgets/custom_bottom_nav.dart';
 import 'package:redeem_order_app/views/stall/stall_page.dart';
 import 'package:redeem_order_app/views/order_history/order_page.dart';
@@ -8,7 +10,6 @@ import 'package:redeem_order_app/views/volunteer/volunteer_organization_page.dar
 import 'package:redeem_order_app/views/profile/profile_page.dart';
 import 'package:redeem_order_app/views/cart/cart_page.dart';
 import 'package:redeem_order_app/views/login/login_page.dart';
-import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 
 class HomeLayout extends StatefulWidget {
   const HomeLayout({super.key});
@@ -90,14 +91,28 @@ class HomeContent extends StatelessWidget {
                   child: const Icon(Icons.shopping_cart, size: 28),
                 ),
                 const SizedBox(width: 16),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                BlocBuilder<SessionBloc, SessionState>(
+                  builder: (context, sessionState) {
+                    final isLoggedIn = sessionState.userId != 0;
+
+                    return GestureDetector(
+                      onTap: () {
+                        if (isLoggedIn) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ProfilePage()),
+                          );
+                        }
+                        else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const LoginPage()),
+                          );
+                        }
+                      },
+                      child: Icon(isLoggedIn ? Icons.account_circle : Icons.login, size: 28),
                     );
                   },
-                  child: const Icon(Icons.login, size: 28),
                 ),
                 const SizedBox(width: 8),
               ],
@@ -133,7 +148,7 @@ class HomeContent extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'Foodgle Hub',
+                      'SIT Earn and Redeem',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,

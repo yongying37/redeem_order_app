@@ -31,7 +31,7 @@ class _NetsClickLayoutState extends State<NetsClickLayout> {
   void initState() {
     super.initState();
     // Hardcoded values for now
-    _mainPaymentAmountController = TextEditingController(text: '1');
+    _mainPaymentAmountController = TextEditingController(text: widget.totalAmount.toStringAsFixed(2));
     _mainPaymentRecordIdController = TextEditingController(text: '1');
   }
 
@@ -66,6 +66,7 @@ class _NetsClickLayoutState extends State<NetsClickLayout> {
             ),
             TextFormField(
               controller: _mainPaymentAmountController,
+              readOnly: true,
               decoration: const InputDecoration(labelText: 'Amount'),
               keyboardType: TextInputType.number,
               inputFormatters: [

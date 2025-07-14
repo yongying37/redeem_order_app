@@ -35,7 +35,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     });
 
     on<ClearCart>((event, emit) {
-      emit(state.copyWith(cartItems: []));
+      emit(state.copyWith(cartItems: [], pointsUsed: 0));
     });
 
     on<RedeemPoints>((event, emit) {

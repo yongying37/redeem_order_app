@@ -77,11 +77,37 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<NetsQrBloc>(context).add(const RequestNetsQrEvent(
-      amount: 3,
-      txnId: 'sandbox_nets|m|8ff8e5b6-d43e-4786-8ac5-7accf8c5bd9b',
-      notifyMobile: 0,
-    ));
+    _startQrFlow();
+  }
+
+  Future<void> _startQrFlow() async {
+    try {
+      final payload = OrderPayloadUtil.buildPayload(
+        cartItems: widget.cartItems,
+        orderType: widget.orderType,
+      );
+
+      final result = await OrderService.createOrder(orderPayload: payload);
+      final txnId = result['txn_id'];
+      final retrievalRef = result['txn_retrieval_ref'];
+      final amtString = txnId.split('|')[5];
+      final parsedAmt = double.parse(amtString);
+
+      print('Order created: $txnId | Ref: $retrievalRef | Amount: $parsedAmt');
+
+      BlocProvider.of<NetsQrBloc>(context).add(RequestNetsQrEvent(
+        amount: parsedAmt,
+        txnId: txnId,
+        notifyMobile: 0,
+      ));
+
+    } catch (e) {
+      print('Failed to create order and request QR: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Order failed to start QR payment: $e')),
+      );
+      Navigator.pop(context);
+    }
   }
 
   Widget netsQrCode(NetsQrState state) {
@@ -130,28 +156,20 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
     return BlocListener<NetsQrBloc, NetsQrState>(
       listener: (context, state) async {
         final userId = context.read<SessionBloc>().state.userId;
+        final pointsUsed = context.read<CartBloc>().state.pointsUsed;
+        final pointsValue = pointsUsed / 100.0;
+        final netTotal = widget.totalAmount - pointsValue;
+        final roundedTotal = double.parse(netTotal.toStringAsFixed(2));
+
         if (state.isNetsQrCodeScanned == true) {
           if (state.isNetsQrPaymentSuccess) {
             try {
-              final payload = OrderPayloadUtil.buildPayload(
-                  cartItems: widget.cartItems,
-                  orderType: widget.orderType,
-              );
-
-              final result = await OrderService.createOrder(orderPayload: payload);
-              final txnId = result['txn_id'];
-              final retrievalRef = result['txn_retrieval_ref'];
-
-              print('Order created: $txnId | Ref: $retrievalRef');
-
-              double roundedTotal = double.parse(widget.totalAmount.toStringAsFixed(2));
-
               await RecordOrderService().submitOrderToDB(
                   userId: userId,
                   cartItems: widget.cartItems,
                   paymentMethod: "NETs QR",
                   paymentAmt: roundedTotal,
-                  pointsUsed: context.read<CartBloc>().state.pointsUsed,
+                  pointsUsed: pointsUsed,
                   orderType: widget.orderType,
               );
 
