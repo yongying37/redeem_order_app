@@ -15,6 +15,4 @@ class SetUserId extends SessionEvent {
   List<Object> get props => [userId];
 }
 
-class ClearSession extends SessionEvent {}
-
 class Logout extends SessionEvent {}

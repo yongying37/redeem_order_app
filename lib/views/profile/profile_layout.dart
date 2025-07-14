@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/views/home/home_page.dart';
@@ -53,6 +54,8 @@ class ProfileLayout extends StatelessWidget {
                             // Profile updated, do something if needed
                           }
                         } else if (value == 'logout') {
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.remove('loggedInUserId');
                           context.read<SessionBloc>().add(Logout());
                           Navigator.push(
                             context,

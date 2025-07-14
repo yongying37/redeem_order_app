@@ -10,10 +10,6 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
       emit(SessionState(userId: event.userId));
     });
 
-    on<ClearSession>((event, emit) {
-      emit(const SessionState(userId: 0)); // reset to guest
-    });
-
     on<Logout>((event, emit) {
       emit(const SessionState(userId: 0));
     });

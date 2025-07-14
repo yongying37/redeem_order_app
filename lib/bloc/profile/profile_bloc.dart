@@ -52,5 +52,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         cfmPassword: event.cfmPassword,
       ));
     });
+
+    on<DoNothing>((event, emit) {
+
+    });
   }
 }

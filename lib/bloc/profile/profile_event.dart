@@ -24,3 +24,5 @@ class UpdateProfile extends ProfileEvent {
     this.contactNumber,
   );
 }
+
+class DoNothing extends ProfileEvent {}

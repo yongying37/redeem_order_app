@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/services/auth_service.dart';
@@ -139,6 +140,11 @@ class _LoginLayoutState extends State<LoginLayout> {
       final user = result['user'];
       if (user != null && user['account_user_id'] != null) {
         final int userId = user['account_user_id'];
+
+        if (_stayLoggedIn) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setInt('loggedInUserId', userId);
+        }
 
         context.read<ProfileBloc>().add(LoadProfile(userId));
         context.read<SessionBloc>().add(SetUserId(userId));
