@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/models/merchant_model.dart';
 import 'package:redeem_order_app/services/merchant_service.dart';
 import 'package:redeem_order_app/views/ordertype_stalls/ordertype_page.dart';
+import 'package:redeem_order_app/bloc/session/session_bloc.dart';
+import 'package:redeem_order_app/views/login/login_page.dart';
 
 class StallLayout extends StatefulWidget {
   const StallLayout({super.key});
@@ -39,7 +42,20 @@ class _StallLayoutState extends State<StallLayout> {
             final merchant = merchants[index];
             print('Merchant: name=${merchant.name}, unit=${merchant.unitNo}, image=${merchant.imageUrl}');
             return InkWell(
-              onTap: () {
+              onTap: () async {
+                final sessionState = context.read<SessionBloc>().state;
+                final isLoggedIn = sessionState.userId != 0;
+
+                if (!isLoggedIn) {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+
+                  final updatedSession = context.read<SessionBloc>().state;
+                  if (updatedSession.userId == 0) return;
+                }
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(

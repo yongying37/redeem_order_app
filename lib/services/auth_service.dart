@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../models/signup_model.dart';
-import '../models/profile_model.dart';
+import 'package:redeem_order_app/models/signup_model.dart';
+import 'package:redeem_order_app/models/profile_model.dart';
 
 class AuthService {
   final String baseUrl = 'http://10.0.2.2:8000/api/v1';
@@ -142,5 +142,4 @@ class AuthService {
       return false;
     }
   }
-
 }
