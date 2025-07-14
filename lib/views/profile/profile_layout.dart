@@ -63,6 +63,9 @@ class ProfileLayout extends StatelessWidget {
                               builder: (context) => const HomePage(),
                             ),
                           );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Successfully Logged Out.')),
+                          );
                         }
                       },
                       itemBuilder: (BuildContext context) => [
