@@ -79,7 +79,7 @@ class _ProductTileState extends State<ProductTile> {
                     cartBloc.add(
                       AddItem(
                         CartItem(
-                          id: UniqueKey().toString(),
+                          id: '${widget.product.productId}_${widget.product.merchantId}',
                           name: widget.product.productName,
                           price: widget.product.productPrice,
                           imgUrl: widget.product.productUrl,
