@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:redeem_order_app/models/volunteer_activity_model.dart';
 import 'package:redeem_order_app/views/volunteer/volunteer_activity_register_page.dart';
+import 'package:redeem_order_app/bloc/session/session_bloc.dart';
+import 'package:redeem_order_app/views/login/login_page.dart';
 
 class VolunteerActivityDetailsLayout extends StatelessWidget {
   final VolunteerActivity activity;
@@ -82,12 +85,25 @@ class VolunteerActivityDetailsLayout extends StatelessWidget {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => VolunteerActivityRegisterPage(activity: activity),
-                  ),
-                );
+                final userId = context.read<SessionBloc>().state.userId;
+
+                if (userId == 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Please log in to register for this activity")),
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const LoginPage()),
+                  );
+                } else {
+                  // User is logged in
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => VolunteerActivityRegisterPage(activity: activity),
+                    ),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),

@@ -7,21 +7,24 @@ import 'package:redeem_order_app/models/order_history_model.dart';
 import 'package:redeem_order_app/bloc/order_history/orderhistory_event.dart';
 import 'package:redeem_order_app/services/order_history_service.dart';
 import 'package:redeem_order_app/views/cart/cart_page.dart';
+import 'package:redeem_order_app/views/login/login_page.dart';
 
 class OrderLayout extends StatelessWidget {
   final int userId;
   const OrderLayout({super.key, required this.userId});
 
+
   @override
   Widget build(BuildContext context) {
     if (userId == 0) {
-      return const SafeArea(
-        child: Center(
-          child: Text(
-            "Please log in to view your order history.",
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const LoginPage()),
+        );
+      });
+
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 

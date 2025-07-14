@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
@@ -37,9 +38,57 @@ class _HomeLayoutState extends State<HomeLayout> {
       const StallPage(),
       userId != 0
           ? OrderPage(userId: userId)
-          : const Center(child: Text("Please log in to view orders")),
+          : Center(
+        child: RichText(
+          text: TextSpan(
+            style: const TextStyle(color: Colors.black, fontSize: 16),
+            children: [
+              const TextSpan(text: "Please "),
+              TextSpan(
+                text: "log in",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                    );
+                  },
+              ),
+              const TextSpan(text: " to view orders"),
+            ],
+          ),
+        ),
+      ),
       const VolunteerOrganizationPage(),
-      const ProfilePage(),
+      userId != 0
+          ? ProfilePage(userId: userId)
+          : Center(
+        child: RichText(
+          text: TextSpan(
+            style: const TextStyle(color: Colors.black, fontSize: 16),
+            children: [
+              const TextSpan(text: "Please "),
+              TextSpan(
+                text: "log in",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                    );
+                  },
+              ),
+              const TextSpan(text: " to view your profile"),
+            ],
+          ),
+        ),
+      ),
     ];
 
     return Scaffold(
@@ -74,7 +123,6 @@ class HomeContent extends StatelessWidget {
                 const SizedBox(width: 8),
                 GestureDetector(
                   onTap: () {
-                    // Set default order type for cart
                     context.read<OrderTypeBloc>().add(const SelectOrderType('Dine In'));
 
                     Navigator.push(
@@ -100,7 +148,12 @@ class HomeContent extends StatelessWidget {
                         if (isLoggedIn) {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const ProfilePage()),
+                            MaterialPageRoute(
+                              builder: (context) {
+                                final userId = context.read<SessionBloc>().state.userId;
+                                return ProfilePage(userId: userId);
+                              },
+                            ),
                           );
                         }
                         else {

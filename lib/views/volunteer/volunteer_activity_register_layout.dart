@@ -17,15 +17,22 @@ class _VolunteerActivityRegisterLayoutState extends State<VolunteerActivityRegis
   bool _isLoading = false;
 
   Future<void> _register() async {
+    final userId = context.read<SessionBloc>().state.userId;
+
+    if (userId == 0) {
+      // Not logged in, redirect to login page
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please log in to register for an activity.')),
+      );
+
+      // Navigate to login page
+      Navigator.pushNamed(context, '/login');
+      return;
+    }
+
     setState(() => _isLoading = true);
 
     try {
-      final userId = context.read<SessionBloc>().state.userId;
-
-      if (userId == 0) {
-        throw Exception('You must log in to register for an activity.');
-      }
-
       final success = await VolunteerActivityService.registerForActivity(
         userId,
         widget.activity.activityId,

@@ -51,7 +51,6 @@ class ProfileLayout extends StatelessWidget {
                           );
 
                           if (result == true) {
-                            // Profile updated, do something if needed
                           }
                         } else if (value == 'logout') {
                           final prefs = await SharedPreferences.getInstance();
@@ -92,7 +91,6 @@ class ProfileLayout extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
 
-                // 🔽 Registered Volunteer Activities Section
                 const Text(
                   'Registered Volunteer Activities',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
