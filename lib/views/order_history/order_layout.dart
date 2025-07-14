@@ -12,6 +12,64 @@ class OrderLayout extends StatelessWidget {
   final int userId;
   const OrderLayout({super.key, required this.userId});
 
+  @override
+  Widget build(BuildContext context) {
+    if (userId == 0) {
+      return const SafeArea(
+        child: Center(
+          child: Text(
+            "Please log in to view your order history.",
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      );
+    }
+
+    return BlocProvider(
+      create: (_) => OrderHistoryBloc(OrderHistoryService())..add(FetchOrderHistory(userId)),
+      child: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            const Text(
+              "Order History",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: BlocBuilder<OrderHistoryBloc, OrderHistoryState>(
+                builder: (context, state) {
+                  if (state is OrderHistoryLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is OrderHistoryLoaded) {
+                    if (state.orders.isEmpty) {
+                      return const Center(child: Text("No past orders."));
+                    }
+
+                    return ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: state.orders.length,
+                      itemBuilder: (context, index) {
+                        return _buildOrderCard(state.orders[index], context);
+                      },
+                    );
+                  } else if (state is OrderHistoryError) {
+                    return Center(child: Text(state.message));
+                  }
+                  return const SizedBox();
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildOrderCard(OrderHistory order, BuildContext context) {
     final formattedDate = DateFormat('dd MMM yyyy').format(order.orderDatetime);
 
@@ -140,49 +198,6 @@ class OrderLayout extends StatelessWidget {
           supportsTakeaway: true,
           prefilledProduct: order,
           prefilledOrderType: orderType,
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => OrderHistoryBloc(OrderHistoryService())..add(FetchOrderHistory(userId)),
-      child: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            const Text(
-              "Order History",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: BlocBuilder<OrderHistoryBloc, OrderHistoryState>(
-                builder: (context, state) {
-                  if (state is OrderHistoryLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is OrderHistoryLoaded) {
-                    if (state.orders.isEmpty) {
-                      return const Center(child: Text("No past orders."));
-                    }
-
-                    return ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: state.orders.length,
-                      itemBuilder: (context, index) {
-                        return _buildOrderCard(state.orders[index], context);
-                      },
-                    );
-                  } else if (state is OrderHistoryError) {
-                    return Center(child: Text(state.message));
-                  }
-                  return const SizedBox();
-                },
-              ),
-            ),
-          ],
         ),
       ),
     );
