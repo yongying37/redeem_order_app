@@ -1,7 +1,10 @@
 part of 'cash_checkout_bloc.dart';
 
-sealed class CashCheckoutEvent {
+sealed class CashCheckoutEvent extends Equatable {
   const CashCheckoutEvent();
+
+  @override
+  List<Object?> get props => [];
 }
 
 class SubmitCashOrderEvent extends CashCheckoutEvent {
