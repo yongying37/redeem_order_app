@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/views/product/product_page.dart';
 import 'package:redeem_order_app/views/stall/stall_page.dart';
+import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
 import 'ordertype_layout.dart';
 
 class OrderTypesPage extends StatelessWidget {
@@ -38,8 +40,8 @@ class OrderTypesPage extends StatelessWidget {
         supportsDinein: supportsDinein,
         supportsTakeaway: supportsTakeaway,
         stallName: stallName,
-        onContinue: (String selectedOption) {
-          Navigator.push(
+        onContinue: (String selectedOption) async {
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ProductPage(
@@ -49,6 +51,10 @@ class OrderTypesPage extends StatelessWidget {
               ),
             ),
           );
+
+          if (result == 'reset_order_type') {
+            context.read<OrderTypeBloc>().add(const ResetOrderType());
+          }
         },
       ),
     );

@@ -18,5 +18,9 @@ class OrderTypeBloc extends Bloc<OrderTypeEvent, OrderTypeState> {
         emit(state.copyWith(status: OrderTypeStatus.confirmed));
       }
     });
+
+    on<ResetOrderType>((event, emit) {
+      emit(const OrderTypeState());
+    });
   }
 }

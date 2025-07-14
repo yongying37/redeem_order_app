@@ -12,3 +12,7 @@ class SelectOrderType extends OrderTypeEvent {
 class CfmOrderType extends OrderTypeEvent {
   const CfmOrderType();
 }
+
+class ResetOrderType extends OrderTypeEvent {
+  const ResetOrderType();
+}

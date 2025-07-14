@@ -4,7 +4,6 @@ import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
 import 'package:redeem_order_app/models/product_model.dart';
 import 'package:redeem_order_app/services/product_service.dart';
 import 'package:redeem_order_app/views/cart/cart_page.dart';
-import 'package:redeem_order_app/views/stall/stall_page.dart';
 import 'product_tile.dart';
 
 class ProductPage extends StatefulWidget {
@@ -40,10 +39,7 @@ class _ProductPageState extends State<ProductPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => StallPage()),
-            );
+            Navigator.pop(context, 'reset_order_type');
           },
         ),
         actions: [
