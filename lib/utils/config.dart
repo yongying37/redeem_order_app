@@ -9,12 +9,13 @@ class Config {
 
   bool get debugMode => true;
 
-  static const String commonUrl = 'https://sandbox.nets.openapipaas.com';
+  // Previous
+  // static const String commonUrl = 'https://sandbox.nets.openapipaas.com';
+  static const String commonUrl = 'https://stg.foodservices.openapipaas.com';
 
   static final ApiUrls apiUrls = ApiUrls();
 
   String get sandboxApiKey => dotenv.env["SANDBOX_API_KEY"]!;
-
   String get sandboxProjectId => dotenv.env["SANDBOX_PROJECT_ID"]!;
 
   String get devProjectId => dotenv.env["DEVELOPER_PROJECT_ID"]!;

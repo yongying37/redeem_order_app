@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
 import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
+import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'package:redeem_order_app/views/checkout/checkout_page.dart';
 import 'package:redeem_order_app/models/cart_item_model.dart';
 import 'package:redeem_order_app/models/order_history_model.dart';
@@ -27,7 +28,7 @@ class CartLayout extends StatefulWidget {
 }
 
 class _CartLayoutState extends State<CartLayout> {
-  int selectedDiscount = 0;
+  int tempSelectedDis = 0;
 
   @override
   void initState() {
@@ -48,79 +49,88 @@ class _CartLayoutState extends State<CartLayout> {
           price: product.productPrice,
           quantity: 1,
           imgUrl: product.productImage,
+          productId: product.productId,
+          merchantId: product.merchantId,
         ),
       ));
     }
   }
 
-
   void showRedeemDialog() {
+    final availablePoints = context.read<ProfileBloc>().state.points;
+    tempSelectedDis = 0;
+
     showDialog(
       context: context,
       builder: (context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text("Redeem Points",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                const SizedBox(height: 4),
-                const Text("200 points available",
-                    style: TextStyle(color: Colors.grey)),
-                const SizedBox(height: 20),
-                _buildRedeemOption("\$1 off", 100),
-                _buildRedeemOption("\$2 off", 200),
-                _buildRedeemOption("\$3 off", 300),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<CartBloc>().add(RedeemPoints(selectedDiscount));
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    minimumSize: const Size(double.infinity, 50),
-                  ),
-                  child: const Text("Redeem Now"),
-                )
-              ],
-            ),
-          ),
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return Dialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text("Redeem Points",
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                    const SizedBox(height: 4),
+                    Text("$availablePoints points available",
+                          style: TextStyle(color: Colors.grey)),
+                    const SizedBox(height: 20),
+                    _buildRedeemOption("\$1 off", 100, availablePoints, setStateDialog),
+                    _buildRedeemOption("\$2 off", 200, availablePoints, setStateDialog),
+                    _buildRedeemOption("\$3 off", 300, availablePoints, setStateDialog),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: tempSelectedDis <= availablePoints && tempSelectedDis > 0 ? () {
+                        context.read<CartBloc>().add(RedeemPoints(tempSelectedDis));
+                        Navigator.pop(context);
+                      } : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
+                      child: const Text("Redeem Now"),
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );
   }
 
-  Widget _buildRedeemOption(String label, int points) {
+  Widget _buildRedeemOption(String label, int points, int availablePoints, void Function(void Function()) setStateDialog) {
+    final isDisabled = points > availablePoints;
+
     return ListTile(
       shape: RoundedRectangleBorder(
         side: BorderSide(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(12),
       ),
-      title: Text(label),
+      title: Text(label, style: TextStyle(color: isDisabled ? Colors.grey : Colors.black,
+      fontWeight: isDisabled ? FontWeight.normal : FontWeight.bold)),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text("$points points"),
+          Text("$points points", style: TextStyle(color: isDisabled ? Colors.grey : Colors.black)),
           Radio<int>(
             value: points,
-            groupValue: selectedDiscount,
-            onChanged: (value) {
-              setState(() {
-                selectedDiscount = value!;
+            groupValue: tempSelectedDis,
+            onChanged: isDisabled ? null : (value) {
+              setStateDialog(() {
+                tempSelectedDis = value!;
               });
-              Navigator.pop(context);
-              showRedeemDialog();
             },
           )
         ],
       ),
-      onTap: () {
-        setState(() {
-          selectedDiscount = points;
+      onTap: isDisabled ? null : () {
+        setStateDialog(() {
+          tempSelectedDis = points;
         });
         Navigator.pop(context);
         showRedeemDialog();
@@ -290,12 +300,12 @@ class _CartLayoutState extends State<CartLayout> {
               ListTile(
                 leading: const Icon(Icons.attach_money),
                 title: Text(
-                  selectedDiscount > 0
+                  state.pointsUsed > 0
                       ? 'Offer Applied!'
                       : 'Enjoy discounts with your points',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: selectedDiscount > 0 ? Colors.green.shade600 : Colors.black,
+                    color: state.pointsUsed > 0 ? Colors.green.shade600 : Colors.black,
                   ),
                 ),
                 onTap: showRedeemDialog,
@@ -313,9 +323,9 @@ class _CartLayoutState extends State<CartLayout> {
                           style:
                           const TextStyle(fontSize: 14, color: Colors.red, fontWeight: FontWeight.bold,),
                         ),
-                        if (selectedDiscount > 0)
+                        if (state.pointsUsed > 0)
                           Text(
-                            'Saved \$${(selectedDiscount / 100).toStringAsFixed(2)}',
+                            'Saved \$${(state.pointsUsed / 100).toStringAsFixed(2)}',
                             style: TextStyle(
                                 fontSize: 14, color: Colors.green.shade600,),
                           ),

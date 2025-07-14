@@ -164,7 +164,6 @@ class CheckoutLayout extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (_) => CashCheckoutPage(
-                                  orderNumber: '01',
                                   orderType: orderType,
                                   cartItems: cartItems,
                                   totalAmount: state.total,

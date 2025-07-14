@@ -6,15 +6,16 @@ import 'package:http/http.dart' as http;
 import 'package:redeem_order_app/utils/config.dart';
 import 'package:redeem_order_app/utils/common_enum.dart';
 import 'package:redeem_order_app/utils/logger.dart';
+import 'package:redeem_order_app/utils/hmac_util.dart';
 
 class NetsHttpClient extends WidgetsBindingObserver {
   static const String _baseUrl = Config.commonUrl;
   static const Duration _httpTimeout = Duration(minutes: 1);
 
-  static final Map<String, String> _apiHeader = {
+  /*static final Map<String, String> _apiHeader = {
     'Content-Type': 'application/json',
-    'api-key': Config().sandboxApiKey,
-    'project-id': Config().sandboxProjectId,
+    'api-key': Config().devApiKey,
+    'project-id': Config().devProjectId,
   };
 
   static Map<String, String> _httpHeaders({bool sse = false}) {
@@ -24,21 +25,37 @@ class NetsHttpClient extends WidgetsBindingObserver {
       headers['Connection'] = 'keep-alive';
     }
     return headers;
+  }*/
+
+  static Map<String, String> _generateHmacHeaders({
+    required String method,
+    required Uri uri,
+    Map<String, dynamic> requestBody = const {},
+  }) {
+    return HmacUtil.generateHeaders(
+        apiKey: Config().devApiKey,
+        projectId: Config().devProjectId,
+        platformSyscode: Config().devPlatformSyscode.toString(),
+        secretKey: Config().devSecretKey,
+        requestMethod: method,
+        requestUrl: uri.toString(),
+        requestBody: jsonEncode(requestBody),
+    );
   }
 
   static final http.Client _sseHttpClient = http.Client();
   static StreamSubscription<String>? _sseSubscription;
 
-  static Future<Map<String, String>> _authHeaders({required String method, required Uri url, Map<String, dynamic> requestBody = const {}}) async {
+  /*static Future<Map<String, String>> _authHeaders({required String method, required Uri url, Map<String, dynamic> requestBody = const {}}) async {
     final headers = Map<String, String>.from(_apiHeader);
     return headers;
-  }
+  }*/
 
   // Generic GET request
   static Future<dynamic> get(String endpoint, {Duration? timeout, bool useLogger = false}) async {
     final uri = Uri.parse('$_baseUrl$endpoint');
     //final headers = _httpHeaders(sse: false);
-    final headers = await _authHeaders(method: RequestType.GET.stringValue, url: uri);
+    final headers = await _generateHmacHeaders(method: RequestType.GET.stringValue, uri: uri);
     if (useLogger) Logger.d(uri.toString(), requestType: RequestType.GET, tag: 'NetsHttpClient.get');
     final response = await http.get(uri, headers: headers).timeout(timeout ?? _httpTimeout);
     return httpResponseHandler(response);
@@ -47,7 +64,7 @@ class NetsHttpClient extends WidgetsBindingObserver {
   // Generic POST request
   static Future<dynamic> post(String endpoint, {Map<String, dynamic> requestBody = const {}, Duration? timeout, bool useLogger = false}) async {
     final uri = Uri.parse('$_baseUrl$endpoint');
-    final headers = await _authHeaders(method: RequestType.GET.stringValue, url: uri, requestBody: requestBody);
+    final headers = await _generateHmacHeaders(method: RequestType.POST.stringValue, uri: uri, requestBody: requestBody);
     if (useLogger) Logger.d(uri.toString(), requestType: RequestType.POST, tag: 'NetsHttpClient.post');
     final response = await http.post(uri, headers: headers, body: jsonEncode(requestBody)).timeout(timeout ?? _httpTimeout);
     return httpResponseHandler(response);
@@ -56,7 +73,7 @@ class NetsHttpClient extends WidgetsBindingObserver {
   // Generic PUT request
   static Future<dynamic> put(String endpoint, {Map<String, dynamic> requestBody = const {}, Duration? timeout, bool useLogger = false}) async {
     final uri = Uri.parse('$_baseUrl$endpoint');
-    final headers = await _authHeaders(method: RequestType.PUT.stringValue, url: uri, requestBody: requestBody);
+    final headers = await _generateHmacHeaders(method: RequestType.PUT.stringValue, uri: uri, requestBody: requestBody);
     if (useLogger) Logger.d(uri.toString(), requestType: RequestType.PUT, tag: 'NetsHttpClient.put');
     final response = await http.put(uri, headers: headers, body: jsonEncode(requestBody)).timeout(timeout ?? _httpTimeout);
     return httpResponseHandler(response);
@@ -65,7 +82,7 @@ class NetsHttpClient extends WidgetsBindingObserver {
   // Generic DELETE request
   static Future<dynamic> delete(String endpoint, {Map<String, dynamic> requestBody = const {}, Duration? timeout, bool useLogger = false}) async {
     final uri = Uri.parse('$_baseUrl$endpoint');
-    final headers = await _authHeaders(method: RequestType.DELETE.stringValue, url: uri, requestBody: requestBody);
+    final headers = await _generateHmacHeaders(method: RequestType.DELETE.stringValue, uri: uri, requestBody: requestBody);
     if (useLogger) Logger.d(uri.toString(), requestType: RequestType.DELETE, tag: 'NetsHttpClient.delete');
     final response = await http.delete(uri, headers: headers, body: jsonEncode(requestBody)).timeout(timeout ?? _httpTimeout);
     return httpResponseHandler(response);
@@ -76,12 +93,21 @@ class NetsHttpClient extends WidgetsBindingObserver {
         required Function(String) onMessage,
         int maxRetries = 0,
       }) async {
-    final headers = _httpHeaders(sse: true);
+    final uri = Uri.parse('$_baseUrl$endpoint');
+    final headers = HmacUtil.generateHeaders(
+      apiKey: Config().devApiKey,
+      projectId: Config().devProjectId,
+      platformSyscode: Config().devPlatformSyscode.toString(),
+      secretKey: Config().devSecretKey,
+      requestMethod: RequestType.GET.stringValue,
+      requestUrl: uri.toString(),
+      requestBody: '{}',
+    );
     int retryCount = 0;
 
     // Function to handle the SSE connection
     Future<void> connect() async {
-      final request = http.Request('GET', Uri.parse('$_baseUrl$endpoint'));
+      final request = http.Request('GET', uri);
       request.headers.addAll(headers);
 
       final response = await _sseHttpClient.send(request);
