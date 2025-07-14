@@ -5,6 +5,7 @@ import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/services/auth_service.dart';
 import 'package:redeem_order_app/views/home/home_page.dart';
 import 'package:redeem_order_app/views/signup/signup_page.dart';
+import 'package:redeem_order_app/views/login/forget_password_page.dart';
 
 class LoginLayout extends StatefulWidget {
   const LoginLayout({super.key});
@@ -40,6 +41,19 @@ class _LoginLayoutState extends State<LoginLayout> {
 
           _buildInputField(Icons.lock, 'Password', _passwordController, obscure: true),
           const SizedBox(height: 15),
+
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ForgotPasswordPage()),
+                );
+              },
+              child: const Text("Forgot Password?"),
+            ),
+          ),
 
           CheckboxListTile(
             title: const Text("Stay logged in"),

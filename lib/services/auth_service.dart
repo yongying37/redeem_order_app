@@ -114,4 +114,33 @@ class AuthService {
       return false;
     }
   }
+
+  Future<bool> resetPassword(String email, String newPassword) async {
+    final url = Uri.parse('$baseUrl/accounts/users/reset-password');
+
+    final body = jsonEncode({
+      'email': email,
+      'new_password': newPassword,
+    });
+
+    print('Sending POST to $url');
+    print('Payload: $body');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+
+      print('Reset status: ${response.statusCode}');
+      print('Reset body: ${response.body}');
+
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Password reset error: $e');
+      return false;
+    }
+  }
+
 }
