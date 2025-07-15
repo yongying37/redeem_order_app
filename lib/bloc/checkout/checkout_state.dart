@@ -16,7 +16,7 @@ class CheckoutState extends Equatable {
   });
 
   factory CheckoutState.initial() {
-    return CheckoutState(
+    return const CheckoutState(
       cartItems: [],
       pointsUsed: 0,
       total: 0.0,

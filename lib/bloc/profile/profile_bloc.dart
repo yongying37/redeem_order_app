@@ -53,8 +53,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       ));
     });
 
-    on<DoNothing>((event, emit) {
+    on<DoNothing>((event, emit) {});
 
+    on<ClearProfile>((event, emit) {
+      emit(ProfileState.initial());
     });
   }
 }

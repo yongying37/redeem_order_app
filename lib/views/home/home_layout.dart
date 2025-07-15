@@ -30,8 +30,8 @@ class _HomeLayoutState extends State<HomeLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final profileState = context.watch<ProfileBloc>().state;
-    final userId = profileState.userId;
+    final sessionState = context.watch<SessionBloc>().state;
+    final userId = sessionState.userId;
 
     final List<Widget> screens = [
       const HomeContent(),

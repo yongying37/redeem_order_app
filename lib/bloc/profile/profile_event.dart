@@ -26,3 +26,5 @@ class UpdateProfile extends ProfileEvent {
 }
 
 class DoNothing extends ProfileEvent {}
+
+class ClearProfile extends ProfileEvent {}

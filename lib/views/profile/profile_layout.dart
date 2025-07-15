@@ -55,12 +55,15 @@ class ProfileLayout extends StatelessWidget {
                         } else if (value == 'logout') {
                           final prefs = await SharedPreferences.getInstance();
                           await prefs.remove('loggedInUserId');
+
                           context.read<SessionBloc>().add(Logout());
-                          Navigator.push(
+                          context.read<ProfileBloc>().add(ClearProfile());
+
+                          Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const HomePage(),
-                            ),
+                              builder: (context) => const HomePage()),
+                                (route) => false,
                           );
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Successfully Logged Out.')),

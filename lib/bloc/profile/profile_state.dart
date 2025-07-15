@@ -21,6 +21,19 @@ class ProfileState extends Equatable {
     required this.cfmPassword,
   });
 
+  factory ProfileState.initial() {
+    return const ProfileState(
+      userId: 0,
+      username: '',
+      points: 0,
+      activityList: [],
+      contactNumber: '',
+      email: '',
+      password: '',
+      cfmPassword: '',
+    );
+  }
+
   ProfileState copyWith({
     int? userId,
     String? username,
