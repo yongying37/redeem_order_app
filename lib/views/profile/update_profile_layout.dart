@@ -54,6 +54,8 @@ class _UpdateProfileLayoutState extends State<UpdateProfileLayout> {
   }
 
   Future<void> _onSave() async {
+    final userId = context.read<SessionBloc>().state.userId;
+
     if (_passwordController.text != _cfmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Passwords do not match')),
@@ -61,14 +63,14 @@ class _UpdateProfileLayoutState extends State<UpdateProfileLayout> {
       return;
     }
 
-    final userId = context.read<SessionBloc>().state.userId;
+    final isPasswordChanged = _passwordController.text != '********';
 
     final success = await _authService.updateProfile(
       userId: userId,
       username: _usernameController.text,
       phoneNumber: _phoneController.text,
       email: _emailController.text,
-      password: _passwordController.text,
+      password: isPasswordChanged ? _passwordController.text : null,
     );
 
     if (success) {

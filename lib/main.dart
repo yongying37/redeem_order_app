@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:redeem_order_app/views/home/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
@@ -11,7 +12,7 @@ import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'package:redeem_order_app/bloc/checkout/checkout_bloc.dart';
 import 'package:redeem_order_app/bloc/order_history/orderhistory_bloc.dart';
 import 'package:redeem_order_app/services/order_history_service.dart';
-import 'package:redeem_order_app/views/home/home_page.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +29,6 @@ class MyApp extends StatelessWidget {
 
   const MyApp({super.key, required this.savedUserId});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(

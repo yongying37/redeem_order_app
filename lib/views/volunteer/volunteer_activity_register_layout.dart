@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/models/volunteer_activity_model.dart';
 import 'package:redeem_order_app/services/volunteer_activity_service.dart';
+import 'package:redeem_order_app/views/login/login_page.dart';
 
 class VolunteerActivityRegisterLayout extends StatefulWidget {
   final VolunteerActivity activity;
@@ -20,13 +21,13 @@ class _VolunteerActivityRegisterLayoutState extends State<VolunteerActivityRegis
     final userId = context.read<SessionBloc>().state.userId;
 
     if (userId == 0) {
-      // Not logged in, redirect to login page
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please log in to register for an activity.')),
       );
-
-      // Navigate to login page
-      Navigator.pushNamed(context, '/login');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
       return;
     }
 

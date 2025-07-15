@@ -10,45 +10,35 @@ class ForgetPasswordLayout extends StatefulWidget {
 
 class _ForgetPasswordLayoutState extends State<ForgetPasswordLayout> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+
   final AuthService _authService = AuthService();
 
   bool _isLoading = false;
 
   Future<void> _resetPassword() async {
     final email = _emailController.text.trim();
-    final newPassword = _newPasswordController.text;
-    final confirmPassword = _confirmPasswordController.text;
 
-    if (email.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {
+    if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields')),
-      );
-      return;
-    }
-
-    if (newPassword != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
+        const SnackBar(content: Text('Please enter your email')),
       );
       return;
     }
 
     setState(() => _isLoading = true);
 
-    final success = await _authService.resetPassword(email, newPassword);
+    final success = await _authService.requestPasswordReset(email);
 
     setState(() => _isLoading = false);
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password reset successful. Please log in.')),
+        const SnackBar(content: Text('Password reset email sent. Please check your inbox.')),
       );
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password reset failed. Please try again.')),
+        const SnackBar(content: Text('Failed to send reset email. Please try again.')),
       );
     }
   }
@@ -88,8 +78,6 @@ class _ForgetPasswordLayoutState extends State<ForgetPasswordLayout> {
           const SizedBox(height: 40),
 
           _buildInputField(Icons.email, 'Email', _emailController),
-          _buildInputField(Icons.lock, 'New Password', _newPasswordController, obscure: true),
-          _buildInputField(Icons.lock_outline, 'Confirm Password', _confirmPasswordController, obscure: true),
 
           const SizedBox(height: 30),
           SizedBox(
@@ -105,7 +93,7 @@ class _ForgetPasswordLayoutState extends State<ForgetPasswordLayout> {
               ),
               child: _isLoading
                   ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text('Reset Password', style: TextStyle(fontSize: 18)),
+                  : const Text('Send Reset Email', style: TextStyle(fontSize: 18)),
             ),
           ),
         ],

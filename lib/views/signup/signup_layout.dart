@@ -100,7 +100,8 @@ class _SignUpLayoutState extends State<SignUpLayout> {
     final gender = _selectedGender;
     print('Fields gathered: $username, $email, $gender');
 
-    if (username.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty || contact.isEmpty || gender == null) {
+    if (username.isEmpty || email.isEmpty || password.isEmpty ||
+        confirmPassword.isEmpty || contact.isEmpty || gender == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill in all fields')),
       );
@@ -115,11 +116,29 @@ class _SignUpLayoutState extends State<SignUpLayout> {
       return;
     }
 
+    final passwordRegex = RegExp(
+        r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
+    if (!passwordRegex.hasMatch(password)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(
+            'Password must be at least 8 characters long, include a capital letter, number, and special character')),
+      );
+      return;
+    }
+
     if (password != confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Passwords do not match')),
       );
       return;
+    }
+
+    final contactRegex = RegExp(r'^[89]\d{7}$');
+    if (!contactRegex.hasMatch(contact)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(
+            'Contact number must start with 8 or 9 and be 8 digits long')),
+      );
     }
 
     final request = SignupRequest(
@@ -131,17 +150,34 @@ class _SignUpLayoutState extends State<SignUpLayout> {
       gender: gender,
     );
 
-    final success = await _authService.signup(request);
+    try {
+      final success = await _authService.signup(request);
 
-    if (success) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const SuccessSignupPage()),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Signup failed. Please try again.')),
-      );
+      if (success) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SuccessSignupPage()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Signup failed. Please try again.')),
+        );
+      }
+    } catch (e) {
+      final error = e.toString().toLowerCase();
+      if (error.contains('username already in use')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Username already in use.')),
+        );
+      } else if (error.contains('email already in use')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Email already in use.')),
+        );
+      } else if (error.contains('contact number already in use')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Contact number already in use.')),
+        );
+      }
     }
   }
 

@@ -22,10 +22,16 @@ class AuthService {
       print('Response: ${response.statusCode}');
       print('Response body: ${response.body}');
 
-      return response.statusCode == 201;
+      if(response.statusCode == 201) {
+        return true;
+      } else {
+        final Map<String, dynamic> error = jsonDecode(response.body);
+        final errorMessage = error['message'] ?? 'Signup failed';
+        throw Exception(errorMessage);
+      }
     } catch (e) {
-      print('Network error: $e');
-      return false;
+      print('Signup error: $e');
+      throw Exception(e.toString());
     }
   }
 
@@ -45,7 +51,7 @@ class AuthService {
       print('Login body: ${response.body}');
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body); // contains 'message' and 'user'
+        return jsonDecode(response.body);
       } else {
         return null;
       }
@@ -83,26 +89,29 @@ class AuthService {
     required String username,
     required String phoneNumber,
     required String email,
-    required String password,
+    String? password,
   }) async {
     final url = Uri.parse('$baseUrl/accounts/users/$userId');
 
-    final body = jsonEncode({
+    final data = {
       'account_user_name': username,
       'account_user_contact_number': phoneNumber,
       'account_user_email': email,
-      'account_user_password': password,
-      'account_user_confirm_password': password,
-    });
+    };
+
+    if (password != null && password.isNotEmpty && password != '********') {
+      data['account_user_password'] = password;
+      data['account_user_confirm_password'] = password;
+    }
 
     print('Sending PUT to $url');
-    print('Payload: $body');
+    print('Payload: ${jsonEncode(data)}');
 
     try {
       final response = await http.put(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: body,
+        body: jsonEncode(data),
       );
 
       print('Update status: ${response.statusCode}');
@@ -142,4 +151,30 @@ class AuthService {
       return false;
     }
   }
+
+  Future<bool> requestPasswordReset(String email) async {
+    final url = Uri.parse('$baseUrl/accounts/users/request-reset');
+
+    final body = jsonEncode({'email': email});
+
+    print('Requesting password reset via email to $url');
+    print('Payload: $body');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+
+      print('Email reset status: ${response.statusCode}');
+      print('Email reset body: ${response.body}');
+
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Error sending reset email: $e');
+      return false;
+    }
+  }
+
 }
