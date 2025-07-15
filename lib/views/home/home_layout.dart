@@ -146,15 +146,7 @@ class HomeContent extends StatelessWidget {
                     return GestureDetector(
                       onTap: () {
                         if (isLoggedIn) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                final userId = context.read<SessionBloc>().state.userId;
-                                return ProfilePage(userId: userId);
-                              },
-                            ),
-                          );
+                          homeLayoutState.updateCurrentIndex(4);
                         }
                         else {
                           Navigator.push(
