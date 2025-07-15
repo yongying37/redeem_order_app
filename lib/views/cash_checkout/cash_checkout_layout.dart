@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
 import 'package:redeem_order_app/bloc/cash_checkout/cash_checkout_bloc.dart';
+import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/models/cart_item_model.dart';
 import 'package:redeem_order_app/views/home/home_layout.dart';
@@ -47,6 +48,27 @@ class CashCheckoutLayout extends StatelessWidget {
         if (state.status == CashCheckoutStatus.failure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Order failed: ${state.errorMsg}")),
+          );
+        }
+
+        if (state.status == CashCheckoutStatus.success) {
+          final userId = context.read<SessionBloc>().state.userId;
+          context.read<ProfileBloc>().add(LoadProfile(userId));
+
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Order Submitted!'),
+              content: const Text('Your order is now being prepared.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
           );
         }
       },

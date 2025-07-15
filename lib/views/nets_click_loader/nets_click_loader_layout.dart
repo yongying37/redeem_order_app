@@ -127,8 +127,9 @@ class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
             final result = await OrderService.createOrder(orderPayload: payload);
             final txnId = result['txn_id'];
             final retrievalRef = result['txn_retrieval_ref'];
+            final orderNo = result['order_no'];
 
-            print('Order created!');
+            print('Order created! | Txn ID: $txnId | Retrieval Ref: $retrievalRef');
 
             double roundedTotal = double.parse(widget.totalAmount.toStringAsFixed(2));
 
@@ -141,6 +142,9 @@ class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
               orderType: widget.orderType,
             );
 
+
+            context.read<CartBloc>().add(ClearCart());
+
             showDialog(
               context: context,
               builder: (_) => AlertDialog(
@@ -149,9 +153,7 @@ class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Transaction ID:\n$txnId"),
-                    const SizedBox(height: 8),
-                    Text("Retrieval Ref:\n$retrievalRef"),
+                    Text("Your order number is $orderNo!"),
                   ],
                 ),
                 actions: [
