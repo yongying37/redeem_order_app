@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
 import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
-import 'package:redeem_order_app/views/cart/cart_page.dart';
 
 class CartBadgeIcon extends StatelessWidget {
   final VoidCallback onPressed;
