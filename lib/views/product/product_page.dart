@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
+import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
 import 'package:redeem_order_app/models/product_model.dart';
 import 'package:redeem_order_app/services/product_service.dart';
 import 'package:redeem_order_app/views/cart/cart_page.dart';
+import 'package:redeem_order_app/widgets/cart_badge_icon.dart';
 import 'product_tile.dart';
 
 class ProductPage extends StatefulWidget {
@@ -43,23 +45,22 @@ class _ProductPageState extends State<ProductPage> {
           },
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => BlocProvider.value(
-                    value: BlocProvider.of<OrderTypeBloc>(context),
-                    child: CartPage(
-                      supportsDinein: widget.selectedOrderType == 'Dine In',
-                      supportsTakeaway: widget.selectedOrderType == 'Takeaway',
-                      stallName: widget.stallName,
-                    ),
+          CartBadgeIcon(
+              onPressed: () {
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(
+                      builder: (_) => BlocProvider.value(
+                        value: BlocProvider.of<OrderTypeBloc>(context),
+                        child: CartPage(
+                          supportsDinein: widget.selectedOrderType == 'Dine In',
+                          supportsTakeaway: widget.selectedOrderType == 'Takeaway',
+                          stallName: widget.stallName,
+                        ),
+                      ),
                   ),
-                ),
-              );
-            },
+                );
+              },
           ),
         ],
       ),
