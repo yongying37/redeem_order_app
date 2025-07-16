@@ -6,10 +6,8 @@ import 'package:redeem_order_app/views/home/home_page.dart';
 import 'package:redeem_order_app/bloc/nets_click/nets_click_bloc.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/bloc/cart/cart_bloc.dart'; 
+import 'package:redeem_order_app/bloc/profile/profile_bloc.dart'; 
 import 'package:redeem_order_app/utils/config.dart';
-import 'package:redeem_order_app/utils/order_payload_util.dart';
-import 'package:redeem_order_app/services/create_order_service.dart';
-import 'package:redeem_order_app/services/record_order_service.dart';
 
 class NetsClickLoaderLayout extends StatefulWidget {
   final PaymentDetails mainPaymentDetails;
@@ -30,15 +28,18 @@ class NetsClickLoaderLayout extends StatefulWidget {
 }
 
 class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
-  bool _orderCreated = false;
 
   @override
   void initState() {
     super.initState();
-    // Delay event dispatch until after UI loads
-    Future.microtask(() {
-      BlocProvider.of<NetsClickBloc>(context).add(MakePayment(widget.mainPaymentDetails));
-    });
+    BlocProvider.of<NetsClickBloc>(context).add(MakePayment(
+        mainPaymentDetails:  widget.mainPaymentDetails,
+        userId: context.read<SessionBloc>().state.userId,
+        orderType: widget.orderType,
+        cartItems: widget.cartItems,
+        totalAmount: widget.totalAmount,
+        pointsUsed: context.read<CartBloc>().state.pointsUsed,
+    ));
   }
 
   Widget renderLoadingScreen(NetsClickState netsClickState) {
@@ -105,72 +106,26 @@ class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
   Widget build(BuildContext context) {
     return BlocListener<NetsClickBloc, NetsClickState>(
       listener: (context, state) async {
-
         final userId = context.read<SessionBloc>().state.userId;
+        if (state.status.isMakePaymentSuccess && state.orderNo != null) {
+          context.read<ProfileBloc>().add(LoadProfile(userId));
+          context.read<CartBloc>().add(ClearCart());
 
-        if (userId == 0) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Please login to place an order")),
-          );
-          return;
-        }
-
-        if (state.status.isMakePaymentSuccess && !_orderCreated) {
-          _orderCreated = true;
-
-          try {
-            final payload = OrderPayloadUtil.buildPayload(
-                cartItems: widget.cartItems,
-                orderType: widget.orderType
-            );
-
-            final result = await OrderService.createOrder(orderPayload: payload);
-            final txnId = result['txn_id'];
-            final retrievalRef = result['txn_retrieval_ref'];
-            final orderNo = result['order_no'];
-
-            print('Order created! | Txn ID: $txnId | Retrieval Ref: $retrievalRef');
-
-            double roundedTotal = double.parse(widget.totalAmount.toStringAsFixed(2));
-
-            await RecordOrderService().submitOrderToDB(
-              userId: userId,
-              cartItems: widget.cartItems,
-              paymentMethod: "NETs Click",
-              paymentAmt: roundedTotal,
-              pointsUsed: context.read<CartBloc>().state.pointsUsed,
-              orderType: widget.orderType,
-            );
-
-
-            context.read<CartBloc>().add(ClearCart());
-
-            showDialog(
-              context: context,
-              builder: (_) => AlertDialog(
-                title: const Text("Order created!"),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Your order number is $orderNo!"),
-                  ],
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: const Text("Order created!"),
+              content: Text("Your order number is ${state.orderNo}!"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("OK"),
                 ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("OK"),
-                  ),
-                ],
-              ),
-            );
-          } catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Order failed: $e")),
-            );
-          }
+              ],
+            ),
+          );
         }
       },
       child: BlocBuilder<NetsClickBloc, NetsClickState>(

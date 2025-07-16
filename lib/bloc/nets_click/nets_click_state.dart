@@ -22,6 +22,7 @@ final class NetsClickState extends Equatable {
   final String loadingMessage;
   final String errorMessage;
   final String successMessage;
+  final String? orderNo;
 
   const NetsClickState({
     this.status = NetsClickStatus.initial,
@@ -31,6 +32,7 @@ final class NetsClickState extends Equatable {
     this.loadingMessage = '',
     this.errorMessage = '',
     this.successMessage = '',
+    this.orderNo,
   });
 
   NetsClickState copyWith({
@@ -41,6 +43,7 @@ final class NetsClickState extends Equatable {
     String? loadingMessage,
     String? errorMessage,
     String? successMessage,
+    String? orderNo,
   }) {
     return NetsClickState(
       status: status ?? this.status,
@@ -50,6 +53,7 @@ final class NetsClickState extends Equatable {
       loadingMessage: loadingMessage ?? this.loadingMessage,
       errorMessage: errorMessage ?? this.errorMessage,
       successMessage: successMessage ?? this.successMessage,
+      orderNo: orderNo ?? this.orderNo,
     );
   }
 
@@ -62,5 +66,6 @@ final class NetsClickState extends Equatable {
     loadingMessage,
     errorMessage,
     successMessage,
+    orderNo,
   ];
 }

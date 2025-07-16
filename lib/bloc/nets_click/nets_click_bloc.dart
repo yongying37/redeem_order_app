@@ -3,9 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/dtos/nets_click_purchase_response_dto.dart';
 import 'package:redeem_order_app/dtos/nets_click_purchase_request_dto.dart';
 import 'package:redeem_order_app/models/payment_details_model.dart';
+import 'package:redeem_order_app/models/cart_item_model.dart';
 import 'package:redeem_order_app/repositories/api_repository.dart';
+import 'package:redeem_order_app/services/create_order_service.dart';
+import 'package:redeem_order_app/services/record_order_service.dart';
 import 'package:redeem_order_app/utils/config.dart';
 import 'package:redeem_order_app/utils/logger.dart';
+import 'package:redeem_order_app/utils/order_payload_util.dart';
+
 
 part 'nets_click_event.dart';
 part 'nets_click_state.dart';
@@ -43,18 +48,15 @@ class NetsClickBloc extends Bloc<NetsClickEvent, NetsClickState> {
     throw 'Main Payment failed (${netsClickPurchaseResponse.responseCode}).';
   }
 
-
   NetsClickBloc() : super(const NetsClickState()) {
     on<MakePayment>((event, emit) async {
       try {
-        // update the state to loading
         emit(state.copyWith(
           status: NetsClickStatus.makePaymentLoading,
           loadingTitle: 'Processing main payment',
           loadingMessage: 'Verifying payment details. Please wait...',
         ));
 
-        // validate payment details
         await _validatePaymentDetails(event);
 
         // check if NETS is available
@@ -86,7 +88,6 @@ class NetsClickBloc extends Bloc<NetsClickEvent, NetsClickState> {
           amtInDollars: event.mainPaymentDetails.amtInDollars,
         );
 
-
         // update loading message
         emit(state.copyWith(
           status: NetsClickStatus.makePaymentLoading,
@@ -105,9 +106,52 @@ class NetsClickBloc extends Bloc<NetsClickEvent, NetsClickState> {
             successTitle: 'Payment Success',
             successMessage: 'Your payment have been received. Thank you for using our services. Please proceed to the stall to collect your food!'));
 
+        add(CompleteNetsClickCheckout(
+            userId: event.userId,
+            orderType: event.orderType,
+            cartItems: event.cartItems,
+            paymentAmount: event.totalAmount,
+            pointsUsed: event.pointsUsed
+        ));
+
       } catch (e, s) {
-        Logger.e(e.toString(), stackTrace: s, tag: 'ManagePaymentBloc.MakePayment');
+        Logger.e(e.toString(), stackTrace: s, tag: 'NetsClickBloc.MakePayment');
         emit(NetsClickState(status: NetsClickStatus.makePaymentError, errorTitle: 'Checkout Error', errorMessage: '$e'));
+      }
+    });
+
+    on<CompleteNetsClickCheckout>((event, emit) async {
+      try {
+        final payload = OrderPayloadUtil.buildPayload(
+            cartItems: event.cartItems,
+            orderType: event.orderType,
+        );
+
+        final result = await OrderService.createOrder(orderPayload: payload);
+        final txnId = result['txn_id'];
+        final retrievalRef = result['txn_retrieval_ref'];
+        final orderNo = result['order_no'];
+
+        print('\nTxn ID: $txnId | Retrieval Ref: $retrievalRef\n');
+
+        await RecordOrderService().submitOrderToDB(
+            userId: event.userId,
+            cartItems: event.cartItems,
+            paymentMethod: 'NETs Click',
+            paymentAmt: event.paymentAmount,
+            pointsUsed: event.pointsUsed,
+            orderType: event.orderType
+        );
+
+        emit(state.copyWith(orderNo: orderNo));
+
+      } catch (e, s) {
+        Logger.e(e.toString(), stackTrace: s, tag: 'NetsClickBloc.CompleteCheckout');
+        emit(state.copyWith(
+          status: NetsClickStatus.makePaymentError,
+          errorTitle: 'Order Failed',
+          errorMessage: '$e',
+        ));
       }
     });
   }
