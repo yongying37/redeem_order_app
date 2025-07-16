@@ -92,7 +92,16 @@ class ProfileLayout extends StatelessWidget {
                 Center(
                   child: Text("${state.points} points", style: const TextStyle(fontSize: 18)),
                 ),
+                const SizedBox(height: 20),
+                const Center(
+                  child: Text("Redeemed Points", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                ),
+                const SizedBox(height: 10),
+                Center(
+                  child: Text("${state.redeemedPoints} points", style: const TextStyle(fontSize: 18)),
+                ),
                 const SizedBox(height: 30),
+
 
                 const Text(
                   'Registered Volunteer Activities',

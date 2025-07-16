@@ -5,6 +5,7 @@ class UserProfile {
   final String email;
   final String password;
   final int points;
+  final int redeemedPoints;
 
   UserProfile({
     required this.accountUserId,
@@ -13,6 +14,7 @@ class UserProfile {
     required this.email,
     required this.password,
     required this.points,
+    required this.redeemedPoints,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class UserProfile {
       email: json['account_user_email'],
       password: '********',
       points: json['account_user_total_points'],
+      redeemedPoints: json['account_user_redeemed_points'],
     );
   }
 }
