@@ -1,6 +1,6 @@
 part of 'nets_click_bloc.dart';
 
-sealed class NetsClickEvent {
+sealed class NetsClickEvent extends Equatable {
   const NetsClickEvent();
 
   @override
