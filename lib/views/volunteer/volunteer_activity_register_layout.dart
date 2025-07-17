@@ -4,6 +4,7 @@ import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/models/volunteer_activity_model.dart';
 import 'package:redeem_order_app/services/volunteer_activity_service.dart';
 import 'package:redeem_order_app/views/login/login_page.dart';
+import 'package:redeem_order_app/views/home/home_page.dart';
 
 class VolunteerActivityRegisterLayout extends StatefulWidget {
   final VolunteerActivity activity;
@@ -43,7 +44,10 @@ class _VolunteerActivityRegisterLayoutState extends State<VolunteerActivityRegis
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Successfully registered for this activity!')),
         );
-        Navigator.pop(context);
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomePage()),
+              (route) => false,
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('You may have already registered.')),
