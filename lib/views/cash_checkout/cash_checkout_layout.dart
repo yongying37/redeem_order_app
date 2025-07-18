@@ -23,13 +23,6 @@ class CashCheckoutLayout extends StatelessWidget {
     final userId = context.read<SessionBloc>().state.userId;
     final pointsUsed = context.read<CartBloc>().state.pointsUsed;
 
-    if (userId == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please login to place an order")),
-      );
-      return;
-    }
-
     context.read<CashCheckoutBloc>().add(
       SubmitCashOrderEvent(
           userId: userId,
