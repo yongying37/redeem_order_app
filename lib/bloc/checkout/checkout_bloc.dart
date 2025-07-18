@@ -10,7 +10,7 @@ part 'checkout_state.dart';
 class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   final CartBloc cartBloc;
 
-  static const double takeawayCharge = 0.50;
+  static const double takeawayCharge = 0.30;
 
   CheckoutBloc({required this.cartBloc}) : super(CheckoutState.initial()) {
     on<LoadCheckout>(_onLoadCheckout);
