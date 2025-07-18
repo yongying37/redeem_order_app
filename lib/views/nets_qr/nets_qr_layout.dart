@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/nets_qr/nets_qr_bloc.dart';
 import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
+import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/models/cart_item_model.dart';
 import 'package:redeem_order_app/views/txn_nets_status/txn_nets_fail_status_page.dart';
 import 'package:redeem_order_app/views/txn_nets_status/txn_nets_success_status_page.dart';
 import 'package:redeem_order_app/views/home/home_page.dart';
-import 'package:redeem_order_app/utils/order_payload_util.dart';
-import 'package:redeem_order_app/services/create_order_service.dart';
 import 'package:redeem_order_app/services/record_order_service.dart';
 
 class NetsQrLayout extends StatefulWidget {
@@ -32,6 +31,7 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
   Timer? netsTimer;
   int secondsNetsTimeout = 30;
   bool netsTimerActive = false;
+  String? orderNo;
 
   String get netsTimerText {
     int minutes = secondsNetsTimeout ~/ 60;
@@ -77,37 +77,16 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
   @override
   void initState() {
     super.initState();
-    _startQrFlow();
-  }
+    final userId = context.read<SessionBloc>().state.userId;
+    final pointsUsed = context.read<CartBloc>().state.pointsUsed;
 
-  Future<void> _startQrFlow() async {
-    try {
-      final payload = OrderPayloadUtil.buildPayload(
+    context.read<NetsQrBloc>().add(StartNETsQrFlowEvent(
         cartItems: widget.cartItems,
         orderType: widget.orderType,
-      );
-
-      final result = await OrderService.createOrder(orderPayload: payload);
-      final txnId = result['txn_id'];
-      final retrievalRef = result['txn_retrieval_ref'];
-      final amtString = txnId.split('|')[5];
-      final parsedAmt = double.parse(amtString);
-
-      print('Order created: $txnId | Ref: $retrievalRef | Amount: $parsedAmt');
-
-      BlocProvider.of<NetsQrBloc>(context).add(RequestNetsQrEvent(
-        amount: parsedAmt,
-        txnId: txnId,
-        notifyMobile: 0,
-      ));
-
-    } catch (e) {
-      print('Failed to create order and request QR: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Order failed to start QR payment: $e')),
-      );
-      Navigator.pop(context);
-    }
+        paymentAmount: widget.totalAmount,
+        userId: userId,
+        pointsUsed: pointsUsed,
+    ));
   }
 
   Widget netsQrCode(NetsQrState state) {
@@ -125,7 +104,10 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
 
       return Image.memory(state.netsQrRequest!.netsQrPayment);
     } else {
-      return const SizedBox(height: 200);
+      return const SizedBox(
+          height: 200,
+          child: Center(child: CircularProgressIndicator()),
+      );
     }
   }
 
@@ -157,9 +139,7 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
       listener: (context, state) async {
         final userId = context.read<SessionBloc>().state.userId;
         final pointsUsed = context.read<CartBloc>().state.pointsUsed;
-        final pointsValue = pointsUsed / 100.0;
-        final netTotal = widget.totalAmount - pointsValue;
-        final roundedTotal = double.parse(netTotal.toStringAsFixed(2));
+        final roundedTotal = double.parse(state.paymentAmt!.toStringAsFixed(2));
 
         if (state.isNetsQrCodeScanned == true) {
           if (state.isNetsQrPaymentSuccess) {
@@ -173,6 +153,24 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
                   orderType: widget.orderType,
               );
 
+              context.read<ProfileBloc>().add(LoadProfile(userId));
+              context.read<CartBloc>().add(ClearCart());
+
+              await showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: const Text("Order Created!"),
+                  content: Text("Your order number is ${state.orderNo}"),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text("OK"),
+                    ),
+                  ],
+                )
+              );
             } catch (e) {
               print('Order creation failed after NETS Payment: $e');
               ScaffoldMessenger.of(context).showSnackBar(

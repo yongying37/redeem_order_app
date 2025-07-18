@@ -32,3 +32,19 @@ class GenerateHmacNetsQrEvent extends NetsQrEvent {
   final String secretKey;
   const GenerateHmacNetsQrEvent({required this.jsonString, required this.secretKey});
 }
+
+class StartNETsQrFlowEvent extends NetsQrEvent {
+  final List<CartItem> cartItems;
+  final String orderType;
+  final double paymentAmount;
+  final int userId;
+  final int pointsUsed;
+
+  const StartNETsQrFlowEvent({
+    required this.cartItems,
+    required this.orderType,
+    required this.paymentAmount,
+    required this.userId,
+    required this.pointsUsed,
+  });
+}

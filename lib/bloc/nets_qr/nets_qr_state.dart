@@ -19,6 +19,9 @@ class NetsQrState extends Equatable {
   final NetsQrQuery? netsQrQuery;
   final bool cancelNetsQr;
   final String? hmac;
+  final String? orderNo;
+  final String? createdTxnId;
+  final double? paymentAmt;
 
   const NetsQrState({
     this.status = NetsQrStatus.initialNetsQr,
@@ -28,10 +31,13 @@ class NetsQrState extends Equatable {
     this.netsQrQuery,
     this.cancelNetsQr = false,
     this.hmac,
+    this.orderNo,
+    this.createdTxnId,
+    this.paymentAmt,
   });
 
   @override
-  List<Object?> get props => [status, netsQrRequest, isNetsQrCodeScanned, isNetsQrPaymentSuccess, netsQrQuery, cancelNetsQr, hmac];
+  List<Object?> get props => [status, netsQrRequest, isNetsQrCodeScanned, isNetsQrPaymentSuccess, netsQrQuery, cancelNetsQr, hmac, orderNo, createdTxnId, paymentAmt];
 
   NetsQrState copyWith({
     NetsQrStatus? status,
@@ -40,7 +46,10 @@ class NetsQrState extends Equatable {
     bool? isNetsQrPaymentSuccess,
     NetsQrQuery? netsQrQuery,
     bool? cancelNetsQr,
-    String? hmac
+    String? hmac,
+    String? orderNo,
+    String? createdTxnId,
+    double? paymentAmt,
   }) => NetsQrState(
     status: status ?? this.status,
     netsQrRequest: (cancelNetsQr == true) ? null : netsQrRequest ?? this.netsQrRequest,
@@ -48,6 +57,9 @@ class NetsQrState extends Equatable {
     isNetsQrPaymentSuccess: (cancelNetsQr == true) ? false : isNetsQrPaymentSuccess ?? this.isNetsQrPaymentSuccess,
     netsQrQuery: (cancelNetsQr == true) ? null : netsQrQuery ?? this.netsQrQuery,
     hmac: (cancelNetsQr == true) ? null : hmac ?? this.hmac,
+    orderNo: orderNo ?? this.orderNo,
+    createdTxnId: createdTxnId ?? this.createdTxnId,
+    paymentAmt: paymentAmt ?? this.paymentAmt,
   );
 
   @override

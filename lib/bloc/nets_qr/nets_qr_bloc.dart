@@ -3,10 +3,13 @@ import 'package:bloc/bloc.dart';
 import 'package:crypto/crypto.dart';
 import 'package:equatable/equatable.dart';
 import 'package:redeem_order_app/dtos/nets_qr_webhook_response_dto.dart';
+import 'package:redeem_order_app/models/cart_item_model.dart';
 import 'package:redeem_order_app/models/nets_qr_request_model.dart';
 import 'package:redeem_order_app/utils/logger.dart';
 import 'package:redeem_order_app/models/nets_qr_query_model.dart';
 import 'package:redeem_order_app/repositories/api_repository.dart';
+import 'package:redeem_order_app/services/create_order_service.dart';
+import 'package:redeem_order_app/utils/order_payload_util.dart';
 
 part 'nets_qr_state.dart';
 part 'nets_qr_event.dart';
@@ -86,6 +89,32 @@ class NetsQrBloc extends Bloc<NetsQrEvent, NetsQrState> {
       Digest hash = sha256.convert(bytes);
       String hmac = base64.encode(hash.bytes);
       emit(state.copyWith(hmac: hmac));
+    });
+
+    on<StartNETsQrFlowEvent>((event, emit) async {
+      try {
+        emit(state.copyWith(status: NetsQrStatus.loadingNetsQr));
+        final payload = OrderPayloadUtil.buildPayload(
+            cartItems: event.cartItems,
+            orderType: event.orderType
+        );
+
+        final result = await OrderService.createOrder(orderPayload: payload);
+        final txnId = result['txn_id'];
+        final retrievalRef = result['txn_retrieval_ref'];
+        final orderNo = result['order_no'];
+        final parsedAmt = result['order_total_amt'] as double;
+
+        print("\n Txn ID: $txnId | Retrieval Ref: $retrievalRef | NETs Amount: $parsedAmt\n");
+
+        add(RequestNetsQrEvent(amount: parsedAmt, txnId: txnId, notifyMobile: 0));
+
+        emit(state.copyWith(orderNo: orderNo, createdTxnId: txnId, paymentAmt: parsedAmt));
+
+      } catch (e, s) {
+        Logger.e("Failed to start NETs QR flow: $e", stackTrace: s, tag: '');
+        emit(state.copyWith(status: NetsQrStatus.failedNetsQr));
+      }
     });
   }
 }
