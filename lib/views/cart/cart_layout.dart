@@ -336,15 +336,18 @@ class _CartLayoutState extends State<CartLayout> {
                           backgroundColor: Colors.redAccent,
                           foregroundColor: Colors.white,
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         final orderType = context.read<OrderTypeBloc>().state.selectedOption ?? '';
-                        Navigator.push(
+                        final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (_) => CheckoutPage(
-                                orderType: orderType,
-                              )),
+                            builder: (_) => CheckoutPage(orderType: orderType),
+                          ),
                         );
+
+                        if (result == 'reset_order_type') {
+                          Navigator.pop(context, 'reset_order_type');
+                        }
                       },
                       child: const Text('Check Out'),
                     ),

@@ -95,23 +95,32 @@ class _NetsClickLayoutState extends State<NetsClickLayout> {
     ];
   }
 
-  _onSubmit() {
+  _onSubmit() async {
     if (!_mainPaymentFormKey.currentState!.validate()) return;
 
     final mainPaymentDetails = PaymentDetails(
       amtInDollars: _mainPaymentAmountController.text,
       recordId: _mainPaymentRecordIdController.text,
-      identifier: Config().mainPaymentIdentifier,);
+      identifier: Config().mainPaymentIdentifier,
+    );
 
-    Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => NetsClickLoaderPage(
-            mainPaymentDetails: mainPaymentDetails,
-            orderType: widget.orderType,
-            cartItems: widget.cartItems,
-            totalAmount: widget.totalAmount,
-        )));
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NetsClickLoaderPage(
+          mainPaymentDetails: mainPaymentDetails,
+          orderType: widget.orderType,
+          cartItems: widget.cartItems,
+          totalAmount: widget.totalAmount,
+        ),
+      ),
+    );
+
+    if (result == 'reset_order_type') {
+      Navigator.pop(context, 'reset_order_type');
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,8 @@ import 'package:redeem_order_app/services/merchant_service.dart';
 import 'package:redeem_order_app/views/ordertype_stalls/ordertype_page.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/views/login/login_page.dart';
+import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
+import 'package:redeem_order_app/views/home/home_layout.dart';
 
 class StallLayout extends StatefulWidget {
   const StallLayout({super.key});
@@ -56,7 +58,7 @@ class _StallLayoutState extends State<StallLayout> {
                   if (updatedSession.userId == 0) return;
                 }
 
-                Navigator.push(
+                final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => OrderTypesPage(
@@ -68,6 +70,16 @@ class _StallLayoutState extends State<StallLayout> {
                     ),
                   ),
                 );
+
+                if (result == 'reset_order_type') {
+                  context.read<OrderTypeBloc>().add(const ResetOrderType());
+
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (_) => const HomeLayout()),
+                        (_) => false,
+                  );
+                }
               },
               child: Card(
                 child: ListTile(

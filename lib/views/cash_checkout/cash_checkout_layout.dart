@@ -113,11 +113,7 @@ class CashCheckoutLayout extends StatelessWidget {
                   onPressed: () {
                     if (isSubmitted) {
                       context.read<CartBloc>().add(ClearCart());
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (_) => const HomeLayout()),
-                            (route) => false,
-                      );
+                      Navigator.pop(context, 'reset_order_type');
                     }
                     else {
                       _handleSubmit(context);

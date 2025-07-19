@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/models/payment_details_model.dart';
 import 'package:redeem_order_app/models/cart_item_model.dart';
-import 'package:redeem_order_app/views/home/home_page.dart';
 import 'package:redeem_order_app/bloc/nets_click/nets_click_bloc.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/bloc/cart/cart_bloc.dart'; 
@@ -89,11 +88,7 @@ class _NetsClickLoaderLayoutState extends State<NetsClickLoaderLayout> {
           const SizedBox(height: 20,),
           ElevatedButton(
             onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => HomePage()),
-                  (_) => false,
-              );
+              Navigator.pop(context, 'reset_order_type');
             },
             child: const Text('Go back'),
           ),

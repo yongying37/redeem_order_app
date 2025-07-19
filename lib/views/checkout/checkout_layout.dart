@@ -128,55 +128,59 @@ class CheckoutLayout extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   ElevatedButton(
-                    onPressed: state.paymentMethod.isEmpty ? null :()  {
+                    onPressed: state.paymentMethod.isEmpty ? null : () async {
+                      dynamic result;
+
                       if (state.paymentMethod == 'NETS QR') {
-                        Navigator.push(
+                        result = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => BlocProvider(
                               create: (_) => NetsQrBloc(),
                               child: NetsQrPage(
-                                  orderType: orderType,
-                                  cartItems: cartItems,
-                                  totalAmount: state.total,
+                                orderType: orderType,
+                                cartItems: cartItems,
+                                totalAmount: state.total,
                               ),
                             ),
                           ),
                         );
-                      }
-                      else if (state.paymentMethod == 'NETS Click') {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => BlocProvider(
-                                  create: (_) => NetsClickBloc(),
-                                  child: NetsClickPage(
-                                      orderType: orderType,
-                                      cartItems: cartItems,
-                                      totalAmount: state.total,
-                                  ),
-                                )
-                            )
-                        );
-                      }
-                      else if (state.paymentMethod == 'Cash') {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => CashCheckoutPage(
-                                  orderType: orderType,
-                                  cartItems: cartItems,
-                                  totalAmount: state.total,
+                      } else if (state.paymentMethod == 'NETS Click') {
+                        result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BlocProvider(
+                              create: (_) => NetsClickBloc(),
+                              child: NetsClickPage(
+                                orderType: orderType,
+                                cartItems: cartItems,
+                                totalAmount: state.total,
                               ),
                             ),
+                          ),
                         );
-                      }
-                      else {
+                      } else if (state.paymentMethod == 'Cash') {
+                        result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CashCheckoutPage(
+                              orderType: orderType,
+                              cartItems: cartItems,
+                              totalAmount: state.total,
+                            ),
+                          ),
+                        );
+                      } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Order submitted with selected payment method.')),
                         );
                       }
+
+                      if (result == 'reset_order_type') {
+                        Navigator.pop(context, 'reset_order_type');
+                      }
                     },
+
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white,),
                     child: const Text("Submit Order"),
                   ),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/views/product/product_page.dart';
 import 'package:redeem_order_app/views/stall/stall_page.dart';
 import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
+import 'package:redeem_order_app/views/home/home_layout.dart';
 import 'ordertype_layout.dart';
 
 class OrderTypesPage extends StatelessWidget {
@@ -54,6 +55,12 @@ class OrderTypesPage extends StatelessWidget {
 
           if (result == 'reset_order_type') {
             context.read<OrderTypeBloc>().add(const ResetOrderType());
+
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => const HomeLayout()),
+                  (route) => false,
+            );
           }
         },
       ),

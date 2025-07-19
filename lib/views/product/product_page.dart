@@ -45,21 +45,25 @@ class _ProductPageState extends State<ProductPage> {
         ),
         actions: [
           CartBadgeIcon(
-              onPressed: () {
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(
-                      builder: (_) => BlocProvider.value(
-                        value: BlocProvider.of<OrderTypeBloc>(context),
-                        child: CartPage(
-                          supportsDinein: widget.selectedOrderType == 'Dine In',
-                          supportsTakeaway: widget.selectedOrderType == 'Takeaway',
-                          stallName: widget.stallName,
-                        ),
-                      ),
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider.value(
+                    value: BlocProvider.of<OrderTypeBloc>(context),
+                    child: CartPage(
+                      supportsDinein: widget.selectedOrderType == 'Dine In',
+                      supportsTakeaway: widget.selectedOrderType == 'Takeaway',
+                      stallName: widget.stallName,
+                    ),
                   ),
-                );
-              },
+                ),
+              );
+
+              if (result == 'reset_order_type') {
+                Navigator.pop(context, 'reset_order_type');
+              }
+            },
           ),
         ],
       ),

@@ -29,7 +29,7 @@ class NetsQrLayout extends StatefulWidget {
 
 class _NetsQrLayoutState extends State<NetsQrLayout> {
   Timer? netsTimer;
-  int secondsNetsTimeout = 30;
+  int secondsNetsTimeout = 300;
   bool netsTimerActive = false;
   String? orderNo;
 
@@ -198,12 +198,17 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
           }
         } else if (state.isNetsQrCodeScanned == false && state.netsQrQuery != null) {
           if (state.netsQrQuery!.netsQrResponseCode == "00" && state.netsQrQuery!.openApiPaasTxnStatus == 1) {
-            await Navigator.pushReplacement(
+            final result = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (_) => TxnNetsSuccessStatusPage(orderType: widget.orderType),
               ),
             );
+
+            if (result == 'reset_order_type') {
+              Navigator.pop(context, 'reset_order_type');
+            }
+
           } else {
             final cartBloc = context.read<CartBloc>();
             await Navigator.pushReplacement(

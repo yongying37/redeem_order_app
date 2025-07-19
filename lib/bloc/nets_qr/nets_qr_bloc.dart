@@ -103,11 +103,12 @@ class NetsQrBloc extends Bloc<NetsQrEvent, NetsQrState> {
         final txnId = result['txn_id'];
         final retrievalRef = result['txn_retrieval_ref'];
         final orderNo = result['order_no'];
-        final parsedAmt = result['order_total_amt'] as double;
+        final parsedAmt = (result['order_total_amt'] as num).toDouble();
+        final formattedAmt = parsedAmt.toStringAsFixed(2);
 
-        print("\n Txn ID: $txnId | Retrieval Ref: $retrievalRef\n");
+        print("\n Txn ID: $txnId | Retrieval Ref: $retrievalRef | NETs Amount: $parsedAmt\n");
 
-        add(RequestNetsQrEvent(amount: parsedAmt, txnId: txnId, notifyMobile: 0));
+        add(RequestNetsQrEvent(amount: formattedAmt, txnId: txnId, notifyMobile: 0));
 
         emit(state.copyWith(orderNo: orderNo, createdTxnId: txnId, paymentAmt: parsedAmt));
 

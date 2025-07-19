@@ -5,7 +5,7 @@ sealed class NetsQrEvent {
 }
 
 class RequestNetsQrEvent extends NetsQrEvent {
-  final double amount;
+  final String amount;
   final String txnId;
   final int notifyMobile;
   const RequestNetsQrEvent({required this.amount, required this.txnId, required this.notifyMobile});

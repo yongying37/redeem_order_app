@@ -14,7 +14,7 @@ class ApiService {
   static final ApiService _instance = ApiService._privateConstructor();
   factory ApiService() => _instance;
 
-  Future<NetsQrRequest> requestNetsApi(double amount, String txnId, int notifyMobile) async {
+  Future<NetsQrRequest> requestNetsApi(String amount, String txnId, int notifyMobile) async {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['amt_in_dollars'] = amount;
     data['txn_id'] = txnId;

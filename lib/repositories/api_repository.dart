@@ -12,7 +12,7 @@ class ApiRepository {
 
   final ApiService service = ApiService();
 
-  Future<NetsQrRequest> requestNetsApi(double amount, String txnId, int notifyMobile) async => service.requestNetsApi(amount, txnId, notifyMobile);
+  Future<NetsQrRequest> requestNetsApi(String amount, String txnId, int notifyMobile) async => service.requestNetsApi(amount, txnId, notifyMobile);
 
   Future<NetsQrWebhookResponseDto> webhookNetsApi(String netsQrRetrievalRef) async => service.webhookNetsApi(netsQrRetrievalRef);
 
