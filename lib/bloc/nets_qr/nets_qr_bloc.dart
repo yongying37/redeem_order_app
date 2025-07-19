@@ -105,7 +105,7 @@ class NetsQrBloc extends Bloc<NetsQrEvent, NetsQrState> {
         final orderNo = result['order_no'];
         final parsedAmt = result['order_total_amt'] as double;
 
-        print("\n Txn ID: $txnId | Retrieval Ref: $retrievalRef | NETs Amount: $parsedAmt\n");
+        print("\n Txn ID: $txnId | Retrieval Ref: $retrievalRef\n");
 
         add(RequestNetsQrEvent(amount: parsedAmt, txnId: txnId, notifyMobile: 0));
 
