@@ -3,8 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:redeem_order_app/bloc/order_history/orderhistory_bloc.dart';
 import 'package:redeem_order_app/bloc/order_history/orderhistory_state.dart';
-import 'package:redeem_order_app/models/order_history_model.dart';
 import 'package:redeem_order_app/bloc/order_history/orderhistory_event.dart';
+import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
+import 'package:redeem_order_app/models/order_history_model.dart';
 import 'package:redeem_order_app/services/order_history_service.dart';
 import 'package:redeem_order_app/views/cart/cart_page.dart';
 import 'package:redeem_order_app/views/login/login_page.dart';
@@ -164,6 +165,8 @@ class OrderLayout extends StatelessWidget {
     );
   }
   void _showOrderTypeDialog(BuildContext context, OrderHistory order) {
+    final cartBloc = context.read<CartBloc>();
+
     showDialog(
       context: context,
       builder: (context) {
@@ -174,14 +177,14 @@ class OrderLayout extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                _goToCart(context, order, 'Dine In');
+                _goToCart(context, order, 'Dine In', cartBloc);
               },
               child: const Text('Dine In'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                _goToCart(context, order, 'Takeaway');
+                _goToCart(context, order, 'Takeaway', cartBloc);
               },
               child: const Text('Takeaway'),
             ),
@@ -191,7 +194,35 @@ class OrderLayout extends StatelessWidget {
     );
   }
 
-  void _goToCart(BuildContext context, OrderHistory order, String orderType) {
+  void _goToCart(BuildContext context, OrderHistory order, String orderType, CartBloc cartBloc) async {
+    final cartState = cartBloc.state;
+    final hasCartItems = cartState.cartItems.isNotEmpty;
+    final currentMerchantId = hasCartItems ? cartState.cartItems.first.merchantId : null;
+
+    if (hasCartItems && currentMerchantId != order.merchantId) {
+      final shouldClear = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Clear Cart?'),
+            content: const Text('Your cart has items from another stall. Do you wish to clear the cart and continue?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Clear Cart'),
+              ),
+            ],
+          ),
+      );
+
+      if (shouldClear != true) return;
+      cartBloc.add(ClearCart());
+
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(

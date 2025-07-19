@@ -5,7 +5,6 @@ import 'package:redeem_order_app/bloc/cash_checkout/cash_checkout_bloc.dart';
 import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/models/cart_item_model.dart';
-import 'package:redeem_order_app/views/home/home_layout.dart';
 
 class CashCheckoutLayout extends StatelessWidget {
   final String orderType;

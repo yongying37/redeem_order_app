@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/models/merchant_model.dart';
 import 'package:redeem_order_app/services/merchant_service.dart';
 import 'package:redeem_order_app/views/ordertype_stalls/ordertype_page.dart';
+import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
 import 'package:redeem_order_app/bloc/session/session_bloc.dart';
 import 'package:redeem_order_app/views/login/login_page.dart';
 import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
@@ -49,13 +50,56 @@ class _StallLayoutState extends State<StallLayout> {
                 final isLoggedIn = sessionState.userId != 0;
 
                 if (!isLoggedIn) {
-                  final result = await Navigator.push(
+                  await showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Login Required!'),
+                      content: const Text('You need to log in to place an order.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context), // Close the alert
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const LoginPage()),
                   );
 
                   final updatedSession = context.read<SessionBloc>().state;
                   if (updatedSession.userId == 0) return;
+                }
+
+                final cartState = context.read<CartBloc>().state;
+
+                final hasCartItems = cartState.cartItems.isNotEmpty;
+                final currentMerchantId = hasCartItems ? cartState.cartItems.first.merchantId : null;
+
+                if (hasCartItems && currentMerchantId != merchant.id) {
+                  final shouldClear = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Clear Cart?'),
+                        content: const Text('Your cart has items from another stall. Do you wish to clear the cart and continue?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            child: const Text('Clear Cart'),
+                          ),
+                        ],
+                      ),
+                  );
+
+                  if (shouldClear != true) return;
+
+                  context.read<CartBloc>().add(ClearCart());
+
                 }
 
                 final result = await Navigator.push(

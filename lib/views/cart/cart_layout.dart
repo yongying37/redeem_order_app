@@ -265,18 +265,12 @@ class _CartLayoutState extends State<CartLayout> {
               ),
               const Divider(),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: TextField(
-                  decoration: const InputDecoration(labelText: 'Order Note'),
-                ),
-              ),
-              Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('Order Info',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                     Row(
                       children: [
                         const Text("Order Type: ",

@@ -131,6 +131,7 @@ class NetsClickBloc extends Bloc<NetsClickEvent, NetsClickState> {
         final txnId = result['txn_id'];
         final retrievalRef = result['txn_retrieval_ref'];
         final orderNo = result['order_no'];
+        final roundedAmount = double.parse(event.paymentAmount.toStringAsFixed(2));
 
         print('\nTxn ID: $txnId | Retrieval Ref: $retrievalRef\n');
 
@@ -138,7 +139,7 @@ class NetsClickBloc extends Bloc<NetsClickEvent, NetsClickState> {
             userId: event.userId,
             cartItems: event.cartItems,
             paymentMethod: 'NETs Click',
-            paymentAmt: event.paymentAmount,
+            paymentAmt: roundedAmount,
             pointsUsed: event.pointsUsed,
             orderType: event.orderType
         );
