@@ -30,9 +30,9 @@ class _NetsClickLayoutState extends State<NetsClickLayout> {
   @override
   void initState() {
     super.initState();
-    // Hardcoded values for now
+
     _mainPaymentAmountController = TextEditingController(text: widget.totalAmount.toStringAsFixed(2));
-    _mainPaymentRecordIdController = TextEditingController(text: '1');
+    _mainPaymentRecordIdController = TextEditingController(text: '1'); // Hardcoded value
   }
 
   @override

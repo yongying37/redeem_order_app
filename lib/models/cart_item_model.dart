@@ -40,19 +40,25 @@ class CartItem {
   });
 
   CartItem copyWith ({
+    String? id,
+    String? name,
+    double? price,
+    String? imgUrl,
     int? quantity,
+    String? productId,
+    String? merchantId,
     List<AddOnItem>? addOns,
     String? preference,
     String? remarks,
-    String? productId,
   }) {
     return CartItem(
-        id: id,
-        name: name,
-        price: price,
-        imgUrl: imgUrl,
+        id: id ?? this.id,
+        name: name ?? this.name,
+        price: price ?? this.price,
+        imgUrl: imgUrl ?? this.imgUrl,
         quantity: quantity ?? this.quantity,
         productId: productId ?? this.productId,
+        merchantId: merchantId ?? this.merchantId,
         addOns: addOns ?? this.addOns,
         preference: preference ?? this.preference,
         remarks: remarks ?? this.remarks,
