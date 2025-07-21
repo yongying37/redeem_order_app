@@ -178,12 +178,16 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
               );
               return;
             }
-            await Navigator.pushReplacement(
+            final result = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (_) => TxnNetsSuccessStatusPage(orderType: widget.orderType),
               ),
             );
+
+            if (result == 'reset_order_type') {
+              Navigator.pop(context, 'reset_order_type');
+            }
           } else {
             final cartBloc = context.read<CartBloc>();
             await Navigator.pushReplacement(

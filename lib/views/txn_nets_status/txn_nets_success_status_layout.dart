@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/nets_qr/nets_qr_bloc.dart';
-import 'package:redeem_order_app/views/home/home_page.dart';
 
 class TxnNetsSuccessStatusLayout extends StatefulWidget {
   final String orderType;
@@ -27,7 +26,7 @@ class _TxnNetsSuccessStatusLayoutState
             )),
         onPressed: () async {
           BlocProvider.of<NetsQrBloc>(context).add(const CancelWebhookNetsQrEvent());
-          await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+          Navigator.pop(context, 'reset_order_type');
         },
         child: const Padding(
           padding: EdgeInsets.all(15.0),
