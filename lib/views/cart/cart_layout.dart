@@ -57,54 +57,60 @@ class _CartLayoutState extends State<CartLayout> {
   }
 
   void showRedeemDialog() {
-    final availablePoints = context.read<ProfileBloc>().state.points;
     tempSelectedDis = 0;
 
     showDialog(
       context: context,
       builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setStateDialog) {
-            return Dialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text("Redeem Points",
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                    const SizedBox(height: 4),
-                    Text("$availablePoints points available",
-                          style: TextStyle(color: Colors.grey)),
-                    const SizedBox(height: 20),
-                    _buildRedeemOption("\$1 off", 100, availablePoints, setStateDialog),
-                    _buildRedeemOption("\$2 off", 200, availablePoints, setStateDialog),
-                    _buildRedeemOption("\$3 off", 300, availablePoints, setStateDialog),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: tempSelectedDis <= availablePoints && tempSelectedDis > 0 ? () {
-                        context.read<CartBloc>().add(RedeemPoints(tempSelectedDis));
-                        Navigator.pop(context);
-                      } : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          minimumSize: const Size(double.infinity, 50),
-                        ),
-                      child: const Text("Redeem Now"),
-                    )
-                  ],
-                ),
-              ),
-            );
-          },
+        return BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, profileState) {
+              final availablePoints = profileState.points;
+              return StatefulBuilder(
+                builder: (context, setStateDialog) {
+                  return Dialog(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text("Redeem Points",
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                          const SizedBox(height: 4),
+                          Text("$availablePoints points available",
+                              style: TextStyle(color: Colors.grey)),
+                          const SizedBox(height: 20),
+                          _buildRedeemOption("\$1 off", 100, availablePoints, setStateDialog),
+                          _buildRedeemOption("\$2 off", 200, availablePoints, setStateDialog),
+                          _buildRedeemOption("\$3 off", 300, availablePoints, setStateDialog),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: tempSelectedDis <= availablePoints && tempSelectedDis > 0 ? () {
+                              context.read<CartBloc>().add(RedeemPoints(tempSelectedDis));
+                              Navigator.pop(context);
+                            } : null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              minimumSize: const Size(double.infinity, 50),
+                            ),
+                            child: const Text("Redeem Now"),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
         );
       },
     );
   }
 
   Widget _buildRedeemOption(String label, int points, int availablePoints, void Function(void Function()) setStateDialog) {
-    final isDisabled = points > availablePoints;
+    final cartTotal = context.read<CartBloc>().state.total;
+    final discountValue = points / 100.0;
+    final isDisabled = points > availablePoints || discountValue > cartTotal;
 
     return ListTile(
       shape: RoundedRectangleBorder(
