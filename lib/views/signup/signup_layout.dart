@@ -92,6 +92,14 @@ class _SignUpLayoutState extends State<SignUpLayout> {
 
   void _handleSignUp() async {
     print('Register button clicked');
+
+    if (_selectedGender == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a gender')),
+      );
+      return;
+    }
+
     final username = _usernameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
