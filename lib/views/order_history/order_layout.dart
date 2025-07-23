@@ -184,9 +184,9 @@ class OrderLayout extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                _goToCart(context, order, 'Takeaway', cartBloc);
+                _goToCart(context, order, 'Take Away', cartBloc);
               },
-              child: const Text('Takeaway'),
+              child: const Text('Take Away'),
             ),
           ],
         );

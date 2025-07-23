@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:redeem_order_app/bloc/cart/cart_bloc.dart';
+import 'package:redeem_order_app/bloc/checkout/checkout_bloc.dart';
 import 'package:redeem_order_app/bloc/ordertype/ordertype_bloc.dart';
 import 'package:redeem_order_app/bloc/profile/profile_bloc.dart';
 import 'package:redeem_order_app/views/checkout/checkout_page.dart';
@@ -336,8 +337,9 @@ class _CartLayoutState extends State<CartLayout> {
                           backgroundColor: Colors.redAccent,
                           foregroundColor: Colors.white,
                       ),
-                      onPressed: () async {
+                      onPressed: state.cartItems.isEmpty ? null : () async {
                         final orderType = context.read<OrderTypeBloc>().state.selectedOption ?? '';
+                        context.read<CheckoutBloc>().add(LoadCheckout(orderType));
                         final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
