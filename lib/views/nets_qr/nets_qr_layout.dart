@@ -139,7 +139,7 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
       listener: (context, state) async {
         final userId = context.read<SessionBloc>().state.userId;
         final pointsUsed = context.read<CartBloc>().state.pointsUsed;
-        final roundedTotal = double.parse(state.paymentAmt!.toStringAsFixed(2));
+        // final roundedTotal = double.parse(state.paymentAmt!.toStringAsFixed(2));
 
         if (state.isNetsQrCodeScanned == true) {
           if (state.isNetsQrPaymentSuccess) {
@@ -148,7 +148,7 @@ class _NetsQrLayoutState extends State<NetsQrLayout> {
                   userId: userId,
                   cartItems: widget.cartItems,
                   paymentMethod: "NETs QR",
-                  paymentAmt: roundedTotal,
+                  paymentAmt: widget.totalAmount,
                   pointsUsed: pointsUsed,
                   orderType: widget.orderType,
               );
