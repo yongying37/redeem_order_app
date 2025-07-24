@@ -88,13 +88,26 @@ class VolunteerActivityDetailsLayout extends StatelessWidget {
                 final userId = context.read<SessionBloc>().state.userId;
 
                 if (userId == 0) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Please log in to register for this activity")),
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Login Required!'),
+                      content: const Text('You need to log in to register for this activity.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const LoginPage()),
+                            );
+                          },
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
                   );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const LoginPage()),
-                  );
+                  return;
                 } else {
                   // User is logged in
                   Navigator.push(
