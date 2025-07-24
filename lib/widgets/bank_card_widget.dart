@@ -1,4 +1,3 @@
-//import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import '../../models/nets_bank_card_model.dart';
 import '../../utils/config.dart';

@@ -4,9 +4,13 @@ import 'package:redeem_order_app/bloc/checkout/checkout_bloc.dart';
 import 'package:redeem_order_app/bloc/nets_qr/nets_qr_bloc.dart';
 import 'package:redeem_order_app/bloc/nets_click/nets_click_bloc.dart';
 import 'package:redeem_order_app/models/cart_item_model.dart';
+import 'package:redeem_order_app/models/nets_bank_card_model.dart';
+import 'package:redeem_order_app/models/payment_details_model.dart';
 import 'package:redeem_order_app/views/cash_checkout/cash_checkout_page.dart';
-import 'package:redeem_order_app/views/nets_click/nets_click_page.dart';
+import 'package:redeem_order_app/views/nets_click_loader/nets_click_loader_page.dart';
 import 'package:redeem_order_app/views/nets_qr/nets_qr_page.dart';
+import 'package:redeem_order_app/widgets/bank_card_widget.dart';
+import 'package:redeem_order_app/utils/config.dart';
 
 class CheckoutLayout extends StatelessWidget {
   final String orderType;
@@ -146,12 +150,19 @@ class CheckoutLayout extends StatelessWidget {
                           ),
                         );
                       } else if (state.paymentMethod == 'NETS Click') {
+                        final mainPaymentDetails = PaymentDetails(
+                            amtInDollars: state.total.toStringAsFixed(2),
+                            recordId: '1',
+                            identifier: Config().mainPaymentIdentifier,
+                        );
+
                         result = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => BlocProvider(
                               create: (_) => NetsClickBloc(),
-                              child: NetsClickPage(
+                              child: NetsClickLoaderPage(
+                                mainPaymentDetails: mainPaymentDetails,
                                 orderType: orderType,
                                 cartItems: cartItems,
                                 totalAmount: state.total,
@@ -182,7 +193,7 @@ class CheckoutLayout extends StatelessWidget {
                     },
 
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white,),
-                    child: const Text("Submit Order"),
+                    child: const Text("Pay"),
                   ),
                 ],
               ),
@@ -249,6 +260,14 @@ class CheckoutLayout extends StatelessWidget {
       {'name': 'NETS Click', 'icon': Icons.credit_card},
     ];
 
+    final netsBankCard = NetsBankCard(
+        id: Config().netsBankCardId,
+        issuerShortName: 'TEST',
+        paymentMode: 'NETS Click',
+        lastFourDigit: '1234',
+        expiryDate: '12/27',
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -260,27 +279,36 @@ class CheckoutLayout extends StatelessWidget {
             final name = method['name'] as String;
             final isSelected = name == selected;
 
-            return GestureDetector(
-              onTap: () {
-                bloc.add(SelectPaymentMethod(name));
-              },
-              child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 6),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: isSelected ? Colors.green : Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.white,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    bloc.add(SelectPaymentMethod(name));
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                    border: Border.all(color: isSelected ? Colors.green : Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(method['icon'] as IconData, size: 28),
+                      const SizedBox(width: 16),
+                      Expanded(child: Text(name, style: const TextStyle(fontSize: 16))),
+                      if (isSelected) const Icon(Icons.check_circle, color: Colors.green),
+                    ],
+                    ),
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    Icon(method['icon'] as IconData, size: 28),
-                    const SizedBox(width: 16),
-                    Expanded(child: Text(name, style: const TextStyle(fontSize: 16))),
-                    if (isSelected) const Icon(Icons.check_circle, color: Colors.green),
-                  ],
-                ),
-              ),
+                if (isSelected && name == 'NETS Click') ...[
+                  const SizedBox(height: 8), 
+                  BankCard(netsBankCard: netsBankCard, width: MediaQuery.of(context).size.width * 0.85),
+                ]
+              ],
             );
           }).toList(),
         ],
