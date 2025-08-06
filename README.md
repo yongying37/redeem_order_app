@@ -1,6 +1,8 @@
 # redeem_order_app
 
 A new Flutter project.
+This project is for the mobile application part of IWL Project 1. 
+There is also another part of it - the data analytics web interface - which is in another Github Repository called Redeem_Order_site by my teammate.
 
 ## Getting Started
 
